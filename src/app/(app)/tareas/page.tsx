@@ -14,8 +14,16 @@ const ESTILOS_URGENCIA: Record<Urgencia, string> = {
   normal: 'border-khaki bg-linen text-cocoa dark:border-cocoa dark:bg-[#3a2820] dark:text-khaki',
 };
 
-export default async function TareasPage() {
-  const [tareas, miembros] = await Promise.all([getTareas(), getMiembrosCasaActiva()]);
+export default async function TareasPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ completada?: string; proxima?: string; completadaId?: string }>;
+}) {
+  const [tareas, miembros, { completada, proxima, completadaId }] = await Promise.all([
+    getTareas(),
+    getMiembrosCasaActiva(),
+    searchParams,
+  ]);
   const nombrePorId = new Map(miembros.map((m) => [m.usuario_id, nombreMiembro(m)]));
 
   const tareasConUrgencia = tareas
@@ -39,6 +47,18 @@ export default async function TareasPage() {
           </Link>
         </div>
 
+        {completada && (
+          <p className="flex items-center gap-2 rounded-lg border-2 border-camel bg-camel/25 px-4 py-3 text-sm font-semibold text-espresso dark:text-linen">
+            <span aria-hidden className="text-lg">
+              ✓
+            </span>
+            <span>
+              Marcaste &ldquo;{completada}&rdquo; como hecha.
+              {proxima && ` Próxima vez: ${proxima}.`}
+            </span>
+          </p>
+        )}
+
         {tareasConUrgencia.length === 0 ? (
           <div className="rounded-lg border border-dashed border-cocoa/40 bg-linen/70 p-6 text-center shadow-sm dark:border-khaki/30 dark:bg-[#3a2820]/70">
             <p className="text-sm font-medium text-cocoa dark:text-khaki">
@@ -48,7 +68,12 @@ export default async function TareasPage() {
         ) : (
           <ul className="space-y-3">
             {tareasConUrgencia.map(({ tarea, diasRestantes, urgencia }) => (
-              <li key={tarea.id} className={`rounded-lg border-2 p-4 shadow-sm ${ESTILOS_URGENCIA[urgencia]}`}>
+              <li
+                key={tarea.id}
+                className={`rounded-lg border-2 p-4 shadow-sm ${ESTILOS_URGENCIA[urgencia]} ${
+                  tarea.id === completadaId ? 'destacar-confirmacion' : ''
+                }`}
+              >
                 <div className="flex items-start justify-between gap-3">
                   <div className="min-w-0">
                     <p className="truncate font-semibold text-espresso dark:text-linen">{tarea.nombre}</p>

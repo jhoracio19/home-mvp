@@ -80,11 +80,19 @@ export async function completarTarea(tareaId: string) {
     hoy.getDate()
   ).padStart(2, '0')}`;
 
-  await supabase
+  const { data } = await supabase
     .from('tareas')
     .update({ ultima_ejecucion: hoyISO })
     .eq('id', tareaId)
-    .eq('casa_id', casa.id);
+    .eq('casa_id', casa.id)
+    .select('nombre, frecuencia_dias')
+    .single();
 
-  redirect('/tareas');
+  if (!data) redirect('/tareas');
+
+  const dias = data.frecuencia_dias;
+  const proxima = dias === 1 ? 'mañana' : `en ${dias} días`;
+  redirect(
+    `/tareas?completada=${encodeURIComponent(data.nombre)}&proxima=${encodeURIComponent(proxima)}&completadaId=${tareaId}`
+  );
 }
