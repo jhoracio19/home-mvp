@@ -4,18 +4,21 @@ import {
   getRolEnCasaActiva,
   nombreMiembro,
 } from '@/lib/casas/data';
+import { getSiteUrl } from '@/lib/site-url';
 import { generarCodigoInvitacion } from '../actions';
 import { SubmitButton } from '@/components/ui/SubmitButton';
+import { CopyButton } from '@/components/ui/CopyButton';
 
 export default async function InvitarPage({
   searchParams,
 }: {
   searchParams: Promise<{ error?: string }>;
 }) {
-  const [casa, rol, miembros, { error }] = await Promise.all([
+  const [casa, rol, miembros, siteUrl, { error }] = await Promise.all([
     getCasaActivaOrRedirect(),
     getRolEnCasaActiva(),
     getMiembrosCasaActiva(),
+    getSiteUrl(),
     searchParams,
   ]);
 
@@ -24,6 +27,7 @@ export default async function InvitarPage({
     casa.codigo_invitacion && casa.codigo_invitacion_expira && new Date(casa.codigo_invitacion_expira) > new Date()
       ? casa.codigo_invitacion
       : null;
+  const linkInvitacion = codigoVigente ? `${siteUrl}/casas/unirse?codigo=${codigoVigente}` : '';
 
   return (
     <main className="flex flex-1 justify-center bg-[linear-gradient(180deg,_#F5F1EA_0%,_#D7C9B8_100%)] px-4 py-8 dark:bg-none dark:bg-espresso">
@@ -50,16 +54,22 @@ export default async function InvitarPage({
                 <p className="text-xs font-semibold uppercase tracking-wide text-cocoa/70 dark:text-khaki/70">
                   Código actual
                 </p>
-                <p className="mt-1 font-mono text-3xl font-bold tracking-[0.2em] text-espresso dark:text-linen">
-                  {codigoVigente}
+                <div className="mt-1 flex items-center justify-between gap-3">
+                  <p className="font-mono text-3xl font-bold tracking-[0.2em] text-espresso dark:text-linen">
+                    {codigoVigente}
+                  </p>
+                  <CopyButton texto={codigoVigente} />
+                </div>
+                <p className="mt-3 text-xs text-cocoa dark:text-khaki">
+                  Válido hasta {new Date(casa.codigo_invitacion_expira!).toLocaleDateString('es-MX')}. O comparte
+                  este link:
                 </p>
-                <p className="mt-1 text-xs text-cocoa dark:text-khaki">
-                  Válido hasta {new Date(casa.codigo_invitacion_expira!).toLocaleDateString('es-MX')}. Compártelo o
-                  manda este link:
-                </p>
-                <p className="mt-1 break-all rounded-lg bg-khaki/30 px-2 py-1.5 text-xs text-espresso dark:bg-black/20 dark:text-linen">
-                  {`{tu-dominio}/casas/unirse?codigo=${codigoVigente}`}
-                </p>
+                <div className="mt-1 flex items-center gap-2">
+                  <p className="min-w-0 flex-1 truncate rounded-lg bg-khaki/30 px-2 py-1.5 text-xs text-espresso dark:bg-black/20 dark:text-linen">
+                    {linkInvitacion}
+                  </p>
+                  <CopyButton texto={linkInvitacion} className="shrink-0" />
+                </div>
               </div>
               <form action={generarCodigoInvitacion}>
                 <SubmitButton variant="secondary" className="w-full" pendingText="Generando…">

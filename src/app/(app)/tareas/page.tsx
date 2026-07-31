@@ -78,6 +78,7 @@ export default async function TareasPage() {
                       variant="secondary"
                       className="min-h-0 px-2 py-1 text-xs"
                       pendingText="Eliminando…"
+                      confirmMessage={`¿Eliminar la tarea "${tarea.nombre}"?`}
                     >
                       Eliminar
                     </SubmitButton>

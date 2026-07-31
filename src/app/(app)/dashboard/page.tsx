@@ -81,6 +81,7 @@ export default async function DashboardPage() {
                       variant="secondary"
                       className="min-h-0 px-2 py-1 text-xs"
                       pendingText="Eliminando…"
+                      confirmMessage={`¿Eliminar "${item.nombre}" del refri?`}
                     >
                       Eliminar
                     </SubmitButton>
