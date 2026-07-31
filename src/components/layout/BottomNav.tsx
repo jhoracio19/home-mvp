@@ -12,7 +12,7 @@ export function BottomNav() {
   const pathname = usePathname();
 
   return (
-    <nav className="sticky bottom-0 z-10 flex border-t border-khaki bg-linen/95 backdrop-blur dark:border-cocoa dark:bg-espresso/95">
+    <nav className="sticky bottom-0 z-10 flex border-t border-khaki bg-linen/95 pb-[env(safe-area-inset-bottom)] backdrop-blur dark:border-cocoa dark:bg-espresso/95">
       {TABS.map((tab) => {
         const activo = tab.match(pathname);
         return (

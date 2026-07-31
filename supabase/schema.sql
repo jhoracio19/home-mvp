@@ -250,3 +250,83 @@ insert into referencia_caducidad (nombre, categoria, dias_estimados) values
   ('apio',       'verdura', 14),
   ('champiñon',  'verdura', 5)
 on conflict (nombre) do nothing;
+
+-- ============================================================
+-- Migraciones posteriores (aplicadas vía SQL editor, agregadas
+-- aquí para que este archivo siga siendo la fuente de verdad)
+-- ============================================================
+
+-- Paso 5: mostrar el email de los miembros de una casa para el
+-- selector de "asignar a" en tareas. auth.users no es legible
+-- directo por el cliente, por eso se expone solo lo necesario y
+-- solo para quien ya es miembro de esa misma casa.
+create or replace function miembros_casa_con_email(p_casa_id uuid)
+returns table (usuario_id uuid, email text, rol text)
+language sql
+security definer
+set search_path = public
+stable
+as $$
+  select m.usuario_id, u.email, m.rol
+  from miembros_casa m
+  join auth.users u on u.id = m.usuario_id
+  where m.casa_id = p_casa_id
+    and is_member_of_casa(p_casa_id);
+$$;
+
+grant execute on function miembros_casa_con_email(uuid) to authenticated;
+
+-- Invitar miembros: cada casa tiene un código de invitación
+-- regenerable (por un admin) con expiración. Compartible como link
+-- (`/casas/unirse?codigo=...`) o dictado en persona.
+alter table casas add column if not exists codigo_invitacion text unique;
+alter table casas add column if not exists codigo_invitacion_expira timestamptz;
+
+-- Previsualiza una invitación (nombre de la casa) sin unirse todavía.
+-- security definer porque quien la llama aún NO es miembro, así que
+-- normalmente no tendría permiso de leer la fila de `casas`.
+create or replace function previsualizar_invitacion(p_codigo text)
+returns table (casa_id uuid, nombre text)
+language sql
+security definer
+set search_path = public
+stable
+as $$
+  select id, nombre
+  from casas
+  where codigo_invitacion = p_codigo
+    and codigo_invitacion_expira > now();
+$$;
+
+grant execute on function previsualizar_invitacion(text) to authenticated;
+
+-- Confirma la unión: valida el código y agrega al usuario actual como
+-- miembro. `on conflict do nothing` hace que reusar el mismo link no
+-- truene si ya eras miembro.
+create or replace function unirse_a_casa(p_codigo text)
+returns uuid
+language plpgsql
+security definer
+set search_path = public
+as $$
+declare
+  v_casa_id uuid;
+begin
+  select id into v_casa_id
+  from casas
+  where codigo_invitacion = p_codigo
+    and codigo_invitacion_expira > now();
+
+  if v_casa_id is null then
+    raise exception 'Código de invitación inválido o expirado';
+  end if;
+
+  insert into miembros_casa (usuario_id, casa_id, rol)
+  values (auth.uid(), v_casa_id, 'miembro')
+  on conflict (usuario_id, casa_id) do nothing;
+
+  return v_casa_id;
+end;
+$$;
+
+grant execute on function unirse_a_casa(text) to authenticated;

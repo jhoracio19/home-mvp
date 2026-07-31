@@ -19,6 +19,14 @@ export default async function AppLayout({ children }: { children: React.ReactNod
           <p className="truncate text-xs text-khaki">{user.email}</p>
         </div>
         <div className="flex shrink-0 items-center gap-3">
+          {casaActiva && (
+            <Link
+              href="/casas/invitar"
+              className="text-xs font-semibold text-camel hover:text-linen hover:underline"
+            >
+              Invitar
+            </Link>
+          )}
           <Link
             href="/casas"
             className="text-xs font-semibold text-camel hover:text-linen hover:underline"

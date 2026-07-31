@@ -9,30 +9,43 @@ async function getOrigin() {
   return (await headers()).get('origin') ?? '';
 }
 
+// '/dashboard' es siempre un destino seguro (interno); cualquier otro
+// valor debe empezar con '/' para evitar que un `next` manipulado nos
+// mande a un dominio externo (open redirect).
+function destinoSeguro(next: string | null): string {
+  if (next && next.startsWith('/') && !next.startsWith('//')) return next;
+  return '/dashboard';
+}
+
 export async function login(formData: FormData) {
   const email = String(formData.get('email') ?? '').trim();
   const password = String(formData.get('password') ?? '');
+  const next = destinoSeguro(String(formData.get('next') ?? ''));
 
   const supabase = await createClient();
   const { error } = await supabase.auth.signInWithPassword({ email, password });
 
   if (error) {
-    redirect(`/login?error=${encodeURIComponent(mensajeErrorAuth(error.message))}`);
+    redirect(
+      `/login?error=${encodeURIComponent(mensajeErrorAuth(error.message))}&next=${encodeURIComponent(next)}`
+    );
   }
 
-  redirect('/dashboard');
+  redirect(next);
 }
 
 export async function signup(formData: FormData) {
   const email = String(formData.get('email') ?? '').trim();
   const password = String(formData.get('password') ?? '');
   const confirmPassword = String(formData.get('confirmPassword') ?? '');
+  const next = destinoSeguro(String(formData.get('next') ?? ''));
+  const nextParam = next !== '/dashboard' ? `&next=${encodeURIComponent(next)}` : '';
 
   if (password !== confirmPassword) {
-    redirect(`/signup?error=${encodeURIComponent('Las contraseñas no coinciden.')}`);
+    redirect(`/signup?error=${encodeURIComponent('Las contraseñas no coinciden.')}${nextParam}`);
   }
   if (password.length < 8) {
-    redirect(`/signup?error=${encodeURIComponent('La contraseña debe tener al menos 8 caracteres.')}`);
+    redirect(`/signup?error=${encodeURIComponent('La contraseña debe tener al menos 8 caracteres.')}${nextParam}`);
   }
 
   const supabase = await createClient();
@@ -40,23 +53,24 @@ export async function signup(formData: FormData) {
   const { error } = await supabase.auth.signUp({
     email,
     password,
-    options: { emailRedirectTo: `${origin}/auth/callback` },
+    options: { emailRedirectTo: `${origin}/auth/callback?next=${encodeURIComponent(next)}` },
   });
 
   if (error) {
-    redirect(`/signup?error=${encodeURIComponent(mensajeErrorAuth(error.message))}`);
+    redirect(`/signup?error=${encodeURIComponent(mensajeErrorAuth(error.message))}${nextParam}`);
   }
 
-  redirect(`/login?message=${encodeURIComponent('Revisa tu correo para confirmar tu cuenta.')}`);
+  redirect(`/login?message=${encodeURIComponent('Revisa tu correo para confirmar tu cuenta.')}${nextParam}`);
 }
 
-export async function signInWithGoogle() {
+export async function signInWithGoogle(formData: FormData) {
+  const next = destinoSeguro(String(formData.get('next') ?? ''));
   const supabase = await createClient();
   const origin = await getOrigin();
 
   const { data, error } = await supabase.auth.signInWithOAuth({
     provider: 'google',
-    options: { redirectTo: `${origin}/auth/callback` },
+    options: { redirectTo: `${origin}/auth/callback?next=${encodeURIComponent(next)}` },
   });
 
   if (error || !data.url) {

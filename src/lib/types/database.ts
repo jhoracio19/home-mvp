@@ -19,18 +19,24 @@ export interface Database {
           nombre: string;
           creada_por: string;
           created_at: string;
+          codigo_invitacion: string | null;
+          codigo_invitacion_expira: string | null;
         };
         Insert: {
           id?: string;
           nombre: string;
           creada_por: string;
           created_at?: string;
+          codigo_invitacion?: string | null;
+          codigo_invitacion_expira?: string | null;
         };
         Update: {
           id?: string;
           nombre?: string;
           creada_por?: string;
           created_at?: string;
+          codigo_invitacion?: string | null;
+          codigo_invitacion_expira?: string | null;
         };
         Relationships: [];
       };
@@ -151,6 +157,14 @@ export interface Database {
       miembros_casa_con_email: {
         Args: { p_casa_id: string };
         Returns: { usuario_id: string; email: string; rol: Rol }[];
+      };
+      previsualizar_invitacion: {
+        Args: { p_codigo: string };
+        Returns: { casa_id: string; nombre: string }[];
+      };
+      unirse_a_casa: {
+        Args: { p_codigo: string };
+        Returns: string;
       };
     };
   };

@@ -1,4 +1,4 @@
-import { getMiembrosCasa } from '@/lib/tareas/data';
+import { getMiembrosCasaActiva } from '@/lib/casas/data';
 import { crearTarea } from '../actions';
 import { TareaForm } from '@/components/tareas/TareaForm';
 
@@ -7,7 +7,7 @@ export default async function NuevaTareaPage({
 }: {
   searchParams: Promise<{ error?: string }>;
 }) {
-  const [miembros, { error }] = await Promise.all([getMiembrosCasa(), searchParams]);
+  const [miembros, { error }] = await Promise.all([getMiembrosCasaActiva(), searchParams]);
 
   return (
     <main className="flex flex-1 justify-center bg-[linear-gradient(180deg,_#F5F1EA_0%,_#D7C9B8_100%)] px-4 py-8 dark:bg-none dark:bg-espresso">

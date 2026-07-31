@@ -6,9 +6,9 @@ import { SubmitButton } from '@/components/ui/SubmitButton';
 export default async function SignupPage({
   searchParams,
 }: {
-  searchParams: Promise<{ error?: string }>;
+  searchParams: Promise<{ error?: string; next?: string }>;
 }) {
-  const { error } = await searchParams;
+  const { error, next } = await searchParams;
 
   return (
     <main className="flex flex-1 items-center justify-center bg-[radial-gradient(circle_at_top,_rgba(178,150,125,0.28),_transparent_34%),linear-gradient(180deg,_#F5F1EA_0%,_#D7C9B8_100%)] px-4 py-12 dark:bg-none dark:bg-espresso">
@@ -25,6 +25,7 @@ export default async function SignupPage({
         )}
 
         <form action={signup} className="space-y-4">
+          {next && <input type="hidden" name="next" value={next} />}
           <Input label="Correo" name="email" type="email" required autoComplete="email" />
           <Input
             label="Contraseña"
@@ -52,6 +53,7 @@ export default async function SignupPage({
         </div>
 
         <form action={signInWithGoogle}>
+          {next && <input type="hidden" name="next" value={next} />}
           <SubmitButton variant="secondary" className="w-full" pendingText="Redirigiendo…">
             Continuar con Google
           </SubmitButton>
@@ -59,7 +61,10 @@ export default async function SignupPage({
 
         <p className="text-center text-sm text-cocoa dark:text-khaki">
           ¿Ya tienes cuenta?{' '}
-          <Link href="/login" className="font-bold text-espresso hover:underline dark:text-camel">
+          <Link
+            href={next ? `/login?next=${encodeURIComponent(next)}` : '/login'}
+            className="font-bold text-espresso hover:underline dark:text-camel"
+          >
             Inicia sesión
           </Link>
         </p>

@@ -34,7 +34,7 @@ export const getCasasDelUsuario = cache(async () => {
   // (ver policy "casas_select_miembros" en supabase/schema.sql).
   const { data, error } = await supabase
     .from('casas')
-    .select('id, nombre, created_at')
+    .select('id, nombre, created_at, codigo_invitacion, codigo_invitacion_expira')
     .order('created_at', { ascending: true });
 
   if (error) throw new Error(error.message);
@@ -56,4 +56,46 @@ export const getCasaActivaOrRedirect = cache(async () => {
   const casa = await getCasaActiva();
   if (!casa) redirect('/casas');
   return casa;
+});
+
+export async function activarCasaCookie(casaId: string) {
+  const cookieStore = await cookies();
+  cookieStore.set(CASA_ACTIVA_COOKIE, casaId, {
+    httpOnly: true,
+    sameSite: 'lax',
+    secure: process.env.NODE_ENV === 'production',
+    path: '/',
+    maxAge: 60 * 60 * 24 * 365,
+  });
+}
+
+export const getRolEnCasaActiva = cache(async () => {
+  const casa = await getCasaActivaOrRedirect();
+  const { supabase, user } = await getSesion();
+
+  const { data, error } = await supabase
+    .from('miembros_casa')
+    .select('rol')
+    .eq('casa_id', casa.id)
+    .eq('usuario_id', user.id)
+    .maybeSingle();
+
+  if (error) throw new Error(error.message);
+  return data?.rol ?? null;
+});
+
+// Miembros de la casa activa con su email, vía la función RPC
+// `miembros_casa_con_email` (auth.users no es legible directo por el
+// cliente). Se usa en el selector de "asignar a" de tareas y en la
+// página de invitar.
+export const getMiembrosCasaActiva = cache(async () => {
+  const casa = await getCasaActivaOrRedirect();
+  const { supabase } = await getSesion();
+
+  const { data, error } = await supabase.rpc('miembros_casa_con_email', {
+    p_casa_id: casa.id,
+  });
+
+  if (error) throw new Error(error.message);
+  return data;
 });

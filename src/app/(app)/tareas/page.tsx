@@ -1,5 +1,6 @@
 import Link from 'next/link';
-import { getMiembrosCasa, getTareas } from '@/lib/tareas/data';
+import { getMiembrosCasaActiva } from '@/lib/casas/data';
+import { getTareas } from '@/lib/tareas/data';
 import { completarTarea, eliminarTarea } from './actions';
 import { calcularProximaFecha } from '@/lib/tareas/urgencia';
 import { calcularDiasRestantes, clasificarUrgencia, etiquetaUrgencia, type Urgencia } from '@/lib/urgencia';
@@ -14,7 +15,7 @@ const ESTILOS_URGENCIA: Record<Urgencia, string> = {
 };
 
 export default async function TareasPage() {
-  const [tareas, miembros] = await Promise.all([getTareas(), getMiembrosCasa()]);
+  const [tareas, miembros] = await Promise.all([getTareas(), getMiembrosCasaActiva()]);
   const emailPorId = new Map(miembros.map((m) => [m.usuario_id, m.email]));
 
   const tareasConUrgencia = tareas

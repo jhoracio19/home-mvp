@@ -1,5 +1,6 @@
 import { notFound } from 'next/navigation';
-import { getTarea, getMiembrosCasa } from '@/lib/tareas/data';
+import { getMiembrosCasaActiva } from '@/lib/casas/data';
+import { getTarea } from '@/lib/tareas/data';
 import { actualizarTarea } from '../../actions';
 import { TareaForm } from '@/components/tareas/TareaForm';
 
@@ -11,7 +12,11 @@ export default async function EditarTareaPage({
   searchParams: Promise<{ error?: string }>;
 }) {
   const { id } = await params;
-  const [tarea, miembros, { error }] = await Promise.all([getTarea(id), getMiembrosCasa(), searchParams]);
+  const [tarea, miembros, { error }] = await Promise.all([
+    getTarea(id),
+    getMiembrosCasaActiva(),
+    searchParams,
+  ]);
 
   if (!tarea) notFound();
 

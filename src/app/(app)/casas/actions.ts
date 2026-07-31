@@ -1,20 +1,8 @@
 'use server';
 
 import { randomUUID } from 'crypto';
-import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
-import { CASA_ACTIVA_COOKIE, getSesion } from '@/lib/casas/data';
-
-async function activarCasaCookie(casaId: string) {
-  const cookieStore = await cookies();
-  cookieStore.set(CASA_ACTIVA_COOKIE, casaId, {
-    httpOnly: true,
-    sameSite: 'lax',
-    secure: process.env.NODE_ENV === 'production',
-    path: '/',
-    maxAge: 60 * 60 * 24 * 365,
-  });
-}
+import { activarCasaCookie, getCasaActivaOrRedirect, getSesion } from '@/lib/casas/data';
 
 export async function crearCasa(formData: FormData) {
   const nombre = String(formData.get('nombre') ?? '').trim();
@@ -49,4 +37,37 @@ export async function crearCasa(formData: FormData) {
 export async function seleccionarCasa(casaId: string) {
   await activarCasaCookie(casaId);
   redirect('/dashboard');
+}
+
+const ALFABETO_CODIGO = 'ABCDEFGHJKMNPQRSTUVWXYZ23456789'; // sin 0/O, 1/I/L: se puede dictar sin ambigüedad
+
+function generarCodigo(longitud = 8) {
+  let codigo = '';
+  for (let i = 0; i < longitud; i++) {
+    codigo += ALFABETO_CODIGO[Math.floor(Math.random() * ALFABETO_CODIGO.length)];
+  }
+  return codigo;
+}
+
+// Solo un admin puede regenerar el código (lo hace cumplir la policy
+// "casas_update_admin" en la base; esto es una capa extra de UX, no
+// la línea de defensa real).
+export async function generarCodigoInvitacion() {
+  const casa = await getCasaActivaOrRedirect();
+  const { supabase } = await getSesion();
+
+  const codigo = generarCodigo();
+  const expira = new Date();
+  expira.setDate(expira.getDate() + 7);
+
+  const { error } = await supabase
+    .from('casas')
+    .update({ codigo_invitacion: codigo, codigo_invitacion_expira: expira.toISOString() })
+    .eq('id', casa.id);
+
+  if (error) {
+    redirect(`/casas/invitar?error=${encodeURIComponent(error.message)}`);
+  }
+
+  redirect('/casas/invitar');
 }

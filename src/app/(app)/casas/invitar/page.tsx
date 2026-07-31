@@ -1,0 +1,104 @@
+import {
+  getCasaActivaOrRedirect,
+  getMiembrosCasaActiva,
+  getRolEnCasaActiva,
+} from '@/lib/casas/data';
+import { generarCodigoInvitacion } from '../actions';
+import { SubmitButton } from '@/components/ui/SubmitButton';
+
+export default async function InvitarPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ error?: string }>;
+}) {
+  const [casa, rol, miembros, { error }] = await Promise.all([
+    getCasaActivaOrRedirect(),
+    getRolEnCasaActiva(),
+    getMiembrosCasaActiva(),
+    searchParams,
+  ]);
+
+  const esAdmin = rol === 'admin';
+  const codigoVigente =
+    casa.codigo_invitacion && casa.codigo_invitacion_expira && new Date(casa.codigo_invitacion_expira) > new Date()
+      ? casa.codigo_invitacion
+      : null;
+
+  return (
+    <main className="flex flex-1 justify-center bg-[linear-gradient(180deg,_#F5F1EA_0%,_#D7C9B8_100%)] px-4 py-8 dark:bg-none dark:bg-espresso">
+      <div className="h-fit w-full max-w-sm space-y-6">
+        <div>
+          <p className="text-xs font-bold uppercase tracking-[0.18em] text-camel">{casa.nombre}</p>
+          <h1 className="mt-1 text-xl font-bold text-espresso dark:text-linen">Invitar miembros</h1>
+        </div>
+
+        {error && (
+          <p className="rounded-lg border border-[#a8422e] bg-[#a8422e]/10 px-3 py-2 text-sm font-medium text-[#a8422e] dark:text-[#e3a999]">
+            {error}
+          </p>
+        )}
+
+        <div className="space-y-4 rounded-lg border border-khaki bg-linen/95 p-6 shadow-lg dark:border-cocoa dark:bg-[#3a2820]">
+          {!esAdmin ? (
+            <p className="text-sm font-medium text-cocoa dark:text-khaki">
+              Solo un admin de la casa puede generar o compartir el código de invitación.
+            </p>
+          ) : codigoVigente ? (
+            <>
+              <div>
+                <p className="text-xs font-semibold uppercase tracking-wide text-cocoa/70 dark:text-khaki/70">
+                  Código actual
+                </p>
+                <p className="mt-1 font-mono text-3xl font-bold tracking-[0.2em] text-espresso dark:text-linen">
+                  {codigoVigente}
+                </p>
+                <p className="mt-1 text-xs text-cocoa dark:text-khaki">
+                  Válido hasta {new Date(casa.codigo_invitacion_expira!).toLocaleDateString('es-MX')}. Compártelo o
+                  manda este link:
+                </p>
+                <p className="mt-1 break-all rounded-lg bg-khaki/30 px-2 py-1.5 text-xs text-espresso dark:bg-black/20 dark:text-linen">
+                  {`{tu-dominio}/casas/unirse?codigo=${codigoVigente}`}
+                </p>
+              </div>
+              <form action={generarCodigoInvitacion}>
+                <SubmitButton variant="secondary" className="w-full" pendingText="Generando…">
+                  Generar código nuevo
+                </SubmitButton>
+              </form>
+            </>
+          ) : (
+            <>
+              <p className="text-sm font-medium text-cocoa dark:text-khaki">
+                Aún no tienes un código de invitación activo (o ya expiró).
+              </p>
+              <form action={generarCodigoInvitacion}>
+                <SubmitButton className="w-full" pendingText="Generando…">
+                  Generar código de invitación
+                </SubmitButton>
+              </form>
+            </>
+          )}
+        </div>
+
+        <div className="space-y-3">
+          <h2 className="text-sm font-bold text-espresso dark:text-linen">
+            Miembros actuales ({miembros.length})
+          </h2>
+          <ul className="space-y-2">
+            {miembros.map((m) => (
+              <li
+                key={m.usuario_id}
+                className="flex items-center justify-between rounded-lg border border-khaki bg-linen/95 px-3 py-2 text-sm shadow-sm dark:border-cocoa dark:bg-[#3a2820]"
+              >
+                <span className="truncate text-espresso dark:text-linen">{m.email}</span>
+                <span className="shrink-0 text-xs font-semibold uppercase tracking-wide text-cocoa dark:text-camel">
+                  {m.rol}
+                </span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </div>
+    </main>
+  );
+}
