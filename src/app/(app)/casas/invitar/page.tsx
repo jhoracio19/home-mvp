@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import {
   getCasaActivaOrRedirect,
   getMiembrosCasaActiva,
@@ -34,6 +35,13 @@ export default async function InvitarPage({
   return (
     <main className="flex flex-1 justify-center bg-[radial-gradient(circle_at_top_left,_rgba(178,150,125,0.3),_transparent_34%)] bg-linen px-4 py-8 dark:bg-none dark:bg-espresso">
       <div className="h-fit w-full max-w-sm space-y-6">
+        <Link href="/dashboard" className="inline-flex items-center gap-1 text-sm font-semibold text-cocoa hover:underline">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="h-4 w-4">
+            <polyline points="15 18 9 12 15 6" />
+          </svg>
+          Volver
+        </Link>
+
         <div>
           <p className="text-xs font-bold uppercase tracking-[0.18em] text-camel">{casa.nombre}</p>
           <h1 className="mt-1 text-xl font-bold text-cocoa dark:text-linen">Invitar miembros</h1>
