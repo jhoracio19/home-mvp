@@ -362,6 +362,13 @@ create policy "perfiles_update_propio"
   on perfiles for update
   using (id = auth.uid());
 
+-- Necesaria para el upsert en /perfil (editar perfil): cubre tanto
+-- actualizar como el caso de cuentas viejas que nunca tuvieron fila
+-- porque se crearon antes de que existiera el trigger de abajo.
+create policy "perfiles_insert_propio"
+  on perfiles for insert
+  with check (id = auth.uid());
+
 -- Al crear un usuario (email/password o Google, da igual), copia
 -- nombre/apellido a `perfiles` automáticamente. Para signup por
 -- email, nombre/apellido llegan en options.data del signUp() del

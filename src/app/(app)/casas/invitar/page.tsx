@@ -1,7 +1,12 @@
-import { getCasaActivaOrRedirect, getMiembrosCasaActiva, getRolEnCasaActiva } from '@/lib/casas/data';
+import {
+  getCasaActivaOrRedirect,
+  getMiembrosCasaActiva,
+  getRolEnCasaActiva,
+  getUsuarioActual,
+} from '@/lib/casas/data';
 import { nombreMiembro } from '@/lib/casas/nombre-miembro';
 import { getSiteUrl } from '@/lib/site-url';
-import { generarCodigoInvitacion } from '../actions';
+import { generarCodigoInvitacion, quitarMiembro } from '../actions';
 import { SubmitButton } from '@/components/ui/SubmitButton';
 import { CopyButton } from '@/components/ui/CopyButton';
 
@@ -10,11 +15,12 @@ export default async function InvitarPage({
 }: {
   searchParams: Promise<{ error?: string }>;
 }) {
-  const [casa, rol, miembros, siteUrl, { error }] = await Promise.all([
+  const [casa, rol, miembros, siteUrl, usuario, { error }] = await Promise.all([
     getCasaActivaOrRedirect(),
     getRolEnCasaActiva(),
     getMiembrosCasaActiva(),
     getSiteUrl(),
+    getUsuarioActual(),
     searchParams,
   ]);
 
@@ -92,20 +98,40 @@ export default async function InvitarPage({
             Miembros actuales ({miembros.length})
           </h2>
           <ul className="space-y-2">
-            {miembros.map((m) => (
-              <li
-                key={m.usuario_id}
-                className="flex items-center justify-between gap-3 rounded-lg border border-camel bg-khaki px-3 py-2 text-sm shadow-sm dark:border-cocoa dark:bg-[#3a2820]"
-              >
-                <div className="min-w-0">
-                  <p className="truncate font-medium text-cocoa dark:text-linen">{nombreMiembro(m)}</p>
-                  {m.nombre && <p className="truncate text-xs text-cocoa/70 dark:text-khaki/70">{m.email}</p>}
-                </div>
-                <span className="shrink-0 text-xs font-semibold uppercase tracking-wide text-cocoa dark:text-camel">
-                  {m.rol}
-                </span>
-              </li>
-            ))}
+            {miembros.map((m) => {
+              const esUnoMismo = m.usuario_id === usuario.id;
+              return (
+                <li
+                  key={m.usuario_id}
+                  className="flex items-center justify-between gap-3 rounded-lg border border-camel bg-khaki px-3 py-2 text-sm shadow-sm dark:border-cocoa dark:bg-[#3a2820]"
+                >
+                  <div className="min-w-0">
+                    <p className="truncate font-medium text-cocoa dark:text-linen">
+                      {nombreMiembro(m)}
+                      {esUnoMismo && <span className="text-cocoa/60"> (tú)</span>}
+                    </p>
+                    {m.nombre && <p className="truncate text-xs text-cocoa/70 dark:text-khaki/70">{m.email}</p>}
+                  </div>
+                  <div className="flex shrink-0 items-center gap-2">
+                    <span className="text-xs font-semibold uppercase tracking-wide text-cocoa dark:text-camel">
+                      {m.rol}
+                    </span>
+                    {esAdmin && !esUnoMismo && (
+                      <form action={quitarMiembro.bind(null, m.usuario_id)}>
+                        <SubmitButton
+                          variant="secondary"
+                          className="min-h-0 px-2 py-1 text-xs"
+                          pendingText="Quitando…"
+                          confirmMessage={`¿Quitar a ${nombreMiembro(m)} de esta casa?`}
+                        >
+                          Quitar
+                        </SubmitButton>
+                      </form>
+                    )}
+                  </div>
+                </li>
+              );
+            })}
           </ul>
         </div>
       </div>

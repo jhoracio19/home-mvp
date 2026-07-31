@@ -1,8 +1,14 @@
 'use client';
 
 import { useEffect, useRef } from 'react';
+import type { FormEvent } from 'react';
 import Link from 'next/link';
 import { logout } from '@/app/auth/actions';
+import { salirDeCasa } from '@/app/(app)/casas/actions';
+
+const itemClase =
+  'flex items-center gap-3 px-4 py-3 text-sm font-medium text-cocoa hover:bg-khaki/40';
+const iconoClase = 'h-4 w-4 shrink-0';
 
 // <details>/<summary> nativo para el desplegable en sí (accesible,
 // sin estado de React); el único JS real aquí es cerrarlo al hacer
@@ -25,6 +31,12 @@ export function MenuUsuario({ dentroDeCasa }: { dentroDeCasa: boolean }) {
     if (detailsRef.current) detailsRef.current.open = false;
   }
 
+  function confirmarSalida(evento: FormEvent<HTMLFormElement>) {
+    if (!window.confirm('¿Seguro que quieres salir de esta casa?')) {
+      evento.preventDefault();
+    }
+  }
+
   return (
     <details ref={detailsRef} className="group relative shrink-0">
       <summary className="flex h-9 w-9 cursor-pointer list-none items-center justify-center rounded-full border-2 border-camel text-camel transition-colors hover:bg-camel hover:text-espresso [&::-webkit-details-marker]:hidden">
@@ -37,15 +49,12 @@ export function MenuUsuario({ dentroDeCasa }: { dentroDeCasa: boolean }) {
 
       <div
         onClick={cerrar}
-        className="absolute right-0 z-20 mt-2 w-56 overflow-hidden rounded-lg border-2 border-camel bg-white text-left shadow-lg dark:border-cocoa dark:bg-[#3a2820]"
+        className="absolute right-0 z-20 mt-2 w-56 overflow-hidden rounded-lg border-2 border-camel bg-white text-left shadow-lg"
       >
         {dentroDeCasa && (
           <>
-            <Link
-              href="/casas/invitar"
-              className="flex items-center gap-3 px-4 py-3 text-sm font-medium text-cocoa hover:bg-khaki/40 dark:text-linen dark:hover:bg-cocoa/40"
-            >
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-4 w-4 shrink-0">
+            <Link href="/casas/invitar" className={itemClase}>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={iconoClase}>
                 <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
                 <circle cx="9" cy="7" r="4" />
                 <line x1="19" y1="8" x2="19" y2="14" />
@@ -53,11 +62,8 @@ export function MenuUsuario({ dentroDeCasa }: { dentroDeCasa: boolean }) {
               </svg>
               Invitar miembros
             </Link>
-            <Link
-              href="/casas"
-              className="flex items-center gap-3 px-4 py-3 text-sm font-medium text-cocoa hover:bg-khaki/40 dark:text-linen dark:hover:bg-cocoa/40"
-            >
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-4 w-4 shrink-0">
+            <Link href="/casas" className={itemClase}>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={iconoClase}>
                 <polyline points="17 1 21 5 17 9" />
                 <path d="M3 11V9a4 4 0 0 1 4-4h14" />
                 <polyline points="7 23 3 19 7 15" />
@@ -65,17 +71,26 @@ export function MenuUsuario({ dentroDeCasa }: { dentroDeCasa: boolean }) {
               </svg>
               Cambiar casa
             </Link>
-            <div className="border-t border-khaki dark:border-cocoa" />
           </>
         )}
+
+        <Link href="/perfil" className={itemClase}>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={iconoClase}>
+            <circle cx="12" cy="8" r="4" />
+            <path d="M4 21c0-4 3.5-7 8-7s8 3 8 7" />
+          </svg>
+          Mi perfil
+        </Link>
+
+        <div className="border-t border-khaki" />
 
         <a
           href="https://paypal.me/jhoracio19"
           target="_blank"
           rel="noopener noreferrer"
-          className="flex items-center gap-3 px-4 py-3 text-sm font-medium text-cocoa hover:bg-khaki/30 dark:text-camel dark:hover:bg-cocoa/40"
+          className={itemClase}
         >
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-4 w-4 shrink-0">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={iconoClase}>
             <path d="M18 8h1a4 4 0 0 1 0 8h-1" />
             <path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4Z" />
             <line x1="6" y1="1" x2="6" y2="4" />
@@ -85,12 +100,27 @@ export function MenuUsuario({ dentroDeCasa }: { dentroDeCasa: boolean }) {
           Invítame un café
         </a>
 
+        <div className="border-t border-khaki" />
+
+        {dentroDeCasa && (
+          <form action={salirDeCasa} onSubmit={confirmarSalida}>
+            <button type="submit" className={`w-full text-left ${itemClase}`}>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={iconoClase}>
+                <path d="M13 4h5a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2h-5" />
+                <polyline points="9 8 5 12 9 16" />
+                <line x1="5" y1="12" x2="17" y2="12" />
+              </svg>
+              Salir de esta casa
+            </button>
+          </form>
+        )}
+
         <form action={logout}>
           <button
             type="submit"
-            className="flex w-full items-center gap-3 px-4 py-3 text-left text-sm font-semibold text-[#a8422e] hover:bg-khaki/30 dark:hover:bg-cocoa/40"
+            className="flex w-full items-center gap-3 px-4 py-3 text-left text-sm font-semibold text-[#a8422e] hover:bg-khaki/30"
           >
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-4 w-4 shrink-0">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={iconoClase}>
               <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
               <polyline points="16 17 21 12 16 7" />
               <line x1="21" y1="12" x2="9" y2="12" />

@@ -1,8 +1,9 @@
 'use server';
 
 import { randomUUID } from 'crypto';
+import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
-import { activarCasaCookie, getCasaActivaOrRedirect, getSesion } from '@/lib/casas/data';
+import { CASA_ACTIVA_COOKIE, activarCasaCookie, getCasaActivaOrRedirect, getSesion } from '@/lib/casas/data';
 
 export async function crearCasa(formData: FormData) {
   const nombre = String(formData.get('nombre') ?? '').trim();
@@ -64,6 +65,51 @@ export async function generarCodigoInvitacion() {
     .from('casas')
     .update({ codigo_invitacion: codigo, codigo_invitacion_expira: expira.toISOString() })
     .eq('id', casa.id);
+
+  if (error) {
+    redirect(`/casas/invitar?error=${encodeURIComponent(error.message)}`);
+  }
+
+  redirect('/casas/invitar');
+}
+
+// Te quita a TI de la casa activa (no a otro miembro — eso es
+// quitarMiembro). Bloqueado si eres el único miembro para no dejar la
+// casa sin nadie que pueda entrar a ella nunca más.
+export async function salirDeCasa() {
+  const casa = await getCasaActivaOrRedirect();
+  const { supabase, user } = await getSesion();
+
+  const { count } = await supabase
+    .from('miembros_casa')
+    .select('*', { count: 'exact', head: true })
+    .eq('casa_id', casa.id);
+
+  if ((count ?? 0) <= 1) {
+    redirect(
+      `/casas?error=${encodeURIComponent('Eres el único miembro de esta casa, no puedes salir.')}`
+    );
+  }
+
+  await supabase.from('miembros_casa').delete().eq('casa_id', casa.id).eq('usuario_id', user.id);
+
+  const cookieStore = await cookies();
+  cookieStore.delete(CASA_ACTIVA_COOKIE);
+
+  redirect(`/casas?message=${encodeURIComponent(`Saliste de "${casa.nombre}".`)}`);
+}
+
+// Solo lo pueden usar admins (lo hace cumplir la policy
+// "miembros_delete_admin_o_propio"): quita a OTRO miembro de la casa.
+export async function quitarMiembro(usuarioId: string) {
+  const casa = await getCasaActivaOrRedirect();
+  const { supabase } = await getSesion();
+
+  const { error } = await supabase
+    .from('miembros_casa')
+    .delete()
+    .eq('casa_id', casa.id)
+    .eq('usuario_id', usuarioId);
 
   if (error) {
     redirect(`/casas/invitar?error=${encodeURIComponent(error.message)}`);
