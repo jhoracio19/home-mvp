@@ -34,6 +34,11 @@ export default async function LoginPage({
           {next && <input type="hidden" name="next" value={next} />}
           <Input label="Correo" name="email" type="email" required autoComplete="email" />
           <PasswordInput label="Contraseña" name="password" required autoComplete="current-password" />
+          <div className="text-right">
+            <Link href="/recuperar" className="text-xs font-semibold text-camel hover:underline">
+              ¿Olvidaste tu contraseña?
+            </Link>
+          </div>
           <SubmitButton className="w-full">Entrar</SubmitButton>
         </form>
 

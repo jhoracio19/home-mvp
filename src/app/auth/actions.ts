@@ -90,6 +90,48 @@ export async function signInWithGoogle(formData: FormData) {
   redirect(data.url);
 }
 
+export async function solicitarRecuperacion(formData: FormData) {
+  const email = String(formData.get('email') ?? '').trim();
+  if (!email) {
+    redirect(`/recuperar?error=${encodeURIComponent('Escribe tu correo.')}`);
+  }
+
+  const supabase = await createClient();
+  const origin = await getOrigin();
+
+  // No revisamos el resultado ni distinguimos "correo no existe" del
+  // éxito real: mostrar siempre el mismo mensaje evita que alguien use
+  // este formulario para adivinar qué correos tienen cuenta.
+  await supabase.auth.resetPasswordForEmail(email, {
+    redirectTo: `${origin}/auth/callback?next=${encodeURIComponent('/restablecer')}`,
+  });
+
+  redirect(
+    `/login?message=${encodeURIComponent('Si ese correo tiene una cuenta, te enviamos un link para restablecer tu contraseña.')}`
+  );
+}
+
+export async function actualizarContrasena(formData: FormData) {
+  const password = String(formData.get('password') ?? '');
+  const confirmPassword = String(formData.get('confirmPassword') ?? '');
+
+  if (password !== confirmPassword) {
+    redirect(`/restablecer?error=${encodeURIComponent('Las contraseñas no coinciden.')}`);
+  }
+  if (password.length < 8) {
+    redirect(`/restablecer?error=${encodeURIComponent('La contraseña debe tener al menos 8 caracteres.')}`);
+  }
+
+  const supabase = await createClient();
+  const { error } = await supabase.auth.updateUser({ password });
+
+  if (error) {
+    redirect(`/restablecer?error=${encodeURIComponent(mensajeErrorAuth(error.message))}`);
+  }
+
+  redirect(`/casas?message=${encodeURIComponent('Tu contraseña se actualizó correctamente.')}`);
+}
+
 export async function logout() {
   const supabase = await createClient();
   await supabase.auth.signOut();

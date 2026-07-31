@@ -7,9 +7,9 @@ import { SubmitButton } from '@/components/ui/SubmitButton';
 export default async function CasasPage({
   searchParams,
 }: {
-  searchParams: Promise<{ error?: string }>;
+  searchParams: Promise<{ error?: string; message?: string }>;
 }) {
-  const [casas, { error }] = await Promise.all([getCasasDelUsuario(), searchParams]);
+  const [casas, { error, message }] = await Promise.all([getCasasDelUsuario(), searchParams]);
   const totalCasas = casas.length;
 
   return (
@@ -30,6 +30,12 @@ export default async function CasasPage({
               </div>
             </div>
           </div>
+
+          {message && (
+            <p className="rounded-lg border-2 border-camel bg-khaki px-4 py-3 text-sm font-semibold text-cocoa">
+              {message}
+            </p>
+          )}
 
           {error && (
             <p className="rounded-lg border border-[#fecdca] bg-[#fef3f2] px-4 py-3 text-sm font-semibold text-[#b42318] dark:border-[#7a271a] dark:bg-[#451a14] dark:text-[#fecdca]">
