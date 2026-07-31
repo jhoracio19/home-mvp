@@ -13,19 +13,19 @@ export default async function CasasPage({
   const totalCasas = casas.length;
 
   return (
-    <main className="flex flex-1 bg-[radial-gradient(circle_at_top_left,_rgba(178,150,125,0.26),_transparent_32%),linear-gradient(180deg,_#F5F1EA_0%,_#D7C9B8_100%)] px-4 py-8 dark:bg-none dark:bg-espresso">
+    <main className="flex flex-1 bg-[radial-gradient(circle_at_top_left,_rgba(178,150,125,0.3),_transparent_34%)] bg-linen px-4 py-8 dark:bg-none dark:bg-espresso">
       <section className="mx-auto grid w-full max-w-5xl gap-6 lg:grid-cols-[1fr_360px]">
         <div className="space-y-6">
           <div className="space-y-3">
             <p className="text-xs font-bold uppercase tracking-[0.18em] text-camel">Espacios</p>
             <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
               <div className="space-y-2">
-                <h1 className="text-3xl font-bold text-espresso dark:text-linen">Tus casas</h1>
+                <h1 className="text-3xl font-bold text-cocoa dark:text-linen">Tus casas</h1>
                 <p className="max-w-xl text-sm leading-6 text-cocoa dark:text-khaki">
                   Selecciona el hogar donde vas a gestionar el refri y las tareas compartidas.
                 </p>
               </div>
-              <div className="w-fit rounded-lg border border-khaki bg-linen/90 px-3 py-2 text-sm font-semibold text-espresso shadow-sm dark:border-cocoa dark:bg-[#3a2820] dark:text-linen">
+              <div className="w-fit rounded-lg border border-camel bg-khaki px-3 py-2 text-sm font-semibold text-cocoa shadow-sm dark:border-cocoa dark:bg-[#3a2820] dark:text-linen">
                 {totalCasas} {totalCasas === 1 ? 'casa' : 'casas'}
               </div>
             </div>
@@ -44,15 +44,15 @@ export default async function CasasPage({
                   <form action={seleccionarCasa.bind(null, casa.id)}>
                     <button
                       type="submit"
-                      className="group flex min-h-28 w-full flex-col justify-between rounded-lg border border-khaki bg-linen/95 p-4 text-left shadow-sm transition hover:-translate-y-0.5 hover:border-espresso hover:bg-linen hover:shadow-md focus:outline-none focus:ring-2 focus:ring-camel/40 dark:border-cocoa dark:bg-[#3a2820] dark:hover:border-camel dark:hover:bg-cocoa"
+                      className="group flex min-h-28 w-full flex-col justify-between rounded-lg border border-camel bg-khaki p-4 text-left shadow-sm transition hover:-translate-y-0.5 hover:border-espresso hover:shadow-md focus:outline-none focus:ring-2 focus:ring-camel/40 dark:border-cocoa dark:bg-[#3a2820] dark:hover:border-camel dark:hover:bg-cocoa"
                     >
                       <span className="flex items-start justify-between gap-3">
-                        <span className="text-lg font-bold text-espresso dark:text-linen">
+                        <span className="text-lg font-bold text-cocoa dark:text-linen">
                           {casa.nombre}
                         </span>
                         <span
                           aria-hidden
-                          className="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-khaki text-lg font-semibold text-cocoa transition group-hover:bg-espresso group-hover:text-linen dark:bg-cocoa dark:text-khaki dark:group-hover:bg-linen dark:group-hover:text-espresso"
+                          className="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-camel text-lg font-semibold text-linen transition group-hover:bg-espresso dark:bg-cocoa dark:text-khaki dark:group-hover:bg-linen dark:group-hover:text-espresso"
                         >
                           →
                         </span>
@@ -66,8 +66,8 @@ export default async function CasasPage({
               ))}
             </ul>
           ) : (
-            <div className="rounded-lg border border-dashed border-cocoa/40 bg-linen/80 p-6 shadow-sm dark:border-khaki/40 dark:bg-[#3a2820]/80">
-              <h2 className="text-lg font-bold text-espresso dark:text-linen">Sin casas todavía</h2>
+            <div className="rounded-lg border border-dashed border-camel bg-khaki/60 p-6 shadow-sm dark:border-khaki/40 dark:bg-[#3a2820]/80">
+              <h2 className="text-lg font-bold text-cocoa dark:text-linen">Sin casas todavía</h2>
               <p className="mt-2 text-sm leading-6 text-cocoa dark:text-khaki">
                 Crea tu primer hogar para empezar a organizar compras, caducidades y pendientes.
               </p>
@@ -75,9 +75,9 @@ export default async function CasasPage({
           )}
         </div>
 
-        <aside className="h-fit rounded-lg border border-khaki bg-linen/95 p-5 shadow-sm dark:border-cocoa dark:bg-[#3a2820]">
+        <aside className="h-fit rounded-lg border border-camel bg-khaki p-5 shadow-sm dark:border-cocoa dark:bg-[#3a2820]">
           <div className="mb-5 space-y-1">
-            <h2 className="text-lg font-bold text-espresso dark:text-linen">Nueva casa</h2>
+            <h2 className="text-lg font-bold text-cocoa dark:text-linen">Nueva casa</h2>
             <p className="text-sm leading-6 text-cocoa dark:text-khaki">
               Usa un nombre fácil de reconocer para todos los miembros.
             </p>
@@ -89,11 +89,11 @@ export default async function CasasPage({
             </SubmitButton>
           </form>
 
-          <div className="mt-5 border-t border-khaki pt-5 text-center dark:border-cocoa">
+          <div className="mt-5 border-t border-camel pt-5 text-center dark:border-cocoa">
             <p className="text-sm text-cocoa dark:text-khaki">¿Ya tienes un código de invitación?</p>
             <Link
               href="/casas/unirse"
-              className="mt-1 inline-block text-sm font-bold text-espresso hover:underline dark:text-camel"
+              className="mt-1 inline-block text-sm font-bold text-camel hover:underline"
             >
               Unirme con un código
             </Link>

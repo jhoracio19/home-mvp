@@ -37,14 +37,14 @@ export default async function UnirseCasaPage({
   }
 
   return (
-    <main className="flex flex-1 items-center justify-center bg-[radial-gradient(circle_at_top,_rgba(178,150,125,0.28),_transparent_34%),linear-gradient(180deg,_#F5F1EA_0%,_#D7C9B8_100%)] px-4 py-12 dark:bg-none dark:bg-espresso">
-      <div className="w-full max-w-sm space-y-6 rounded-lg border border-khaki bg-linen/95 p-6 shadow-lg dark:border-cocoa dark:bg-[#3a2820]">
+    <main className="flex flex-1 items-center justify-center bg-[radial-gradient(circle_at_top,_rgba(178,150,125,0.32),_transparent_36%)] bg-linen px-4 py-12 dark:bg-none dark:bg-espresso">
+      <div className="w-full max-w-sm space-y-6 rounded-lg border border-camel bg-khaki p-6 shadow-lg dark:border-cocoa dark:bg-[#3a2820]">
         <div className="space-y-1 text-center">
-          <h1 className="text-2xl font-bold text-espresso dark:text-linen">Unirme a una casa</h1>
+          <h1 className="text-2xl font-bold text-cocoa dark:text-linen">Unirme a una casa</h1>
         </div>
 
         {error && (
-          <p className="rounded-lg border border-cocoa bg-khaki/45 px-3 py-2 text-sm font-semibold text-espresso dark:text-linen">
+          <p className="rounded-lg border border-cocoa bg-linen px-3 py-2 text-sm font-semibold text-cocoa dark:text-linen">
             {error}
           </p>
         )}
@@ -82,7 +82,7 @@ export default async function UnirseCasaPage({
         )}
 
         <p className="text-center text-sm text-cocoa dark:text-khaki">
-          <Link href="/dashboard" className="font-bold text-espresso hover:underline dark:text-camel">
+          <Link href="/dashboard" className="font-bold text-camel hover:underline">
             Volver
           </Link>
         </p>

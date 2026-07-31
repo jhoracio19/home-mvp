@@ -26,11 +26,11 @@ export default async function InvitarPage({
   const linkInvitacion = codigoVigente ? `${siteUrl}/casas/unirse?codigo=${codigoVigente}` : '';
 
   return (
-    <main className="flex flex-1 justify-center bg-[linear-gradient(180deg,_#F5F1EA_0%,_#D7C9B8_100%)] px-4 py-8 dark:bg-none dark:bg-espresso">
+    <main className="flex flex-1 justify-center bg-[radial-gradient(circle_at_top_left,_rgba(178,150,125,0.3),_transparent_34%)] bg-linen px-4 py-8 dark:bg-none dark:bg-espresso">
       <div className="h-fit w-full max-w-sm space-y-6">
         <div>
           <p className="text-xs font-bold uppercase tracking-[0.18em] text-camel">{casa.nombre}</p>
-          <h1 className="mt-1 text-xl font-bold text-espresso dark:text-linen">Invitar miembros</h1>
+          <h1 className="mt-1 text-xl font-bold text-cocoa dark:text-linen">Invitar miembros</h1>
         </div>
 
         {error && (
@@ -39,7 +39,7 @@ export default async function InvitarPage({
           </p>
         )}
 
-        <div className="space-y-4 rounded-lg border border-khaki bg-linen/95 p-6 shadow-lg dark:border-cocoa dark:bg-[#3a2820]">
+        <div className="space-y-4 rounded-lg border border-camel bg-khaki p-6 shadow-lg dark:border-cocoa dark:bg-[#3a2820]">
           {!esAdmin ? (
             <p className="text-sm font-medium text-cocoa dark:text-khaki">
               Solo un admin de la casa puede generar o compartir el código de invitación.
@@ -61,7 +61,7 @@ export default async function InvitarPage({
                   este link:
                 </p>
                 <div className="mt-1 flex items-center gap-2">
-                  <p className="min-w-0 flex-1 truncate rounded-lg bg-khaki/30 px-2 py-1.5 text-xs text-espresso dark:bg-black/20 dark:text-linen">
+                  <p className="min-w-0 flex-1 truncate rounded-lg bg-linen px-2 py-1.5 text-xs text-cocoa dark:bg-black/20 dark:text-linen">
                     {linkInvitacion}
                   </p>
                   <CopyButton texto={linkInvitacion} className="shrink-0" />
@@ -88,17 +88,17 @@ export default async function InvitarPage({
         </div>
 
         <div className="space-y-3">
-          <h2 className="text-sm font-bold text-espresso dark:text-linen">
+          <h2 className="text-sm font-bold text-cocoa dark:text-linen">
             Miembros actuales ({miembros.length})
           </h2>
           <ul className="space-y-2">
             {miembros.map((m) => (
               <li
                 key={m.usuario_id}
-                className="flex items-center justify-between gap-3 rounded-lg border border-khaki bg-linen/95 px-3 py-2 text-sm shadow-sm dark:border-cocoa dark:bg-[#3a2820]"
+                className="flex items-center justify-between gap-3 rounded-lg border border-camel bg-khaki px-3 py-2 text-sm shadow-sm dark:border-cocoa dark:bg-[#3a2820]"
               >
                 <div className="min-w-0">
-                  <p className="truncate font-medium text-espresso dark:text-linen">{nombreMiembro(m)}</p>
+                  <p className="truncate font-medium text-cocoa dark:text-linen">{nombreMiembro(m)}</p>
                   {m.nombre && <p className="truncate text-xs text-cocoa/70 dark:text-khaki/70">{m.email}</p>}
                 </div>
                 <span className="shrink-0 text-xs font-semibold uppercase tracking-wide text-cocoa dark:text-camel">

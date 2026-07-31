@@ -1,5 +1,11 @@
 @import "tailwindcss";
 
+/* Un solo modo, siempre: las clases dark: de Tailwind quedan
+   apuntando a una clase que nunca existe en el DOM, así que jamás
+   se activan — sin importar el modo del sistema operativo/navegador.
+   Más simple que borrar cada "dark:" suelto en cada componente. */
+@custom-variant dark (&:where(.modo-oscuro-desactivado));
+
 :root {
   --linen: #F5F1EA;
   --khaki: #D7C9B8;
@@ -21,13 +27,6 @@
   --color-espresso: var(--espresso);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: var(--espresso);
-    --foreground: var(--linen);
-  }
 }
 
 body {

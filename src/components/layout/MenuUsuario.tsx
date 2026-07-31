@@ -37,13 +37,13 @@ export function MenuUsuario({ dentroDeCasa }: { dentroDeCasa: boolean }) {
 
       <div
         onClick={cerrar}
-        className="absolute right-0 z-20 mt-2 w-56 overflow-hidden rounded-lg border-2 border-khaki bg-white text-left shadow-lg dark:border-cocoa dark:bg-[#3a2820]"
+        className="absolute right-0 z-20 mt-2 w-56 overflow-hidden rounded-lg border-2 border-camel bg-white text-left shadow-lg dark:border-cocoa dark:bg-[#3a2820]"
       >
         {dentroDeCasa && (
           <>
             <Link
               href="/casas/invitar"
-              className="flex items-center gap-3 px-4 py-3 text-sm font-medium text-espresso hover:bg-khaki/30 dark:text-linen dark:hover:bg-cocoa/40"
+              className="flex items-center gap-3 px-4 py-3 text-sm font-medium text-cocoa hover:bg-khaki/40 dark:text-linen dark:hover:bg-cocoa/40"
             >
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-4 w-4 shrink-0">
                 <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
@@ -55,7 +55,7 @@ export function MenuUsuario({ dentroDeCasa }: { dentroDeCasa: boolean }) {
             </Link>
             <Link
               href="/casas"
-              className="flex items-center gap-3 px-4 py-3 text-sm font-medium text-espresso hover:bg-khaki/30 dark:text-linen dark:hover:bg-cocoa/40"
+              className="flex items-center gap-3 px-4 py-3 text-sm font-medium text-cocoa hover:bg-khaki/40 dark:text-linen dark:hover:bg-cocoa/40"
             >
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-4 w-4 shrink-0">
                 <polyline points="17 1 21 5 17 9" />

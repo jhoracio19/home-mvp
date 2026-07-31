@@ -4,7 +4,7 @@ import { useMemo, useState } from 'react';
 import { Input } from '@/components/ui/Input';
 import { Select } from '@/components/ui/Select';
 import { SubmitButton } from '@/components/ui/SubmitButton';
-import { CATEGORIAS } from '@/lib/refri/categorias';
+import { CATEGORIAS, HEX_CATEGORIA } from '@/lib/refri/categorias';
 import type { CategoriaItem, TipoTracking } from '@/lib/types/database';
 
 type ReferenciaItem = { nombre: string; categoria: 'fruta' | 'verdura'; dias_estimados: number };
@@ -88,7 +88,16 @@ export function ItemForm({
       />
 
       <Select
-        label="Categoría"
+        label={
+          <span className="inline-flex items-center gap-1.5">
+            <span
+              aria-hidden
+              className="inline-block h-2.5 w-2.5 rounded-full"
+              style={{ backgroundColor: HEX_CATEGORIA[categoria] }}
+            />
+            Categoría
+          </span>
+        }
         name="categoria"
         value={categoria}
         onChange={(e) => setCategoria(e.target.value as CategoriaItem)}
@@ -107,7 +116,7 @@ export function ItemForm({
       )}
 
       <div className="space-y-2">
-        <span className="block text-sm font-semibold text-espresso dark:text-linen">
+        <span className="block text-sm font-semibold text-cocoa dark:text-linen">
           ¿Cómo quieres controlar la caducidad?
         </span>
         <div className="flex gap-2">
@@ -117,7 +126,7 @@ export function ItemForm({
             className={`flex-1 rounded-lg border-2 px-3 py-2 text-sm font-semibold transition-colors ${
               tipoTracking === 'dias'
                 ? 'border-espresso bg-espresso text-linen'
-                : 'border-khaki bg-linen text-espresso dark:border-cocoa dark:bg-[#3a2820] dark:text-linen'
+                : 'border-camel bg-linen text-cocoa dark:border-cocoa dark:bg-[#3a2820] dark:text-linen'
             }`}
           >
             Por días
@@ -128,7 +137,7 @@ export function ItemForm({
             className={`flex-1 rounded-lg border-2 px-3 py-2 text-sm font-semibold transition-colors ${
               tipoTracking === 'fecha'
                 ? 'border-espresso bg-espresso text-linen'
-                : 'border-khaki bg-linen text-espresso dark:border-cocoa dark:bg-[#3a2820] dark:text-linen'
+                : 'border-camel bg-linen text-cocoa dark:border-cocoa dark:bg-[#3a2820] dark:text-linen'
             }`}
           >
             Por fecha exacta

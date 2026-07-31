@@ -10,9 +10,11 @@ const base =
   'inline-flex min-h-11 items-center justify-center rounded-lg px-4 text-base font-semibold transition-colors disabled:opacity-50 disabled:pointer-events-none';
 
 const variants: Record<ButtonVariant, string> = {
-  primary: 'bg-espresso text-linen shadow-sm hover:bg-cocoa active:bg-[#3a2820]',
+  // Cocoa en reposo; espresso (el tono de mayor énfasis) aparece al
+  // interactuar, como si el botón "se comprometiera" más al presionarlo.
+  primary: 'bg-cocoa text-linen shadow-sm hover:bg-espresso active:bg-[#3a2820]',
   secondary:
-    'border border-khaki bg-linen text-espresso shadow-sm hover:border-cocoa hover:bg-khaki active:bg-camel dark:border-cocoa dark:bg-[#3a2820] dark:text-linen dark:hover:border-camel dark:hover:bg-cocoa',
+    'border border-camel bg-linen text-cocoa shadow-sm hover:border-espresso hover:bg-khaki active:bg-camel dark:border-cocoa dark:bg-[#3a2820] dark:text-linen dark:hover:border-camel dark:hover:bg-cocoa',
   danger: 'bg-[#a8422e] text-linen shadow-sm hover:bg-[#8f3626] active:bg-[#7a2d20]',
 };
 

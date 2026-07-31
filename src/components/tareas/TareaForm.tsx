@@ -54,7 +54,7 @@ export function TareaForm({
       />
 
       <div className="space-y-2">
-        <span className="block text-sm font-semibold text-espresso dark:text-linen">¿Cómo se repite?</span>
+        <span className="block text-sm font-semibold text-cocoa dark:text-linen">¿Cómo se repite?</span>
         <div className="flex gap-2">
           <button
             type="button"
@@ -62,7 +62,7 @@ export function TareaForm({
             className={`flex-1 rounded-lg border-2 px-3 py-2 text-sm font-semibold transition-colors ${
               tipoFrecuencia === 'intervalo'
                 ? 'border-espresso bg-espresso text-linen'
-                : 'border-khaki bg-linen text-espresso dark:border-cocoa dark:bg-[#3a2820] dark:text-linen'
+                : 'border-camel bg-linen text-cocoa dark:border-cocoa dark:bg-[#3a2820] dark:text-linen'
             }`}
           >
             Cada N días
@@ -73,7 +73,7 @@ export function TareaForm({
             className={`flex-1 rounded-lg border-2 px-3 py-2 text-sm font-semibold transition-colors ${
               tipoFrecuencia === 'dias_semana'
                 ? 'border-espresso bg-espresso text-linen'
-                : 'border-khaki bg-linen text-espresso dark:border-cocoa dark:bg-[#3a2820] dark:text-linen'
+                : 'border-camel bg-linen text-cocoa dark:border-cocoa dark:bg-[#3a2820] dark:text-linen'
             }`}
           >
             Días de la semana
@@ -94,7 +94,7 @@ export function TareaForm({
         />
       ) : (
         <div className="space-y-2">
-          <span className="block text-sm font-semibold text-espresso dark:text-linen">
+          <span className="block text-sm font-semibold text-cocoa dark:text-linen">
             ¿Qué días toca? (elige uno o varios)
           </span>
           <div className="grid grid-cols-7 gap-1.5">
@@ -110,7 +110,7 @@ export function TareaForm({
                   className={`aspect-square rounded-lg border-2 text-sm font-bold transition-colors ${
                     activo
                       ? 'border-espresso bg-espresso text-linen'
-                      : 'border-khaki bg-linen text-espresso dark:border-cocoa dark:bg-[#3a2820] dark:text-linen'
+                      : 'border-camel bg-linen text-cocoa dark:border-cocoa dark:bg-[#3a2820] dark:text-linen'
                   }`}
                 >
                   {dia.corta}
