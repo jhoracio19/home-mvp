@@ -330,3 +330,84 @@ end;
 $$;
 
 grant execute on function unirse_a_casa(text) to authenticated;
+
+-- Perfil de usuario: nombre/apellido. auth.users NO guarda estos campos,
+-- así que viven en su propia tabla, 1:1 con auth.users vía el mismo id.
+-- Nullable porque se llenan automáticamente vía trigger (ver más abajo)
+-- a partir de los metadatos del signup o de Google — sin bloquear el
+-- acceso si por alguna razón vinieran vacíos.
+create table perfiles (
+  id         uuid primary key references auth.users (id) on delete cascade,
+  nombre     text,
+  apellido   text,
+  created_at timestamptz not null default now()
+);
+
+alter table perfiles enable row level security;
+
+-- Ves tu propio perfil, y el de cualquiera con quien compartas una casa
+-- (útil para mostrar nombres reales en vez de emails en tareas/refri).
+create policy "perfiles_select_propio_o_compartido"
+  on perfiles for select
+  using (
+    id = auth.uid()
+    or exists (
+      select 1 from miembros_casa m1
+      join miembros_casa m2 on m1.casa_id = m2.casa_id
+      where m1.usuario_id = auth.uid() and m2.usuario_id = perfiles.id
+    )
+  );
+
+create policy "perfiles_update_propio"
+  on perfiles for update
+  using (id = auth.uid());
+
+-- Al crear un usuario (email/password o Google, da igual), copia
+-- nombre/apellido a `perfiles` automáticamente. Para signup por
+-- email, nombre/apellido llegan en options.data del signUp() del
+-- cliente (quedan en raw_user_meta_data). Para Google, Supabase ya
+-- puebla given_name/family_name ahí solo. security definer porque en
+-- este punto todavía no hay sesión (auth.uid() sería null).
+create or replace function handle_nuevo_usuario()
+returns trigger
+language plpgsql
+security definer
+set search_path = public
+as $$
+begin
+  insert into perfiles (id, nombre, apellido)
+  values (
+    new.id,
+    coalesce(new.raw_user_meta_data ->> 'nombre', new.raw_user_meta_data ->> 'given_name'),
+    coalesce(new.raw_user_meta_data ->> 'apellido', new.raw_user_meta_data ->> 'family_name')
+  )
+  on conflict (id) do nothing;
+  return new;
+end;
+$$;
+
+create trigger trg_nuevo_usuario
+  after insert on auth.users
+  for each row
+  execute function handle_nuevo_usuario();
+
+-- Reemplaza a miembros_casa_con_email: ahora también trae nombre/apellido
+-- (pueden venir null si ese miembro aún no completó su perfil).
+drop function if exists miembros_casa_con_email(uuid);
+
+create or replace function miembros_casa_con_perfil(p_casa_id uuid)
+returns table (usuario_id uuid, email text, rol text, nombre text, apellido text)
+language sql
+security definer
+set search_path = public
+stable
+as $$
+  select m.usuario_id, u.email, m.rol, p.nombre, p.apellido
+  from miembros_casa m
+  join auth.users u on u.id = m.usuario_id
+  left join perfiles p on p.id = m.usuario_id
+  where m.casa_id = p_casa_id
+    and is_member_of_casa(p_casa_id);
+$$;
+
+grant execute on function miembros_casa_con_perfil(uuid) to authenticated;

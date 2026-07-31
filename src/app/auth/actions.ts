@@ -35,12 +35,17 @@ export async function login(formData: FormData) {
 }
 
 export async function signup(formData: FormData) {
+  const nombre = String(formData.get('nombre') ?? '').trim();
+  const apellido = String(formData.get('apellido') ?? '').trim();
   const email = String(formData.get('email') ?? '').trim();
   const password = String(formData.get('password') ?? '');
   const confirmPassword = String(formData.get('confirmPassword') ?? '');
   const next = destinoSeguro(String(formData.get('next') ?? ''));
   const nextParam = next !== '/dashboard' ? `&next=${encodeURIComponent(next)}` : '';
 
+  if (!nombre || !apellido) {
+    redirect(`/signup?error=${encodeURIComponent('Nombre y apellido son obligatorios.')}${nextParam}`);
+  }
   if (password !== confirmPassword) {
     redirect(`/signup?error=${encodeURIComponent('Las contraseñas no coinciden.')}${nextParam}`);
   }
@@ -53,7 +58,12 @@ export async function signup(formData: FormData) {
   const { error } = await supabase.auth.signUp({
     email,
     password,
-    options: { emailRedirectTo: `${origin}/auth/callback?next=${encodeURIComponent(next)}` },
+    options: {
+      // Llega a raw_user_meta_data; el trigger trg_nuevo_usuario
+      // (schema.sql) los copia a la tabla `perfiles` automáticamente.
+      data: { nombre, apellido },
+      emailRedirectTo: `${origin}/auth/callback?next=${encodeURIComponent(next)}`,
+    },
   });
 
   if (error) {

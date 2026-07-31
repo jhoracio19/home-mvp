@@ -84,18 +84,23 @@ export const getRolEnCasaActiva = cache(async () => {
   return data?.rol ?? null;
 });
 
-// Miembros de la casa activa con su email, vía la función RPC
-// `miembros_casa_con_email` (auth.users no es legible directo por el
-// cliente). Se usa en el selector de "asignar a" de tareas y en la
-// página de invitar.
+// Miembros de la casa activa con su email + nombre/apellido (si ya
+// completaron su perfil), vía la función RPC `miembros_casa_con_perfil`
+// (auth.users no es legible directo por el cliente). Se usa en el
+// selector de "asignar a" de tareas y en la página de invitar.
 export const getMiembrosCasaActiva = cache(async () => {
   const casa = await getCasaActivaOrRedirect();
   const { supabase } = await getSesion();
 
-  const { data, error } = await supabase.rpc('miembros_casa_con_email', {
+  const { data, error } = await supabase.rpc('miembros_casa_con_perfil', {
     p_casa_id: casa.id,
   });
 
   if (error) throw new Error(error.message);
   return data;
 });
+
+export function nombreMiembro(m: { email: string; nombre: string | null; apellido: string | null }) {
+  if (m.nombre && m.apellido) return `${m.nombre} ${m.apellido}`;
+  return m.email;
+}

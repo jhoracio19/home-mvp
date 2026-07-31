@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { getMiembrosCasaActiva } from '@/lib/casas/data';
+import { getMiembrosCasaActiva, nombreMiembro } from '@/lib/casas/data';
 import { getTareas } from '@/lib/tareas/data';
 import { completarTarea, eliminarTarea } from './actions';
 import { calcularProximaFecha } from '@/lib/tareas/urgencia';
@@ -16,7 +16,7 @@ const ESTILOS_URGENCIA: Record<Urgencia, string> = {
 
 export default async function TareasPage() {
   const [tareas, miembros] = await Promise.all([getTareas(), getMiembrosCasaActiva()]);
-  const emailPorId = new Map(miembros.map((m) => [m.usuario_id, m.email]));
+  const nombrePorId = new Map(miembros.map((m) => [m.usuario_id, nombreMiembro(m)]));
 
   const tareasConUrgencia = tareas
     .map((tarea) => {
@@ -54,7 +54,7 @@ export default async function TareasPage() {
                     <p className="truncate font-semibold text-espresso dark:text-linen">{tarea.nombre}</p>
                     <p className="text-xs font-medium opacity-70">
                       Cada {tarea.frecuencia_dias} {tarea.frecuencia_dias === 1 ? 'día' : 'días'} ·{' '}
-                      {tarea.asignado_a ? (emailPorId.get(tarea.asignado_a) ?? 'Miembro') : 'Sin asignar'}
+                      {tarea.asignado_a ? (nombrePorId.get(tarea.asignado_a) ?? 'Miembro') : 'Sin asignar'}
                     </p>
                   </div>
                   <span className="shrink-0 rounded-full bg-white/60 px-2 py-1 text-xs font-bold dark:bg-black/20">

@@ -1,6 +1,7 @@
 import Link from 'next/link';
-import { login, signInWithGoogle } from '@/app/auth/actions';
+import { login } from '@/app/auth/actions';
 import { Input } from '@/components/ui/Input';
+import { PasswordInput } from '@/components/ui/PasswordInput';
 import { SubmitButton } from '@/components/ui/SubmitButton';
 
 export default async function LoginPage({
@@ -32,27 +33,8 @@ export default async function LoginPage({
         <form action={login} className="space-y-4">
           {next && <input type="hidden" name="next" value={next} />}
           <Input label="Correo" name="email" type="email" required autoComplete="email" />
-          <Input
-            label="Contraseña"
-            name="password"
-            type="password"
-            required
-            autoComplete="current-password"
-          />
+          <PasswordInput label="Contraseña" name="password" required autoComplete="current-password" />
           <SubmitButton className="w-full">Entrar</SubmitButton>
-        </form>
-
-        <div className="flex items-center gap-3 text-xs font-medium text-cocoa dark:text-khaki">
-          <div className="h-px flex-1 bg-khaki dark:bg-cocoa" />
-          o
-          <div className="h-px flex-1 bg-khaki dark:bg-cocoa" />
-        </div>
-
-        <form action={signInWithGoogle}>
-          {next && <input type="hidden" name="next" value={next} />}
-          <SubmitButton variant="secondary" className="w-full" pendingText="Redirigiendo…">
-            Continuar con Google
-          </SubmitButton>
         </form>
 
         <p className="text-center text-sm text-cocoa dark:text-khaki">

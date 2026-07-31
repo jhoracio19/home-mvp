@@ -2,6 +2,7 @@ import {
   getCasaActivaOrRedirect,
   getMiembrosCasaActiva,
   getRolEnCasaActiva,
+  nombreMiembro,
 } from '@/lib/casas/data';
 import { generarCodigoInvitacion } from '../actions';
 import { SubmitButton } from '@/components/ui/SubmitButton';
@@ -88,9 +89,12 @@ export default async function InvitarPage({
             {miembros.map((m) => (
               <li
                 key={m.usuario_id}
-                className="flex items-center justify-between rounded-lg border border-khaki bg-linen/95 px-3 py-2 text-sm shadow-sm dark:border-cocoa dark:bg-[#3a2820]"
+                className="flex items-center justify-between gap-3 rounded-lg border border-khaki bg-linen/95 px-3 py-2 text-sm shadow-sm dark:border-cocoa dark:bg-[#3a2820]"
               >
-                <span className="truncate text-espresso dark:text-linen">{m.email}</span>
+                <div className="min-w-0">
+                  <p className="truncate font-medium text-espresso dark:text-linen">{nombreMiembro(m)}</p>
+                  {m.nombre && <p className="truncate text-xs text-cocoa/70 dark:text-khaki/70">{m.email}</p>}
+                </div>
                 <span className="shrink-0 text-xs font-semibold uppercase tracking-wide text-cocoa dark:text-camel">
                   {m.rol}
                 </span>

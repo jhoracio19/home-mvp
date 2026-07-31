@@ -118,6 +118,27 @@ export interface Database {
         };
         Relationships: [];
       };
+      perfiles: {
+        Row: {
+          id: string;
+          nombre: string | null;
+          apellido: string | null;
+          created_at: string;
+        };
+        Insert: {
+          id: string;
+          nombre?: string | null;
+          apellido?: string | null;
+          created_at?: string;
+        };
+        Update: {
+          id?: string;
+          nombre?: string | null;
+          apellido?: string | null;
+          created_at?: string;
+        };
+        Relationships: [];
+      };
       tareas: {
         Row: {
           id: string;
@@ -154,9 +175,15 @@ export interface Database {
     };
     Views: Record<string, never>;
     Functions: {
-      miembros_casa_con_email: {
+      miembros_casa_con_perfil: {
         Args: { p_casa_id: string };
-        Returns: { usuario_id: string; email: string; rol: Rol }[];
+        Returns: {
+          usuario_id: string;
+          email: string;
+          rol: Rol;
+          nombre: string | null;
+          apellido: string | null;
+        }[];
       };
       previsualizar_invitacion: {
         Args: { p_codigo: string };

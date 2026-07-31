@@ -1,8 +1,9 @@
 import { Input } from '@/components/ui/Input';
 import { Select } from '@/components/ui/Select';
 import { SubmitButton } from '@/components/ui/SubmitButton';
+import { nombreMiembro } from '@/lib/casas/data';
 
-type Miembro = { usuario_id: string; email: string; rol: string };
+type Miembro = { usuario_id: string; email: string; rol: string; nombre: string | null; apellido: string | null };
 
 type TareaInicial = {
   nombre: string;
@@ -44,7 +45,7 @@ export function TareaForm({
         <option value="">Sin asignar</option>
         {miembros.map((m) => (
           <option key={m.usuario_id} value={m.usuario_id}>
-            {m.email}
+            {nombreMiembro(m)}
           </option>
         ))}
       </Select>

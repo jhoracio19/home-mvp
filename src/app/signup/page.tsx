@@ -1,6 +1,7 @@
 import Link from 'next/link';
-import { signup, signInWithGoogle } from '@/app/auth/actions';
+import { signup } from '@/app/auth/actions';
 import { Input } from '@/components/ui/Input';
+import { PasswordInput } from '@/components/ui/PasswordInput';
 import { SubmitButton } from '@/components/ui/SubmitButton';
 
 export default async function SignupPage({
@@ -26,37 +27,26 @@ export default async function SignupPage({
 
         <form action={signup} className="space-y-4">
           {next && <input type="hidden" name="next" value={next} />}
+          <div className="grid grid-cols-2 gap-3">
+            <Input label="Nombre" name="nombre" required autoComplete="given-name" />
+            <Input label="Apellido" name="apellido" required autoComplete="family-name" />
+          </div>
           <Input label="Correo" name="email" type="email" required autoComplete="email" />
-          <Input
+          <PasswordInput
             label="Contraseña"
             name="password"
-            type="password"
             required
             minLength={8}
             autoComplete="new-password"
           />
-          <Input
+          <PasswordInput
             label="Confirmar contraseña"
             name="confirmPassword"
-            type="password"
             required
             minLength={8}
             autoComplete="new-password"
           />
           <SubmitButton className="w-full">Crear cuenta</SubmitButton>
-        </form>
-
-        <div className="flex items-center gap-3 text-xs font-medium text-cocoa dark:text-khaki">
-          <div className="h-px flex-1 bg-khaki dark:bg-cocoa" />
-          o
-          <div className="h-px flex-1 bg-khaki dark:bg-cocoa" />
-        </div>
-
-        <form action={signInWithGoogle}>
-          {next && <input type="hidden" name="next" value={next} />}
-          <SubmitButton variant="secondary" className="w-full" pendingText="Redirigiendo…">
-            Continuar con Google
-          </SubmitButton>
         </form>
 
         <p className="text-center text-sm text-cocoa dark:text-khaki">
