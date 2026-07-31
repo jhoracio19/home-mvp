@@ -1,0 +1,92 @@
+import Link from 'next/link';
+import { getMiembrosCasa, getTareas } from '@/lib/tareas/data';
+import { completarTarea, eliminarTarea } from './actions';
+import { calcularProximaFecha } from '@/lib/tareas/urgencia';
+import { calcularDiasRestantes, clasificarUrgencia, etiquetaUrgencia, type Urgencia } from '@/lib/urgencia';
+import { buttonClasses } from '@/components/ui/Button';
+import { SubmitButton } from '@/components/ui/SubmitButton';
+
+const ESTILOS_URGENCIA: Record<Urgencia, string> = {
+  vencido: 'border-[#a8422e] bg-[#a8422e]/10 text-[#a8422e] dark:bg-[#a8422e]/15 dark:text-[#e3a999]',
+  hoy: 'border-[#c9702f] bg-[#c9702f]/10 text-[#c9702f] dark:bg-[#c9702f]/15 dark:text-[#f0b988]',
+  pronto: 'border-camel bg-camel/15 text-cocoa dark:bg-camel/10 dark:text-camel',
+  normal: 'border-khaki bg-linen text-cocoa dark:border-cocoa dark:bg-[#3a2820] dark:text-khaki',
+};
+
+export default async function TareasPage() {
+  const [tareas, miembros] = await Promise.all([getTareas(), getMiembrosCasa()]);
+  const emailPorId = new Map(miembros.map((m) => [m.usuario_id, m.email]));
+
+  const tareasConUrgencia = tareas
+    .map((tarea) => {
+      const proximaFecha = calcularProximaFecha(tarea);
+      const diasRestantes = calcularDiasRestantes(proximaFecha);
+      return { tarea, diasRestantes, urgencia: clasificarUrgencia(diasRestantes) };
+    })
+    .sort((a, b) => a.diasRestantes - b.diasRestantes);
+
+  return (
+    <main className="flex flex-1 bg-[linear-gradient(180deg,_#F5F1EA_0%,_#D7C9B8_100%)] px-4 py-8 dark:bg-none dark:bg-espresso">
+      <section className="mx-auto w-full max-w-2xl space-y-6">
+        <div className="flex items-center justify-between gap-3">
+          <div>
+            <p className="text-xs font-bold uppercase tracking-[0.18em] text-camel">Tareas</p>
+            <h1 className="mt-1 text-2xl font-bold text-espresso dark:text-linen">Pendientes de la casa</h1>
+          </div>
+          <Link href="/tareas/nueva" className={buttonClasses('primary')}>
+            + Nueva
+          </Link>
+        </div>
+
+        {tareasConUrgencia.length === 0 ? (
+          <div className="rounded-lg border border-dashed border-cocoa/40 bg-linen/70 p-6 text-center shadow-sm dark:border-khaki/30 dark:bg-[#3a2820]/70">
+            <p className="text-sm font-medium text-cocoa dark:text-khaki">
+              Aún no hay tareas recurrentes. Crea la primera.
+            </p>
+          </div>
+        ) : (
+          <ul className="space-y-3">
+            {tareasConUrgencia.map(({ tarea, diasRestantes, urgencia }) => (
+              <li key={tarea.id} className={`rounded-lg border-2 p-4 shadow-sm ${ESTILOS_URGENCIA[urgencia]}`}>
+                <div className="flex items-start justify-between gap-3">
+                  <div className="min-w-0">
+                    <p className="truncate font-semibold text-espresso dark:text-linen">{tarea.nombre}</p>
+                    <p className="text-xs font-medium opacity-70">
+                      Cada {tarea.frecuencia_dias} {tarea.frecuencia_dias === 1 ? 'día' : 'días'} ·{' '}
+                      {tarea.asignado_a ? (emailPorId.get(tarea.asignado_a) ?? 'Miembro') : 'Sin asignar'}
+                    </p>
+                  </div>
+                  <span className="shrink-0 rounded-full bg-white/60 px-2 py-1 text-xs font-bold dark:bg-black/20">
+                    {etiquetaUrgencia(diasRestantes)}
+                  </span>
+                </div>
+                <div className="mt-3 flex flex-wrap items-center gap-3">
+                  <form action={completarTarea.bind(null, tarea.id)}>
+                    <SubmitButton className="min-h-0 px-3 py-1.5 text-xs" pendingText="Marcando…">
+                      Marcar hecho
+                    </SubmitButton>
+                  </form>
+                  <Link
+                    href={`/tareas/${tarea.id}/editar`}
+                    className="text-xs font-semibold text-cocoa hover:underline dark:text-camel"
+                  >
+                    Editar
+                  </Link>
+                  <form action={eliminarTarea.bind(null, tarea.id)}>
+                    <SubmitButton
+                      variant="secondary"
+                      className="min-h-0 px-2 py-1 text-xs"
+                      pendingText="Eliminando…"
+                    >
+                      Eliminar
+                    </SubmitButton>
+                  </form>
+                </div>
+              </li>
+            ))}
+          </ul>
+        )}
+      </section>
+    </main>
+  );
+}
