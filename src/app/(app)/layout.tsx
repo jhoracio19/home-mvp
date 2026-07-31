@@ -1,9 +1,8 @@
 import Link from 'next/link';
 import { getCasaActiva, getUsuarioActual } from '@/lib/casas/data';
 import { getPerfilPropio } from '@/lib/perfil/data';
-import { logout } from '@/app/auth/actions';
-import { SubmitButton } from '@/components/ui/SubmitButton';
 import { BottomNav } from '@/components/layout/BottomNav';
+import { MenuUsuario } from '@/components/layout/MenuUsuario';
 
 export default async function AppLayout({ children }: { children: React.ReactNode }) {
   // getUsuarioActual redirige a /login si no hay sesión.
@@ -20,31 +19,7 @@ export default async function AppLayout({ children }: { children: React.ReactNod
           </Link>
           <p className="truncate text-xs text-khaki">{saludo}</p>
         </div>
-        <div className="flex shrink-0 items-center gap-3">
-          {casaActiva && (
-            <Link
-              href="/casas/invitar"
-              className="text-xs font-semibold text-camel hover:text-linen hover:underline"
-            >
-              Invitar
-            </Link>
-          )}
-          <Link
-            href="/casas"
-            className="text-xs font-semibold text-camel hover:text-linen hover:underline"
-          >
-            Cambiar casa
-          </Link>
-          <form action={logout}>
-            <SubmitButton
-              className="min-h-0 border-2 border-camel px-2 py-1 text-xs text-camel hover:bg-camel hover:text-espresso"
-              variant="secondary"
-              pendingText="Saliendo…"
-            >
-              Salir
-            </SubmitButton>
-          </form>
-        </div>
+        <MenuUsuario dentroDeCasa={!!casaActiva} />
       </header>
       <div className="flex flex-1 flex-col">{children}</div>
       {casaActiva && <BottomNav />}

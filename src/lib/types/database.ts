@@ -9,6 +9,7 @@
 export type Rol = 'admin' | 'miembro';
 export type CategoriaItem = 'fruta' | 'verdura' | 'lacteo' | 'carne' | 'preparado' | 'otro';
 export type TipoTracking = 'dias' | 'fecha';
+export type TipoFrecuencia = 'intervalo' | 'dias_semana';
 
 export interface Database {
   public: {
@@ -144,7 +145,9 @@ export interface Database {
           id: string;
           casa_id: string;
           nombre: string;
-          frecuencia_dias: number;
+          tipo_frecuencia: TipoFrecuencia;
+          frecuencia_dias: number | null;
+          dias_semana: number[] | null;
           asignado_a: string | null;
           ultima_ejecucion: string | null;
           creado_por: string;
@@ -154,7 +157,9 @@ export interface Database {
           id?: string;
           casa_id: string;
           nombre: string;
-          frecuencia_dias: number;
+          tipo_frecuencia?: TipoFrecuencia;
+          frecuencia_dias?: number | null;
+          dias_semana?: number[] | null;
           asignado_a?: string | null;
           ultima_ejecucion?: string | null;
           creado_por: string;
@@ -164,7 +169,9 @@ export interface Database {
           id?: string;
           casa_id?: string;
           nombre?: string;
-          frecuencia_dias?: number;
+          tipo_frecuencia?: TipoFrecuencia;
+          frecuencia_dias?: number | null;
+          dias_semana?: number[] | null;
           asignado_a?: string | null;
           ultima_ejecucion?: string | null;
           creado_por?: string;

@@ -99,8 +99,3 @@ export const getMiembrosCasaActiva = cache(async () => {
   if (error) throw new Error(error.message);
   return data;
 });
-
-export function nombreMiembro(m: { email: string; nombre: string | null; apellido: string | null }) {
-  if (m.nombre && m.apellido) return `${m.nombre} ${m.apellido}`;
-  return m.email;
-}

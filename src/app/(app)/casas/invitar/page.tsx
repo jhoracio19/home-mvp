@@ -1,9 +1,5 @@
-import {
-  getCasaActivaOrRedirect,
-  getMiembrosCasaActiva,
-  getRolEnCasaActiva,
-  nombreMiembro,
-} from '@/lib/casas/data';
+import { getCasaActivaOrRedirect, getMiembrosCasaActiva, getRolEnCasaActiva } from '@/lib/casas/data';
+import { nombreMiembro } from '@/lib/casas/nombre-miembro';
 import { getSiteUrl } from '@/lib/site-url';
 import { generarCodigoInvitacion } from '../actions';
 import { SubmitButton } from '@/components/ui/SubmitButton';

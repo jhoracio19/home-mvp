@@ -411,3 +411,25 @@ as $$
 $$;
 
 grant execute on function miembros_casa_con_perfil(uuid) to authenticated;
+
+-- Tareas: además de "cada N días", ahora se puede repetir en días fijos
+-- de la semana (ej. lavar trastes lunes/miércoles/jueves). Un solo tipo
+-- de frecuencia activo a la vez; frecuencia_dias deja de ser obligatoria.
+alter table tareas add column if not exists tipo_frecuencia text not null default 'intervalo'
+  check (tipo_frecuencia in ('intervalo', 'dias_semana'));
+
+alter table tareas alter column frecuencia_dias drop not null;
+alter table tareas drop constraint if exists tareas_frecuencia_dias_check;
+alter table tareas add column if not exists dias_semana int[];
+
+-- 0 = domingo ... 6 = sábado (mismo criterio que Date.getDay() en JS).
+alter table tareas add constraint tareas_frecuencia_coherente check (
+  (tipo_frecuencia = 'intervalo' and frecuencia_dias is not null and frecuencia_dias > 0)
+  or
+  (
+    tipo_frecuencia = 'dias_semana'
+    and dias_semana is not null
+    and array_length(dias_semana, 1) > 0
+    and dias_semana <@ array[0, 1, 2, 3, 4, 5, 6]
+  )
+);

@@ -1,8 +1,10 @@
 import Link from 'next/link';
-import { getMiembrosCasaActiva, nombreMiembro } from '@/lib/casas/data';
+import { getMiembrosCasaActiva } from '@/lib/casas/data';
+import { nombreMiembro } from '@/lib/casas/nombre-miembro';
 import { getTareas } from '@/lib/tareas/data';
 import { completarTarea, eliminarTarea } from './actions';
 import { calcularProximaFecha } from '@/lib/tareas/urgencia';
+import { etiquetaDiasSemana } from '@/lib/tareas/dias-semana';
 import { calcularDiasRestantes, clasificarUrgencia, etiquetaUrgencia, type Urgencia } from '@/lib/urgencia';
 import { buttonClasses } from '@/components/ui/Button';
 import { SubmitButton } from '@/components/ui/SubmitButton';
@@ -78,7 +80,10 @@ export default async function TareasPage({
                   <div className="min-w-0">
                     <p className="truncate font-semibold text-espresso dark:text-linen">{tarea.nombre}</p>
                     <p className="text-xs font-medium opacity-70">
-                      Cada {tarea.frecuencia_dias} {tarea.frecuencia_dias === 1 ? 'día' : 'días'} ·{' '}
+                      {tarea.tipo_frecuencia === 'dias_semana'
+                        ? etiquetaDiasSemana(tarea.dias_semana ?? [])
+                        : `Cada ${tarea.frecuencia_dias} ${tarea.frecuencia_dias === 1 ? 'día' : 'días'}`}
+                      {' · '}
                       {tarea.asignado_a ? (nombrePorId.get(tarea.asignado_a) ?? 'Miembro') : 'Sin asignar'}
                     </p>
                   </div>

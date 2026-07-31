@@ -1,18 +1,23 @@
+'use client';
+
+import { useState } from 'react';
 import { Input } from '@/components/ui/Input';
 import { Select } from '@/components/ui/Select';
 import { SubmitButton } from '@/components/ui/SubmitButton';
-import { nombreMiembro } from '@/lib/casas/data';
+import { nombreMiembro } from '@/lib/casas/nombre-miembro';
+import { DIAS_SEMANA } from '@/lib/tareas/dias-semana';
+import type { TipoFrecuencia } from '@/lib/types/database';
 
 type Miembro = { usuario_id: string; email: string; rol: string; nombre: string | null; apellido: string | null };
 
 type TareaInicial = {
   nombre: string;
-  frecuencia_dias: number;
+  tipo_frecuencia: TipoFrecuencia;
+  frecuencia_dias: number | null;
+  dias_semana: number[] | null;
   asignado_a: string | null;
 };
 
-// Server Component: sin estado propio ni lógica cruzada entre campos,
-// así que no necesita 'use client' (a diferencia de ItemForm).
 export function TareaForm({
   miembros,
   tareaInicial,
@@ -24,23 +29,101 @@ export function TareaForm({
   action: (formData: FormData) => void;
   textoBoton?: string;
 }) {
+  const [tipoFrecuencia, setTipoFrecuencia] = useState<TipoFrecuencia>(
+    tareaInicial?.tipo_frecuencia ?? 'intervalo'
+  );
+  const [frecuenciaDias, setFrecuenciaDias] = useState(
+    tareaInicial?.frecuencia_dias != null ? String(tareaInicial.frecuencia_dias) : ''
+  );
+  const [diasSeleccionados, setDiasSeleccionados] = useState<number[]>(tareaInicial?.dias_semana ?? []);
+
+  function alternarDia(valor: number) {
+    setDiasSeleccionados((actual) =>
+      actual.includes(valor) ? actual.filter((d) => d !== valor) : [...actual, valor]
+    );
+  }
+
   return (
     <form action={action} className="space-y-4">
       <Input
         label="Nombre de la tarea"
         name="nombre"
-        placeholder="Ej. Sacar la basura"
+        placeholder="Ej. Lavar trastes"
         defaultValue={tareaInicial?.nombre}
         required
       />
-      <Input
-        label="Cada cuántos días se repite"
-        name="frecuencia_dias"
-        type="number"
-        min={1}
-        defaultValue={tareaInicial?.frecuencia_dias}
-        required
-      />
+
+      <div className="space-y-2">
+        <span className="block text-sm font-semibold text-espresso dark:text-linen">¿Cómo se repite?</span>
+        <div className="flex gap-2">
+          <button
+            type="button"
+            onClick={() => setTipoFrecuencia('intervalo')}
+            className={`flex-1 rounded-lg border-2 px-3 py-2 text-sm font-semibold transition-colors ${
+              tipoFrecuencia === 'intervalo'
+                ? 'border-espresso bg-espresso text-linen'
+                : 'border-khaki bg-linen text-espresso dark:border-cocoa dark:bg-[#3a2820] dark:text-linen'
+            }`}
+          >
+            Cada N días
+          </button>
+          <button
+            type="button"
+            onClick={() => setTipoFrecuencia('dias_semana')}
+            className={`flex-1 rounded-lg border-2 px-3 py-2 text-sm font-semibold transition-colors ${
+              tipoFrecuencia === 'dias_semana'
+                ? 'border-espresso bg-espresso text-linen'
+                : 'border-khaki bg-linen text-espresso dark:border-cocoa dark:bg-[#3a2820] dark:text-linen'
+            }`}
+          >
+            Días de la semana
+          </button>
+        </div>
+        <input type="hidden" name="tipo_frecuencia" value={tipoFrecuencia} />
+      </div>
+
+      {tipoFrecuencia === 'intervalo' ? (
+        <Input
+          label="Cada cuántos días se repite"
+          name="frecuencia_dias"
+          type="number"
+          min={1}
+          value={frecuenciaDias}
+          onChange={(e) => setFrecuenciaDias(e.target.value)}
+          required
+        />
+      ) : (
+        <div className="space-y-2">
+          <span className="block text-sm font-semibold text-espresso dark:text-linen">
+            ¿Qué días toca? (elige uno o varios)
+          </span>
+          <div className="grid grid-cols-7 gap-1.5">
+            {DIAS_SEMANA.map((dia) => {
+              const activo = diasSeleccionados.includes(dia.valor);
+              return (
+                <button
+                  key={dia.valor}
+                  type="button"
+                  onClick={() => alternarDia(dia.valor)}
+                  aria-pressed={activo}
+                  aria-label={dia.nombre}
+                  className={`aspect-square rounded-lg border-2 text-sm font-bold transition-colors ${
+                    activo
+                      ? 'border-espresso bg-espresso text-linen'
+                      : 'border-khaki bg-linen text-espresso dark:border-cocoa dark:bg-[#3a2820] dark:text-linen'
+                  }`}
+                >
+                  {dia.corta}
+                </button>
+              );
+            })}
+          </div>
+          {diasSeleccionados.map((d) => (
+            <input key={d} type="hidden" name="dias_semana" value={d} />
+          ))}
+        </div>
+      )}
+
       <Select label="Asignar a" name="asignado_a" defaultValue={tareaInicial?.asignado_a ?? ''}>
         <option value="">Sin asignar</option>
         {miembros.map((m) => (

@@ -9,12 +9,12 @@ async function getOrigin() {
   return (await headers()).get('origin') ?? '';
 }
 
-// '/dashboard' es siempre un destino seguro (interno); cualquier otro
-// valor debe empezar con '/' para evitar que un `next` manipulado nos
-// mande a un dominio externo (open redirect).
+// '/casas' (elegir casa) es el destino por defecto tras iniciar sesión —
+// nunca auto-entra a una casa específica. Cualquier `next` explícito debe
+// empezar con '/' para evitar que nos manden a un dominio externo.
 function destinoSeguro(next: string | null): string {
   if (next && next.startsWith('/') && !next.startsWith('//')) return next;
-  return '/dashboard';
+  return '/casas';
 }
 
 export async function login(formData: FormData) {
@@ -41,7 +41,7 @@ export async function signup(formData: FormData) {
   const password = String(formData.get('password') ?? '');
   const confirmPassword = String(formData.get('confirmPassword') ?? '');
   const next = destinoSeguro(String(formData.get('next') ?? ''));
-  const nextParam = next !== '/dashboard' ? `&next=${encodeURIComponent(next)}` : '';
+  const nextParam = next !== '/casas' ? `&next=${encodeURIComponent(next)}` : '';
 
   if (!nombre || !apellido) {
     redirect(`/signup?error=${encodeURIComponent('Nombre y apellido son obligatorios.')}${nextParam}`);
