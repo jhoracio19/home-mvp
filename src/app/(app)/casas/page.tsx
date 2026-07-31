@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import { getCasasDelUsuario } from '@/lib/casas/data';
 import { crearCasa, seleccionarCasa } from './actions';
 import { Input } from '@/components/ui/Input';
@@ -87,6 +88,16 @@ export default async function CasasPage({
               Crear casa
             </SubmitButton>
           </form>
+
+          <div className="mt-5 border-t border-khaki pt-5 text-center dark:border-cocoa">
+            <p className="text-sm text-cocoa dark:text-khaki">¿Ya tienes un código de invitación?</p>
+            <Link
+              href="/casas/unirse"
+              className="mt-1 inline-block text-sm font-bold text-espresso hover:underline dark:text-camel"
+            >
+              Unirme con un código
+            </Link>
+          </div>
         </aside>
       </section>
     </main>
