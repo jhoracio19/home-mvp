@@ -440,3 +440,32 @@ alter table tareas add constraint tareas_frecuencia_coherente check (
     and dias_semana <@ array[0, 1, 2, 3, 4, 5, 6]
   )
 );
+
+-- Notificaciones push (Web Push). Cada suscripción es un dispositivo/
+-- navegador donde el usuario aceptó recibir notificaciones; puede tener
+-- varias (ej. celular + laptop). El endpoint lo genera el navegador y
+-- ya es único de por sí, por eso sirve como llave natural para upsert
+-- al volver a suscribirse.
+create table if not exists push_subscriptions (
+  id uuid primary key default gen_random_uuid(),
+  usuario_id uuid not null references auth.users(id) on delete cascade,
+  endpoint text not null unique,
+  p256dh text not null,
+  auth text not null,
+  created_at timestamptz not null default now()
+);
+
+alter table push_subscriptions enable row level security;
+
+create policy push_subscriptions_select_propio on push_subscriptions
+  for select using (usuario_id = auth.uid());
+
+create policy push_subscriptions_insert_propio on push_subscriptions
+  for insert with check (usuario_id = auth.uid());
+
+create policy push_subscriptions_delete_propio on push_subscriptions
+  for delete using (usuario_id = auth.uid());
+
+-- El cron que manda las notificaciones corre con la service role key
+-- (bypassa RLS a propósito: necesita leer suscripciones de todos los
+-- usuarios, no solo las de quien hace la petición).

@@ -5,10 +5,8 @@ import type { FormEvent } from 'react';
 import Link from 'next/link';
 import { logout } from '@/app/auth/actions';
 import { salirDeCasa } from '@/app/(app)/casas/actions';
-
-const itemClase =
-  'flex items-center gap-3 px-4 py-3 text-sm font-medium text-cocoa hover:bg-khaki/40';
-const iconoClase = 'h-4 w-4 shrink-0';
+import { NotificacionesToggle } from '@/components/notificaciones/NotificacionesToggle';
+import { itemClase, iconoClase } from './menu-clases';
 
 // <details>/<summary> nativo para el desplegable en sí (accesible,
 // sin estado de React); el único JS real aquí es cerrarlo al hacer
@@ -81,6 +79,8 @@ export function MenuUsuario({ dentroDeCasa }: { dentroDeCasa: boolean }) {
           </svg>
           Mi perfil
         </Link>
+
+        <NotificacionesToggle />
 
         <div className="border-t border-khaki" />
 
