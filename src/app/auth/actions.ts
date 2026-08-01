@@ -41,9 +41,11 @@ export async function confirmarCuenta(formData: FormData) {
   const { error } = await supabase.auth.verifyOtp({ token_hash: tokenHash, type });
 
   if (error) {
-    redirect(
-      `/login?error=${encodeURIComponent('Tu link ya no es válido. Si ya te habías registrado antes, intenta iniciar sesión directamente.')}`
-    );
+    const mensaje =
+      type === 'recovery'
+        ? 'Tu link para restablecer la contraseña ya no es válido. Pide uno nuevo.'
+        : 'Tu link ya no es válido. Si ya te habías registrado antes, intenta iniciar sesión directamente.';
+    redirect(`/login?error=${encodeURIComponent(mensaje)}`);
   }
 
   redirect(next);

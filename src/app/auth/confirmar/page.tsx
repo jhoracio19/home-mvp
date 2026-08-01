@@ -10,6 +10,13 @@ export default async function ConfirmarPage({
 }) {
   const { token_hash, type, next, error } = await searchParams;
   const linkValido = Boolean(token_hash && type);
+  const esRecuperacion = type === 'recovery';
+
+  const titulo = esRecuperacion ? 'Restablece tu contraseña' : 'Confirma tu cuenta';
+  const explicacion = esRecuperacion
+    ? 'Por seguridad, no abrimos tu cuenta solo con abrir este link — da clic abajo para continuar y elegir una nueva contraseña.'
+    : 'Por seguridad, no confirmamos tu correo solo con abrir este link — da clic abajo para activarlo.';
+  const textoBoton = esRecuperacion ? 'Continuar' : 'Confirmar cuenta';
 
   return (
     <div className="flex min-h-dvh flex-col bg-linen">
@@ -18,10 +25,8 @@ export default async function ConfirmarPage({
       <main className="flex flex-1 items-center justify-center px-4 py-12">
         <div className="w-full max-w-sm space-y-6 rounded-lg border border-camel bg-khaki p-6 text-center shadow-lg">
           <div className="space-y-1">
-            <h1 className="text-xl font-bold text-cocoa">Confirma tu cuenta</h1>
-            <p className="text-sm text-cocoa/70">
-              Por seguridad, no confirmamos tu correo solo con abrir este link — da clic abajo para activarlo.
-            </p>
+            <h1 className="text-xl font-bold text-cocoa">{titulo}</h1>
+            <p className="text-sm text-cocoa/70">{explicacion}</p>
           </div>
 
           {error && (
@@ -35,8 +40,8 @@ export default async function ConfirmarPage({
               <input type="hidden" name="token_hash" value={token_hash} />
               <input type="hidden" name="type" value={type} />
               <input type="hidden" name="next" value={next ?? '/casas'} />
-              <SubmitButton className="w-full" pendingText="Confirmando…">
-                Confirmar cuenta
+              <SubmitButton className="w-full" pendingText="Cargando…">
+                {textoBoton}
               </SubmitButton>
             </form>
           ) : (
