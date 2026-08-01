@@ -1,6 +1,6 @@
 import { ImageResponse } from 'next/og';
 
-export const alt = 'Gestión doméstica — el refri y las tareas del hogar, organizados';
+export const alt = 'RemindHome — el refri y las tareas del hogar, organizados';
 export const size = { width: 1200, height: 630 };
 export const contentType = 'image/png';
 
@@ -35,7 +35,7 @@ export default function Image() {
               <path d="M256 100 L376 200 L376 400 L136 400 L136 200 Z" fill="#7D5A44" />
             </svg>
           </div>
-          <span style={{ fontSize: 34, fontWeight: 700, color: '#F5F1EA' }}>Gestión doméstica</span>
+          <span style={{ fontSize: 34, fontWeight: 700, color: '#F5F1EA' }}>RemindHome</span>
         </div>
 
         <div style={{ display: 'flex', marginTop: 56, maxWidth: 920 }}>

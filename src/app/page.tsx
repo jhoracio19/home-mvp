@@ -93,7 +93,7 @@ function MockupTareas() {
 function MockupAvisos() {
   const avisos = [
     { titulo: 'Nueva tarea asignada', cuerpo: 'Te asignaron: Sacar la basura' },
-    { titulo: 'Gestión doméstica', cuerpo: 'Plátano vence hoy' },
+    { titulo: 'RemindHome', cuerpo: 'Plátano vence hoy' },
   ];
   return (
     <div className="w-full max-w-sm space-y-3">

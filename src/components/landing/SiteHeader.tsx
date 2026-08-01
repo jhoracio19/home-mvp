@@ -7,7 +7,7 @@ export function SiteHeader() {
     <header className="sticky top-0 z-20 flex items-center justify-between gap-3 border-b border-camel/30 bg-linen/90 px-4 pb-4 pt-[calc(env(safe-area-inset-top)+1rem)] backdrop-blur sm:px-8">
       <Link href="/" className="flex items-center gap-2">
         <Logomark className="h-8 w-8 rounded-lg" />
-        <span className="text-sm font-bold text-espresso">Gestión doméstica</span>
+        <span className="text-sm font-bold text-espresso">RemindHome</span>
       </Link>
       <div className="flex items-center gap-4">
         <Link href="/login" className="flex items-center gap-1.5 text-sm font-semibold text-cocoa hover:underline">

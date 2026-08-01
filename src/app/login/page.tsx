@@ -21,7 +21,7 @@ export default async function LoginPage({
         <div className="w-full max-w-sm space-y-6 rounded-lg border border-camel bg-khaki p-6 shadow-lg">
           <div className="space-y-1 text-center">
             <h1 className="text-2xl font-bold text-cocoa">Iniciar sesión</h1>
-            <p className="text-sm font-medium text-cocoa/70">Entra a tu casa en Gestión doméstica</p>
+            <p className="text-sm font-medium text-cocoa/70">Entra a tu casa en RemindHome</p>
           </div>
 
           {message && (

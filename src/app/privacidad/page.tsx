@@ -14,7 +14,7 @@ export default function PrivacidadPage() {
             <p className="text-xs font-bold uppercase tracking-[0.2em] text-camel">Legal</p>
             <h1 className="mt-1 text-2xl font-bold text-espresso sm:text-3xl">Aviso de privacidad</h1>
             <p className="mt-2 text-sm text-cocoa/70">
-              Gestión doméstica es un proyecto pequeño hecho para organizar el refri y las tareas de tu casa. Este
+              RemindHome es un proyecto pequeño hecho para organizar el refri y las tareas de tu casa. Este
               aviso explica, en español sencillo, qué datos guardamos y para qué.
             </p>
           </div>

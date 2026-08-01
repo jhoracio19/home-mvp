@@ -4,24 +4,24 @@ import { RegistrarServiceWorker } from "@/components/RegistrarServiceWorker";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://www.cylcard.com"),
-  title: "Gestión doméstica",
+  metadataBase: new URL("https://remindhome.app"),
+  title: "RemindHome",
   description: "El refri y las tareas del hogar, organizados en un solo lugar.",
   appleWebApp: {
     capable: true,
     statusBarStyle: "black-translucent",
-    title: "Hogar",
+    title: "RemindHome",
   },
   openGraph: {
-    title: "Gestión doméstica",
+    title: "RemindHome",
     description: "El refri y las tareas del hogar, organizados en un solo lugar.",
-    siteName: "Gestión doméstica",
+    siteName: "RemindHome",
     locale: "es_MX",
     type: "website",
   },
   twitter: {
     card: "summary_large_image",
-    title: "Gestión doméstica",
+    title: "RemindHome",
     description: "El refri y las tareas del hogar, organizados en un solo lugar.",
   },
 };

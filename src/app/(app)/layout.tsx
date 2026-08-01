@@ -19,7 +19,7 @@ export default async function AppLayout({ children }: { children: React.ReactNod
       <header className="sticky top-0 z-10 flex items-center justify-between gap-2 bg-espresso px-4 pb-3 pt-[calc(env(safe-area-inset-top)+0.75rem)] shadow-md">
         <div className="min-w-0">
           <Link href="/dashboard" className="block truncate text-sm font-semibold text-linen hover:underline">
-            {casaActiva ? casaActiva.nombre : 'Gestión doméstica'}
+            {casaActiva ? casaActiva.nombre : 'RemindHome'}
           </Link>
           <p className="truncate text-xs text-khaki">{saludo}</p>
         </div>

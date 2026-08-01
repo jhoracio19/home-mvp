@@ -2,8 +2,8 @@ import type { MetadataRoute } from 'next';
 
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: 'Gestión doméstica',
-    short_name: 'Hogar',
+    name: 'RemindHome',
+    short_name: 'RemindHome',
     description: 'Refri y tareas compartidas del hogar.',
     start_url: '/dashboard',
     display: 'standalone',

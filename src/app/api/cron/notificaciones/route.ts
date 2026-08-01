@@ -60,7 +60,7 @@ export async function GET(request: NextRequest) {
   let enviados = 0;
   for (const [usuarioId, mensajes] of mensajesPorUsuario) {
     enviados += await enviarNotificacionAUsuario(usuarioId, {
-      title: 'Gestión doméstica',
+      title: 'RemindHome',
       body: mensajes.length === 1 ? mensajes[0] : `${mensajes.length} pendientes: ${mensajes.join(', ')}`,
       url: '/dashboard',
     });

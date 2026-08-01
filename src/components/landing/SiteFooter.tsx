@@ -11,7 +11,7 @@ export function SiteFooter() {
         <div className="max-w-xs space-y-3 text-center sm:text-left">
           <div className="flex items-center justify-center gap-2 sm:justify-start">
             <Logomark className="h-7 w-7 rounded-md" />
-            <span className="text-sm font-bold text-espresso">Gestión doméstica</span>
+            <span className="text-sm font-bold text-espresso">RemindHome</span>
           </div>
           <p className="text-sm text-cocoa/70">
             El refri y las tareas del hogar, organizados y sin que tengas que acordarte tú.
@@ -84,7 +84,7 @@ export function SiteFooter() {
       </div>
 
       <div className="mx-auto mt-8 flex w-full max-w-5xl flex-col items-center gap-2 border-t border-camel/30 pt-4 text-xs text-cocoa/60 sm:flex-row sm:justify-between">
-        <span>© {new Date().getFullYear()} Gestión doméstica</span>
+        <span>© {new Date().getFullYear()} RemindHome</span>
         <Link href="/privacidad" className="font-semibold text-cocoa/70 hover:underline">
           Aviso de privacidad
         </Link>
