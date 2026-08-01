@@ -1,26 +1,20 @@
 import { NextRequest, NextResponse } from 'next/server';
-import webpush, { WebPushError } from 'web-push';
 import { createAdminClient } from '@/lib/supabase/admin';
+import { enviarNotificacionAUsuario } from '@/lib/notificaciones/enviar';
 import { calcularDiasRestantes } from '@/lib/urgencia';
 import { calcularFechaVencimiento } from '@/lib/refri/urgencia';
 import { calcularProximaFecha } from '@/lib/tareas/urgencia';
 
 // Job diario (ver vercel.json) que revisa items del refri por vencer y
 // tareas asignadas que ya tocan, y manda un push a cada usuario
-// afectado. No usa Realtime ni WebSockets: es un resumen una vez al día,
-// suficiente para el MVP y compatible con el límite de cron del plan
-// Hobby de Vercel (una corrida diaria).
+// afectado. Es un resumen una vez al día (compatible con el límite de
+// cron del plan Hobby de Vercel); el aviso "te asignaron una tarea" es
+// aparte y va al instante (ver tareas/actions.ts).
 export async function GET(request: NextRequest) {
   const auth = request.headers.get('authorization');
   if (auth !== `Bearer ${process.env.CRON_SECRET}`) {
     return NextResponse.json({ error: 'unauthorized' }, { status: 401 });
   }
-
-  webpush.setVapidDetails(
-    process.env.VAPID_SUBJECT!,
-    process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY!,
-    process.env.VAPID_PRIVATE_KEY!
-  );
 
   const supabase = createAdminClient();
 
@@ -63,47 +57,13 @@ export async function GET(request: NextRequest) {
     if (dias <= 0) agregarMensaje(tarea.asignado_a, `Te toca: ${tarea.nombre}`);
   }
 
-  if (mensajesPorUsuario.size === 0) {
-    return NextResponse.json({ enviados: 0 });
-  }
-
-  const { data: suscripciones } = await supabase
-    .from('push_subscriptions')
-    .select('*')
-    .in('usuario_id', [...mensajesPorUsuario.keys()]);
-
   let enviados = 0;
-  const endpointsExpirados: string[] = [];
-
-  await Promise.all(
-    (suscripciones ?? []).map(async (sub) => {
-      const mensajes = mensajesPorUsuario.get(sub.usuario_id);
-      if (!mensajes) return;
-
-      const payload = JSON.stringify({
-        title: 'Gestión doméstica',
-        body: mensajes.length === 1 ? mensajes[0] : `${mensajes.length} pendientes: ${mensajes.join(', ')}`,
-        url: '/dashboard',
-      });
-
-      try {
-        await webpush.sendNotification(
-          { endpoint: sub.endpoint, keys: { p256dh: sub.p256dh, auth: sub.auth } },
-          payload
-        );
-        enviados++;
-      } catch (err) {
-        // 404/410: la suscripción ya no existe del lado del navegador
-        // (desinstaló la app, borró datos, etc.) — se limpia de una vez.
-        if (err instanceof WebPushError && (err.statusCode === 404 || err.statusCode === 410)) {
-          endpointsExpirados.push(sub.endpoint);
-        }
-      }
-    })
-  );
-
-  if (endpointsExpirados.length > 0) {
-    await supabase.from('push_subscriptions').delete().in('endpoint', endpointsExpirados);
+  for (const [usuarioId, mensajes] of mensajesPorUsuario) {
+    enviados += await enviarNotificacionAUsuario(usuarioId, {
+      title: 'Gestión doméstica',
+      body: mensajes.length === 1 ? mensajes[0] : `${mensajes.length} pendientes: ${mensajes.join(', ')}`,
+      url: '/dashboard',
+    });
   }
 
   return NextResponse.json({ enviados });

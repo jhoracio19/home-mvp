@@ -3,7 +3,22 @@
 import { redirect } from 'next/navigation';
 import { getCasaActivaOrRedirect, getSesion } from '@/lib/casas/data';
 import { calcularDiasRestantes, calcularProximaFecha } from '@/lib/tareas/urgencia';
+import { enviarNotificacionAUsuario } from '@/lib/notificaciones/enviar';
 import type { TipoFrecuencia } from '@/lib/types/database';
+
+// Si falla el push no debe tumbar la creación/edición de la tarea —
+// por eso el try/catch, aquí termina el error.
+async function notificarAsignacion(usuarioId: string, nombreTarea: string) {
+  try {
+    await enviarNotificacionAUsuario(usuarioId, {
+      title: 'Nueva tarea asignada',
+      body: `Te asignaron: ${nombreTarea}`,
+      url: '/tareas',
+    });
+  } catch {
+    // Silencioso a propósito.
+  }
+}
 
 function leerCamposFormulario(formData: FormData) {
   const tipoFrecuenciaRaw = String(formData.get('tipo_frecuencia') ?? '').trim();
@@ -84,12 +99,16 @@ export async function crearTarea(formData: FormData) {
     redirect(`/tareas/nueva?error=${encodeURIComponent(error.message)}`);
   }
 
+  if (campos.asignadoA && campos.asignadoA !== user.id) {
+    await notificarAsignacion(campos.asignadoA, campos.nombre);
+  }
+
   redirect('/tareas');
 }
 
 export async function actualizarTarea(tareaId: string, formData: FormData) {
   const casa = await getCasaActivaOrRedirect();
-  const { supabase } = await getSesion();
+  const { supabase, user } = await getSesion();
   const campos = leerCamposFormulario(formData);
 
   if (!campos.nombre) {
@@ -100,6 +119,13 @@ export async function actualizarTarea(tareaId: string, formData: FormData) {
   if ('error' in resultado) {
     redirect(`/tareas/${tareaId}/editar?error=${encodeURIComponent(resultado.error)}`);
   }
+
+  const { data: anterior } = await supabase
+    .from('tareas')
+    .select('asignado_a')
+    .eq('id', tareaId)
+    .eq('casa_id', casa.id)
+    .maybeSingle();
 
   const { error } = await supabase
     .from('tareas')
@@ -113,6 +139,11 @@ export async function actualizarTarea(tareaId: string, formData: FormData) {
 
   if (error) {
     redirect(`/tareas/${tareaId}/editar?error=${encodeURIComponent(error.message)}`);
+  }
+
+  const cambioDeAsignado = campos.asignadoA && campos.asignadoA !== anterior?.asignado_a;
+  if (cambioDeAsignado && campos.asignadoA !== user.id) {
+    await notificarAsignacion(campos.asignadoA!, campos.nombre);
   }
 
   redirect('/tareas');
