@@ -54,7 +54,7 @@ export default async function ConfiguracionCasaPage({
             <div className="space-y-4 rounded-lg border border-camel bg-khaki p-6 shadow-lg">
               <h2 className="text-sm font-bold text-cocoa">Nombre de la casa</h2>
               <form action={renombrarCasa} className="space-y-3">
-                <Input label="Nombre" name="nombre" defaultValue={casa.nombre} required />
+                <Input label="Nombre" name="nombre" defaultValue={casa.nombre} required maxLength={80} />
                 <SubmitButton className="w-full">Guardar cambios</SubmitButton>
               </form>
             </div>

@@ -118,7 +118,7 @@ export function MenuUsuario({ dentroDeCasa, esAdmin }: { dentroDeCasa: boolean; 
             <line x1="10" y1="1" x2="10" y2="4" />
             <line x1="14" y1="1" x2="14" y2="4" />
           </svg>
-          Invítame un café
+          Buy me a coffee
         </a>
 
         <div className="border-t border-khaki" />

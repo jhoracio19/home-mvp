@@ -9,6 +9,8 @@ function esTrackingValido(valor: string): valor is TipoTracking {
   return valor === 'dias' || valor === 'fecha';
 }
 
+const MAX_NOMBRE = 100;
+
 function leerCamposFormulario(formData: FormData) {
   return {
     nombre: String(formData.get('nombre') ?? '').trim(),
@@ -27,6 +29,9 @@ export async function crearItem(formData: FormData) {
 
   if (!campos.nombre || !esCategoriaValida(campos.categoria) || !esTrackingValido(campos.tipoTracking)) {
     redirect(`/refri/nuevo?error=${encodeURIComponent('Completa nombre, categoría y tipo de seguimiento.')}`);
+  }
+  if (campos.nombre.length > MAX_NOMBRE) {
+    redirect(`/refri/nuevo?error=${encodeURIComponent(`El nombre no puede pasar de ${MAX_NOMBRE} caracteres.`)}`);
   }
 
   const diasEstimados = campos.diasEstimadosRaw ? Number(campos.diasEstimadosRaw) : null;
@@ -63,6 +68,11 @@ export async function actualizarItem(itemId: string, formData: FormData) {
   if (!campos.nombre || !esCategoriaValida(campos.categoria) || !esTrackingValido(campos.tipoTracking)) {
     redirect(
       `/refri/${itemId}/editar?error=${encodeURIComponent('Completa nombre, categoría y tipo de seguimiento.')}`
+    );
+  }
+  if (campos.nombre.length > MAX_NOMBRE) {
+    redirect(
+      `/refri/${itemId}/editar?error=${encodeURIComponent(`El nombre no puede pasar de ${MAX_NOMBRE} caracteres.`)}`
     );
   }
 

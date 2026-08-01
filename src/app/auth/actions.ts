@@ -5,17 +5,10 @@ import { headers } from 'next/headers';
 import type { EmailOtpType } from '@supabase/supabase-js';
 import { createClient } from '@/lib/supabase/server';
 import { mensajeErrorAuth } from '@/lib/auth/errors';
+import { destinoSeguro } from '@/lib/auth/destino-seguro';
 
 async function getOrigin() {
   return (await headers()).get('origin') ?? '';
-}
-
-// '/casas' (elegir casa) es el destino por defecto tras iniciar sesión —
-// nunca auto-entra a una casa específica. Cualquier `next` explícito debe
-// empezar con '/' para evitar que nos manden a un dominio externo.
-function destinoSeguro(next: string | null): string {
-  if (next && next.startsWith('/') && !next.startsWith('//')) return next;
-  return '/casas';
 }
 
 // Confirma el link de correo (registro o recuperación) SOLO cuando la
@@ -79,6 +72,9 @@ export async function signup(formData: FormData) {
 
   if (!nombre || !apellido) {
     redirect(`/signup?error=${encodeURIComponent('Nombre y apellido son obligatorios.')}${nextParam}`);
+  }
+  if (nombre.length > 60 || apellido.length > 60) {
+    redirect(`/signup?error=${encodeURIComponent('Nombre y apellido no pueden pasar de 60 caracteres.')}${nextParam}`);
   }
   if (password !== confirmPassword) {
     redirect(`/signup?error=${encodeURIComponent('Las contraseñas no coinciden.')}${nextParam}`);

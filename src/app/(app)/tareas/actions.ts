@@ -1,7 +1,7 @@
 'use server';
 
 import { redirect } from 'next/navigation';
-import { getCasaActivaOrRedirect, getSesion } from '@/lib/casas/data';
+import { getCasaActivaOrRedirect, getMiembrosCasaActiva, getSesion } from '@/lib/casas/data';
 import { nombreMiembro } from '@/lib/casas/nombre-miembro';
 import { getPerfilPropio } from '@/lib/perfil/data';
 import { calcularDiasRestantes, calcularProximaFecha } from '@/lib/tareas/urgencia';
@@ -20,6 +20,21 @@ async function notificarAsignacion(usuarioId: string, nombreTarea: string) {
   } catch {
     // Silencioso a propósito.
   }
+}
+
+const MAX_NOMBRE = 100;
+
+// El <select> del formulario solo lista miembros de la casa, pero eso
+// no evita que alguien mande un usuario_id distinto a mano (form
+// tamperado). Sin esta validación, cualquiera podría "asignar" una
+// tarea a cualquier usuario_id de la plataforma — y como asignar
+// dispara un push (notificarAsignacion), eso sería un vector para
+// mandarle notificaciones arbitrarias a cualquier persona, no solo a
+// tus compañeros de casa.
+async function asignadoEsMiembro(asignadoA: string | null): Promise<boolean> {
+  if (!asignadoA) return true;
+  const miembros = await getMiembrosCasaActiva();
+  return miembros.some((m) => m.usuario_id === asignadoA);
 }
 
 function leerCamposFormulario(formData: FormData) {
@@ -83,6 +98,12 @@ export async function crearTarea(formData: FormData) {
   if (!campos.nombre) {
     redirect(`/tareas/nueva?error=${encodeURIComponent('Ponle un nombre a la tarea.')}`);
   }
+  if (campos.nombre.length > MAX_NOMBRE) {
+    redirect(`/tareas/nueva?error=${encodeURIComponent(`El nombre no puede pasar de ${MAX_NOMBRE} caracteres.`)}`);
+  }
+  if (!(await asignadoEsMiembro(campos.asignadoA))) {
+    redirect(`/tareas/nueva?error=${encodeURIComponent('Solo puedes asignar la tarea a alguien de esta casa.')}`);
+  }
 
   const resultado = validarFrecuencia(campos);
   if ('error' in resultado) {
@@ -115,6 +136,16 @@ export async function actualizarTarea(tareaId: string, formData: FormData) {
 
   if (!campos.nombre) {
     redirect(`/tareas/${tareaId}/editar?error=${encodeURIComponent('Ponle un nombre a la tarea.')}`);
+  }
+  if (campos.nombre.length > MAX_NOMBRE) {
+    redirect(
+      `/tareas/${tareaId}/editar?error=${encodeURIComponent(`El nombre no puede pasar de ${MAX_NOMBRE} caracteres.`)}`
+    );
+  }
+  if (!(await asignadoEsMiembro(campos.asignadoA))) {
+    redirect(
+      `/tareas/${tareaId}/editar?error=${encodeURIComponent('Solo puedes asignar la tarea a alguien de esta casa.')}`
+    );
   }
 
   const resultado = validarFrecuencia(campos);

@@ -10,6 +10,9 @@ export async function actualizarPerfil(formData: FormData) {
   if (!nombre || !apellido) {
     redirect(`/perfil?error=${encodeURIComponent('Nombre y apellido son obligatorios.')}`);
   }
+  if (nombre.length > 60 || apellido.length > 60) {
+    redirect(`/perfil?error=${encodeURIComponent('Nombre y apellido no pueden pasar de 60 caracteres.')}`);
+  }
 
   const { supabase, user } = await getSesion();
 

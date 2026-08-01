@@ -495,3 +495,30 @@ create policy historial_tareas_select on historial_tareas
 
 create policy historial_tareas_insert on historial_tareas
   for insert with check (is_member_of_casa(casa_id) and auth.uid() = usuario_id);
+
+-- ------------------------------------------------------------
+-- Revisión de seguridad (endpoints + RLS)
+-- ------------------------------------------------------------
+
+-- push_subscriptions no tenía policy de UPDATE. Sin ella, RLS bloquea
+-- por completo la rama "ON CONFLICT DO UPDATE" del upsert que usa
+-- guardarSuscripcion() al reactivar notificaciones en un dispositivo
+-- que ya tenía una suscripción guardada (mismo endpoint) — se veía
+-- como que "no pasaba nada" al reactivar. De paso, esta policy deja
+-- explícito lo que antes solo pasaba por accidente (RLS ya bloqueaba
+-- de facto que alguien "robara" el endpoint push de otro usuario vía
+-- upsert, por falta total de policy UPDATE): ahora solo se puede
+-- actualizar una fila si YA era tuya y SIGUE siendo tuya.
+create policy push_subscriptions_update_propio on push_subscriptions
+  for update using (usuario_id = auth.uid()) with check (usuario_id = auth.uid());
+
+-- Límites de longitud como defensa en profundidad: la app ya valida
+-- esto en los server actions, pero cualquiera con un JWT válido puede
+-- llamar a la API REST de Supabase directo, sin pasar por el server
+-- action ni por la UI. Los límites viven en la base para que apliquen
+-- sin importar por dónde entre la escritura.
+alter table casas add constraint casas_nombre_longitud check (char_length(nombre) <= 80);
+alter table tareas add constraint tareas_nombre_longitud check (char_length(nombre) <= 100);
+alter table items_refri add constraint items_refri_nombre_longitud check (char_length(nombre) <= 100);
+alter table perfiles add constraint perfiles_nombre_longitud check (nombre is null or char_length(nombre) <= 60);
+alter table perfiles add constraint perfiles_apellido_longitud check (apellido is null or char_length(apellido) <= 60);

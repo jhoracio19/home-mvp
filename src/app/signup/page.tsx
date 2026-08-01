@@ -33,8 +33,8 @@ export default async function SignupPage({
           <form action={signup} className="space-y-4">
             {next && <input type="hidden" name="next" value={next} />}
             <div className="grid grid-cols-2 gap-3">
-              <Input label="Nombre" name="nombre" required autoComplete="given-name" />
-              <Input label="Apellido" name="apellido" required autoComplete="family-name" />
+              <Input label="Nombre" name="nombre" required maxLength={60} autoComplete="given-name" />
+              <Input label="Apellido" name="apellido" required maxLength={60} autoComplete="family-name" />
             </div>
             <Input label="Correo" name="email" type="email" required autoComplete="email" />
             <PasswordInput

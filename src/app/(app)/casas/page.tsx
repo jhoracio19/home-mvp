@@ -89,7 +89,7 @@ export default async function CasasPage({
             </p>
           </div>
           <form action={crearCasa} className="space-y-4">
-            <Input label="Nombre" name="nombre" placeholder="Ej. Departamento centro" required />
+            <Input label="Nombre" name="nombre" placeholder="Ej. Departamento centro" required maxLength={80} />
             <SubmitButton className="w-full" pendingText="Creando...">
               Crear casa
             </SubmitButton>

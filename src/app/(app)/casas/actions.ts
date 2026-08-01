@@ -10,6 +10,9 @@ export async function crearCasa(formData: FormData) {
   if (!nombre) {
     redirect(`/casas?error=${encodeURIComponent('Ponle un nombre a la casa.')}`);
   }
+  if (nombre.length > 80) {
+    redirect(`/casas?error=${encodeURIComponent('El nombre no puede pasar de 80 caracteres.')}`);
+  }
 
   const { supabase, user } = await getSesion();
   const casaId = randomUUID();
@@ -109,6 +112,9 @@ export async function renombrarCasa(formData: FormData) {
   const nombre = String(formData.get('nombre') ?? '').trim();
   if (!nombre) {
     redirect(`/casas/configuracion?error=${encodeURIComponent('Ponle un nombre a la casa.')}`);
+  }
+  if (nombre.length > 80) {
+    redirect(`/casas/configuracion?error=${encodeURIComponent('El nombre no puede pasar de 80 caracteres.')}`);
   }
 
   const { error } = await supabase.from('casas').update({ nombre }).eq('id', casa.id);

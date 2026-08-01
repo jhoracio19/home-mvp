@@ -51,6 +51,7 @@ export function TareaForm({
         placeholder="Ej. Lavar trastes"
         defaultValue={tareaInicial?.nombre}
         required
+        maxLength={100}
       />
 
       <div className="space-y-2">

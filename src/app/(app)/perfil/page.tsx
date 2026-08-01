@@ -45,8 +45,8 @@ export default async function PerfilPage({
           )}
 
           <form action={actualizarPerfil} className="space-y-4">
-            <Input label="Nombre" name="nombre" defaultValue={perfil?.nombre ?? ''} required />
-            <Input label="Apellido" name="apellido" defaultValue={perfil?.apellido ?? ''} required />
+            <Input label="Nombre" name="nombre" defaultValue={perfil?.nombre ?? ''} required maxLength={60} />
+            <Input label="Apellido" name="apellido" defaultValue={perfil?.apellido ?? ''} required maxLength={60} />
             <SubmitButton className="w-full">Guardar cambios</SubmitButton>
           </form>
         </div>

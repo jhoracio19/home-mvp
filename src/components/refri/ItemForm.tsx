@@ -85,6 +85,7 @@ export function ItemForm({
         onChange={(e) => manejarCambioNombre(e.target.value)}
         placeholder="Ej. Plátano, leche, pollo…"
         required
+        maxLength={100}
       />
 
       <Select
