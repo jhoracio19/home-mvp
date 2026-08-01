@@ -27,19 +27,12 @@
   --color-espresso: var(--espresso);
   --font-sans: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
-  --font-titulo: var(--font-sekuya), ui-sans-serif, system-ui, sans-serif;
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
   font-family: var(--font-sans);
-}
-
-/* Sekuya solo en títulos (h1-h6); el resto del texto usa la fuente del
-   sistema (--font-sans) — más legible en textos chicos/densos. */
-h1, h2, h3, h4, h5, h6 {
-  font-family: var(--font-titulo);
 }
 
 /* Destello de confirmación: se dispara una sola vez al pintar el

@@ -1,17 +1,7 @@
 import type { Metadata, Viewport } from "next";
-import { Sekuya } from "next/font/google";
 import { Analytics } from "@vercel/analytics/next";
 import { RegistrarServiceWorker } from "@/components/RegistrarServiceWorker";
 import "./globals.css";
-
-// Solo para títulos (h1-h6, ver globals.css) — el resto del texto usa
-// la fuente del sistema, más legible en textos chicos/densos.
-const sekuya = Sekuya({
-  subsets: ["latin"],
-  weight: "400",
-  variable: "--font-sekuya",
-  display: "swap",
-});
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://www.cylcard.com"),
@@ -52,7 +42,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="es" className={`h-dvh antialiased ${sekuya.variable}`}>
+    <html lang="es" className="h-dvh antialiased">
       <body className="min-h-dvh flex flex-col">
         {children}
         <RegistrarServiceWorker />

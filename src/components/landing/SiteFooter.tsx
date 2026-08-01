@@ -83,8 +83,11 @@ export function SiteFooter() {
         </div>
       </div>
 
-      <div className="mx-auto mt-8 w-full max-w-5xl border-t border-camel/30 pt-4 text-center text-xs text-cocoa/60 sm:text-left">
-        © {new Date().getFullYear()} Gestión doméstica
+      <div className="mx-auto mt-8 flex w-full max-w-5xl flex-col items-center gap-2 border-t border-camel/30 pt-4 text-xs text-cocoa/60 sm:flex-row sm:justify-between">
+        <span>© {new Date().getFullYear()} Gestión doméstica</span>
+        <Link href="/privacidad" className="font-semibold text-cocoa/70 hover:underline">
+          Aviso de privacidad
+        </Link>
       </div>
     </footer>
   );
