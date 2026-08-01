@@ -206,6 +206,36 @@ export interface Database {
         };
         Relationships: [];
       };
+      historial_tareas: {
+        Row: {
+          id: string;
+          casa_id: string;
+          tarea_id: string | null;
+          nombre_tarea: string;
+          usuario_id: string;
+          nombre_usuario: string;
+          completada_en: string;
+        };
+        Insert: {
+          id?: string;
+          casa_id: string;
+          tarea_id?: string | null;
+          nombre_tarea: string;
+          usuario_id: string;
+          nombre_usuario: string;
+          completada_en?: string;
+        };
+        Update: {
+          id?: string;
+          casa_id?: string;
+          tarea_id?: string | null;
+          nombre_tarea?: string;
+          usuario_id?: string;
+          nombre_usuario?: string;
+          completada_en?: string;
+        };
+        Relationships: [];
+      };
     };
     Views: Record<string, never>;
     Functions: {

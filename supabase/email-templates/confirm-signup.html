@@ -1,0 +1,39 @@
+<!--
+  Plantilla "Confirm signup" — pegar en Supabase Dashboard:
+  Authentication → Emails → Confirm signup
+
+  El link ya NO confirma la cuenta con solo abrirse (ver /auth/confirmar
+  y confirmarCuenta() en src/app/auth/actions.ts) — evita que un escáner
+  de seguridad de correo gaste el código de un solo uso antes de que la
+  persona real le dé clic.
+-->
+<div style="background-color:#F5F1EA;padding:40px 16px;font-family:Arial,Helvetica,sans-serif;">
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:480px;margin:0 auto;">
+    <tr>
+      <td style="text-align:center;padding-bottom:24px;">
+        <img src="https://www.cylcard.com/icons/icon-192.png" width="48" height="48" alt="Gestión doméstica" style="border-radius:12px;display:block;margin:0 auto 12px;">
+        <span style="font-size:15px;font-weight:bold;color:#4A342A;">Gestión doméstica</span>
+      </td>
+    </tr>
+    <tr>
+      <td style="background-color:#D7C9B8;border-radius:12px;padding:32px;text-align:center;">
+        <h1 style="margin:0 0 12px;font-size:20px;color:#4A342A;">Confirma tu cuenta</h1>
+        <p style="margin:0 0 24px;font-size:15px;line-height:1.5;color:#7D5A44;">
+          Falta un paso para empezar a usar tu casa: confirma tu correo dando clic en el botón de abajo.
+        </p>
+        <table role="presentation" cellpadding="0" cellspacing="0" style="margin:0 auto;">
+          <tr>
+            <td style="background-color:#7D5A44;border-radius:8px;">
+              <a href="{{ .SiteURL }}/auth/confirmar?token_hash={{ .TokenHash }}&type=signup&next=/casas" style="display:inline-block;padding:14px 28px;font-size:15px;font-weight:bold;color:#F5F1EA;text-decoration:none;">
+                Confirmar mi cuenta
+              </a>
+            </td>
+          </tr>
+        </table>
+        <p style="margin:24px 0 0;font-size:12px;color:#7D5A44;">
+          Si tú no creaste esta cuenta, puedes ignorar este correo.
+        </p>
+      </td>
+    </tr>
+  </table>
+</div>

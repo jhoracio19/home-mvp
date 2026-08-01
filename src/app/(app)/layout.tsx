@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { getCasaActiva, getUsuarioActual } from '@/lib/casas/data';
+import { getCasaActiva, getRolEnCasaActiva, getUsuarioActual } from '@/lib/casas/data';
 import { getPerfilPropio } from '@/lib/perfil/data';
 import { BottomNav } from '@/components/layout/BottomNav';
 import { MenuUsuario } from '@/components/layout/MenuUsuario';
@@ -8,6 +8,10 @@ export default async function AppLayout({ children }: { children: React.ReactNod
   // getUsuarioActual redirige a /login si no hay sesión.
   const user = await getUsuarioActual();
   const [casaActiva, perfil] = await Promise.all([getCasaActiva(), getPerfilPropio()]);
+  // getRolEnCasaActiva redirige si no hay casa activa, por eso solo se
+  // llama cuando ya sabemos que sí hay una (esta pantalla también se usa
+  // sin casa activa, ej. /casas).
+  const esAdmin = casaActiva ? (await getRolEnCasaActiva()) === 'admin' : false;
   const saludo = perfil?.nombre ? `Hola, ${perfil.nombre}` : user.email;
 
   return (
@@ -19,7 +23,7 @@ export default async function AppLayout({ children }: { children: React.ReactNod
           </Link>
           <p className="truncate text-xs text-khaki">{saludo}</p>
         </div>
-        <MenuUsuario dentroDeCasa={!!casaActiva} />
+        <MenuUsuario dentroDeCasa={!!casaActiva} esAdmin={esAdmin} />
       </header>
       <div className="flex flex-1 flex-col">{children}</div>
       {casaActiva && <BottomNav />}

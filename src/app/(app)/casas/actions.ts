@@ -99,6 +99,46 @@ export async function salirDeCasa() {
   redirect(`/casas?message=${encodeURIComponent(`Saliste de "${casa.nombre}".`)}`);
 }
 
+// Solo lo puede usar un admin (lo hace cumplir la policy
+// "casas_update_admin" — si no eres admin, el update no toca ninguna
+// fila y simplemente no pasa nada, sin error explícito).
+export async function renombrarCasa(formData: FormData) {
+  const casa = await getCasaActivaOrRedirect();
+  const { supabase } = await getSesion();
+
+  const nombre = String(formData.get('nombre') ?? '').trim();
+  if (!nombre) {
+    redirect(`/casas/configuracion?error=${encodeURIComponent('Ponle un nombre a la casa.')}`);
+  }
+
+  const { error } = await supabase.from('casas').update({ nombre }).eq('id', casa.id);
+
+  if (error) {
+    redirect(`/casas/configuracion?error=${encodeURIComponent(error.message)}`);
+  }
+
+  redirect('/casas/configuracion?message=Nombre actualizado.');
+}
+
+// Solo lo puede usar un admin (policy "casas_delete_admin"). El resto
+// de las filas de esta casa (miembros, refri, tareas) se van con ella
+// por los "on delete cascade" del schema — no hay que borrarlas aparte.
+export async function eliminarCasa() {
+  const casa = await getCasaActivaOrRedirect();
+  const { supabase } = await getSesion();
+
+  const { error } = await supabase.from('casas').delete().eq('id', casa.id);
+
+  if (error) {
+    redirect(`/casas/configuracion?error=${encodeURIComponent(error.message)}`);
+  }
+
+  const cookieStore = await cookies();
+  cookieStore.delete(CASA_ACTIVA_COOKIE);
+
+  redirect(`/casas?message=${encodeURIComponent(`Se eliminó "${casa.nombre}".`)}`);
+}
+
 // Solo lo pueden usar admins (lo hace cumplir la policy
 // "miembros_delete_admin_o_propio"): quita a OTRO miembro de la casa.
 export async function quitarMiembro(usuarioId: string) {

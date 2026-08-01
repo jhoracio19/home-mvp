@@ -1,14 +1,28 @@
 import type { Metadata, Viewport } from "next";
 import { Analytics } from "@vercel/analytics/next";
+import { RegistrarServiceWorker } from "@/components/RegistrarServiceWorker";
 import "./globals.css";
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://www.cylcard.com"),
   title: "Gestión doméstica",
-  description: "MVP de gestión del hogar: refri y tareas compartidas.",
+  description: "El refri y las tareas del hogar, organizados en un solo lugar.",
   appleWebApp: {
     capable: true,
     statusBarStyle: "black-translucent",
     title: "Hogar",
+  },
+  openGraph: {
+    title: "Gestión doméstica",
+    description: "El refri y las tareas del hogar, organizados en un solo lugar.",
+    siteName: "Gestión doméstica",
+    locale: "es_MX",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Gestión doméstica",
+    description: "El refri y las tareas del hogar, organizados en un solo lugar.",
   },
 };
 
@@ -31,6 +45,7 @@ export default function RootLayout({
     <html lang="es" className="h-dvh antialiased">
       <body className="min-h-dvh flex flex-col">
         {children}
+        <RegistrarServiceWorker />
         <Analytics />
       </body>
     </html>

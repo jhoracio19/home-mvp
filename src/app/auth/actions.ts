@@ -2,6 +2,7 @@
 
 import { redirect } from 'next/navigation';
 import { headers } from 'next/headers';
+import type { EmailOtpType } from '@supabase/supabase-js';
 import { createClient } from '@/lib/supabase/server';
 import { mensajeErrorAuth } from '@/lib/auth/errors';
 
@@ -15,6 +16,37 @@ async function getOrigin() {
 function destinoSeguro(next: string | null): string {
   if (next && next.startsWith('/') && !next.startsWith('//')) return next;
   return '/casas';
+}
+
+// Confirma el link de correo (registro o recuperación) SOLO cuando la
+// persona da clic al botón en /auth/confirmar — no antes. Si en vez de
+// eso verificáramos apenas alguien visita el link (GET), un escáner de
+// seguridad de correo (Outlook Safe Links, antivirus corporativos, etc.)
+// que abre el link solo, sin que nadie lo vea, "gastaría" el código de
+// un solo uso antes de que la persona real le dé clic — eso es
+// justamente lo que le pasó a las hermanas del usuario: a ellas les
+// salía "expiró" pero la cuenta ya había quedado confirmada por el
+// escáner. Con el botón, el GET inicial solo pinta la página; el POST
+// del formulario es lo único que de verdad llama a verifyOtp.
+export async function confirmarCuenta(formData: FormData) {
+  const tokenHash = String(formData.get('token_hash') ?? '');
+  const type = String(formData.get('type') ?? '') as EmailOtpType;
+  const next = destinoSeguro(String(formData.get('next') ?? ''));
+
+  if (!tokenHash || !type) {
+    redirect(`/auth/confirmar?error=${encodeURIComponent('Este link no es válido.')}`);
+  }
+
+  const supabase = await createClient();
+  const { error } = await supabase.auth.verifyOtp({ token_hash: tokenHash, type });
+
+  if (error) {
+    redirect(
+      `/login?error=${encodeURIComponent('Tu link ya no es válido. Si ya te habías registrado antes, intenta iniciar sesión directamente.')}`
+    );
+  }
+
+  redirect(next);
 }
 
 export async function login(formData: FormData) {
@@ -135,5 +167,5 @@ export async function actualizarContrasena(formData: FormData) {
 export async function logout() {
   const supabase = await createClient();
   await supabase.auth.signOut();
-  redirect('/login');
+  redirect('/');
 }

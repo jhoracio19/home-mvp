@@ -469,3 +469,29 @@ create policy push_subscriptions_delete_propio on push_subscriptions
 -- El cron que manda las notificaciones corre con la service role key
 -- (bypassa RLS a propósito: necesita leer suscripciones de todos los
 -- usuarios, no solo las de quien hace la petición).
+
+-- Historial de tareas completadas. `nombre_tarea` y `nombre_usuario` son
+-- una copia (no una referencia) de cómo se llamaban la tarea y quién la
+-- hizo en ese momento — así el historial se queda igual aunque después
+-- se renombre la tarea, se borre, o esa persona salga de la casa (lo
+-- cual además evita depender de la RLS de `perfiles`, que solo deja ver
+-- perfiles de miembros ACTUALES de una casa compartida).
+create table if not exists historial_tareas (
+  id uuid primary key default gen_random_uuid(),
+  casa_id uuid not null references casas(id) on delete cascade,
+  tarea_id uuid references tareas(id) on delete set null,
+  nombre_tarea text not null,
+  usuario_id uuid not null references auth.users(id) on delete cascade,
+  nombre_usuario text not null,
+  completada_en timestamptz not null default now()
+);
+
+create index if not exists idx_historial_tareas_casa on historial_tareas (casa_id, completada_en desc);
+
+alter table historial_tareas enable row level security;
+
+create policy historial_tareas_select on historial_tareas
+  for select using (is_member_of_casa(casa_id));
+
+create policy historial_tareas_insert on historial_tareas
+  for insert with check (is_member_of_casa(casa_id) and auth.uid() = usuario_id);

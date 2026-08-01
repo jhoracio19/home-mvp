@@ -8,6 +8,8 @@ import { etiquetaDiasSemana } from '@/lib/tareas/dias-semana';
 import { calcularDiasRestantes, clasificarUrgencia, etiquetaUrgencia, type Urgencia } from '@/lib/urgencia';
 import { buttonClasses } from '@/components/ui/Button';
 import { SubmitButton } from '@/components/ui/SubmitButton';
+import { Input } from '@/components/ui/Input';
+import { FormBusqueda } from '@/components/ui/FormBusqueda';
 
 const ESTILOS_URGENCIA: Record<Urgencia, string> = {
   vencido: 'border-[#a8422e] bg-[#a8422e]/10 text-[#a8422e] dark:bg-[#a8422e]/15 dark:text-[#e3a999]',
@@ -19,16 +21,20 @@ const ESTILOS_URGENCIA: Record<Urgencia, string> = {
 export default async function TareasPage({
   searchParams,
 }: {
-  searchParams: Promise<{ completada?: string; proxima?: string; completadaId?: string }>;
+  searchParams: Promise<{ completada?: string; proxima?: string; completadaId?: string; q?: string }>;
 }) {
-  const [tareas, miembros, { completada, proxima, completadaId }] = await Promise.all([
+  const [tareas, miembros, { completada, proxima, completadaId, q }] = await Promise.all([
     getTareas(),
     getMiembrosCasaActiva(),
     searchParams,
   ]);
   const nombrePorId = new Map(miembros.map((m) => [m.usuario_id, nombreMiembro(m)]));
 
+  const busqueda = (q ?? '').trim().toLowerCase();
+  const hayFiltros = Boolean(busqueda);
+
   const tareasConUrgencia = tareas
+    .filter((tarea) => !busqueda || tarea.nombre.toLowerCase().includes(busqueda))
     .map((tarea) => {
       const proximaFecha = calcularProximaFecha(tarea);
       const diasRestantes = calcularDiasRestantes(proximaFecha);
@@ -49,6 +55,10 @@ export default async function TareasPage({
           </Link>
         </div>
 
+        <Link href="/tareas/historial" className="inline-block text-xs font-semibold text-camel hover:underline">
+          Ver historial de tareas completadas
+        </Link>
+
         {completada && (
           <p className="flex items-center gap-2 rounded-lg border-2 border-camel bg-camel/25 px-4 py-3 text-sm font-semibold text-cocoa dark:text-linen">
             <span aria-hidden className="text-lg">
@@ -61,10 +71,18 @@ export default async function TareasPage({
           </p>
         )}
 
+        {(tareas.length > 0 || hayFiltros) && (
+          <FormBusqueda>
+            <div className="min-w-0 flex-1">
+              <Input label="Buscar" name="q" defaultValue={q ?? ''} placeholder="Nombre de la tarea" />
+            </div>
+          </FormBusqueda>
+        )}
+
         {tareasConUrgencia.length === 0 ? (
           <div className="rounded-lg border border-dashed border-camel bg-khaki/50 p-6 text-center shadow-sm dark:border-khaki/30 dark:bg-[#3a2820]/70">
             <p className="text-sm font-medium text-cocoa dark:text-khaki">
-              Aún no hay tareas recurrentes. Crea la primera.
+              {hayFiltros ? 'Nada coincide con esa búsqueda.' : 'Aún no hay tareas recurrentes. Crea la primera.'}
             </p>
           </div>
         ) : (

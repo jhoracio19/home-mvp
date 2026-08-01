@@ -2,6 +2,8 @@
 
 import { redirect } from 'next/navigation';
 import { getCasaActivaOrRedirect, getSesion } from '@/lib/casas/data';
+import { nombreMiembro } from '@/lib/casas/nombre-miembro';
+import { getPerfilPropio } from '@/lib/perfil/data';
 import { calcularDiasRestantes, calcularProximaFecha } from '@/lib/tareas/urgencia';
 import { enviarNotificacionAUsuario } from '@/lib/notificaciones/enviar';
 import type { TipoFrecuencia } from '@/lib/types/database';
@@ -161,7 +163,7 @@ export async function eliminarTarea(tareaId: string) {
 
 export async function completarTarea(tareaId: string) {
   const casa = await getCasaActivaOrRedirect();
-  const { supabase } = await getSesion();
+  const { supabase, user } = await getSesion();
 
   const hoy = new Date();
   const hoyISO = `${hoy.getFullYear()}-${String(hoy.getMonth() + 1).padStart(2, '0')}-${String(
@@ -177,6 +179,18 @@ export async function completarTarea(tareaId: string) {
     .single();
 
   if (!data) redirect('/tareas');
+
+  // Snapshot del nombre de la tarea y de quién la hizo — el historial no
+  // debe cambiar si después renombran la tarea, la borran, o esa persona
+  // sale de la casa.
+  const perfil = await getPerfilPropio();
+  await supabase.from('historial_tareas').insert({
+    casa_id: casa.id,
+    tarea_id: tareaId,
+    nombre_tarea: data.nombre,
+    usuario_id: user.id,
+    nombre_usuario: nombreMiembro({ email: user.email ?? '', nombre: perfil?.nombre ?? null, apellido: perfil?.apellido ?? null }),
+  });
 
   const diasRestantes = calcularDiasRestantes(calcularProximaFecha(data));
   const proxima =
