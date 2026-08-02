@@ -1,7 +1,9 @@
-import { signInWithGoogle } from '@/app/auth/actions';
+import { getTranslations } from 'next-intl/server';
+import { signInWithGoogle } from '@/app/[locale]/auth/actions';
 import { buttonClasses } from '@/components/ui/Button';
 
-export function BotonGoogle({ next }: { next?: string }) {
+export async function BotonGoogle({ next }: { next?: string }) {
+  const t = await getTranslations('Auth');
   return (
     <form action={signInWithGoogle}>
       {next && <input type="hidden" name="next" value={next} />}
@@ -12,7 +14,7 @@ export function BotonGoogle({ next }: { next?: string }) {
           <path fill="#FBBC05" d="M5.29 14.29A7.2 7.2 0 0 1 4.91 12c0-.8.14-1.57.38-2.29v-3.1H1.28A11.98 11.98 0 0 0 0 12c0 1.94.46 3.77 1.28 5.39l4.01-3.1Z" />
           <path fill="#EA4335" d="M12 4.77c1.76 0 3.35.61 4.6 1.8l3.44-3.44C17.95 1.19 15.24 0 12 0 7.31 0 3.25 2.7 1.28 6.61l4.01 3.1C6.23 6.88 8.88 4.77 12 4.77Z" />
         </svg>
-        Continuar con Google
+        {t('continuarConGoogle')}
       </button>
     </form>
   );

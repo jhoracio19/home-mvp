@@ -37,12 +37,11 @@ export function clasificarUrgencia(diasRestantes: number): Urgencia {
   return 'normal';
 }
 
-export function etiquetaUrgencia(diasRestantes: number): string {
-  if (diasRestantes < 0) {
-    const dias = Math.abs(diasRestantes);
-    return `Venció hace ${dias} ${dias === 1 ? 'día' : 'días'}`;
-  }
-  if (diasRestantes === 0) return 'Vence hoy';
-  if (diasRestantes === 1) return 'Vence mañana';
-  return `Vence en ${diasRestantes} días`;
+type Traductor = (key: string, values?: Record<string, string | number | Date>) => string;
+
+export function etiquetaUrgencia(diasRestantes: number, t: Traductor): string {
+  if (diasRestantes < 0) return t('vencioHace', { dias: Math.abs(diasRestantes) });
+  if (diasRestantes === 0) return t('venceHoy');
+  if (diasRestantes === 1) return t('venceManana');
+  return t('venceEn', { dias: diasRestantes });
 }

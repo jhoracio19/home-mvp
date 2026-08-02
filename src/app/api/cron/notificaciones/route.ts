@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { getTranslations } from 'next-intl/server';
 import { createAdminClient } from '@/lib/supabase/admin';
 import { enviarNotificacionAUsuario } from '@/lib/notificaciones/enviar';
 import { calcularDiasRestantes } from '@/lib/urgencia';
@@ -33,9 +34,14 @@ export async function GET(request: NextRequest) {
     miembrosPorCasa.set(m.casa_id, [...(miembrosPorCasa.get(m.casa_id) ?? []), m.usuario_id]);
   }
 
-  const mensajesPorUsuario = new Map<string, string[]>();
-  function agregarMensaje(usuarioId: string, texto: string) {
-    mensajesPorUsuario.set(usuarioId, [...(mensajesPorUsuario.get(usuarioId) ?? []), texto]);
+  // Se guarda info estructurada, no texto ya renderizado — el idioma
+  // correcto para redactar cada mensaje es el del destinatario
+  // (perfiles.idioma), que enviarNotificacionAUsuario recién resuelve
+  // al momento de mandar, no aquí.
+  type ItemPendiente = { tipo: 'refri'; nombre: string; dias: 0 | 1 } | { tipo: 'tarea'; nombre: string };
+  const pendientesPorUsuario = new Map<string, ItemPendiente[]>();
+  function agregarPendiente(usuarioId: string, item: ItemPendiente) {
+    pendientesPorUsuario.set(usuarioId, [...(pendientesPorUsuario.get(usuarioId) ?? []), item]);
   }
 
   // Items del refri: se avisa a TODOS los miembros de la casa (no están
@@ -43,9 +49,8 @@ export async function GET(request: NextRequest) {
   for (const item of items ?? []) {
     const dias = calcularDiasRestantes(calcularFechaVencimiento(item));
     if (dias !== 0 && dias !== 1) continue;
-    const texto = dias === 0 ? `${item.nombre} vence hoy` : `${item.nombre} vence mañana`;
     for (const usuarioId of miembrosPorCasa.get(item.casa_id) ?? []) {
-      agregarMensaje(usuarioId, texto);
+      agregarPendiente(usuarioId, { tipo: 'refri', nombre: item.nombre, dias });
     }
   }
 
@@ -54,15 +59,26 @@ export async function GET(request: NextRequest) {
   for (const tarea of tareas ?? []) {
     if (!tarea.asignado_a) continue;
     const dias = calcularDiasRestantes(calcularProximaFecha(tarea));
-    if (dias <= 0) agregarMensaje(tarea.asignado_a, `Te toca: ${tarea.nombre}`);
+    if (dias <= 0) agregarPendiente(tarea.asignado_a, { tipo: 'tarea', nombre: tarea.nombre });
   }
 
   let enviados = 0;
-  for (const [usuarioId, mensajes] of mensajesPorUsuario) {
-    enviados += await enviarNotificacionAUsuario(usuarioId, {
-      title: 'RemindHome',
-      body: mensajes.length === 1 ? mensajes[0] : `${mensajes.length} pendientes: ${mensajes.join(', ')}`,
-      url: '/dashboard',
+  for (const [usuarioId, pendientes] of pendientesPorUsuario) {
+    enviados += await enviarNotificacionAUsuario(usuarioId, async (locale) => {
+      const t = await getTranslations({ locale, namespace: 'Push' });
+      const mensajes = pendientes.map((item) =>
+        item.tipo === 'refri'
+          ? t(item.dias === 0 ? 'digestVenceHoy' : 'digestVenceManana', { nombre: item.nombre })
+          : t('digestTeToca', { nombre: item.nombre })
+      );
+      return {
+        title: 'RemindHome',
+        body:
+          mensajes.length === 1
+            ? mensajes[0]
+            : t('digestPendientes', { n: mensajes.length, lista: mensajes.join(', ') }),
+        url: '/dashboard',
+      };
     });
   }
 

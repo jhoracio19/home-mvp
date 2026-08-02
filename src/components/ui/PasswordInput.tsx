@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import type { InputHTMLAttributes } from 'react';
+import { useTranslations } from 'next-intl';
 
 type PasswordInputProps = Omit<InputHTMLAttributes<HTMLInputElement>, 'type'> & {
   label: string;
@@ -10,6 +11,7 @@ type PasswordInputProps = Omit<InputHTMLAttributes<HTMLInputElement>, 'type'> & 
 export function PasswordInput({ label, id, name, className = '', ...props }: PasswordInputProps) {
   const [visible, setVisible] = useState(false);
   const inputId = id ?? name;
+  const t = useTranslations('Common');
 
   return (
     <div className="space-y-1">
@@ -27,7 +29,7 @@ export function PasswordInput({ label, id, name, className = '', ...props }: Pas
         <button
           type="button"
           onClick={() => setVisible((v) => !v)}
-          aria-label={visible ? 'Ocultar contraseña' : 'Mostrar contraseña'}
+          aria-label={visible ? t('ocultarContrasena') : t('mostrarContrasena')}
           className="absolute inset-y-0 right-0 flex w-11 items-center justify-center text-cocoa hover:text-espresso dark:text-khaki dark:hover:text-linen"
         >
           {visible ? (

@@ -1,10 +1,11 @@
 'use client';
 
 import { useMemo, useState } from 'react';
+import { useTranslations } from 'next-intl';
 import { Input } from '@/components/ui/Input';
 import { Select } from '@/components/ui/Select';
 import { SubmitButton } from '@/components/ui/SubmitButton';
-import { CATEGORIAS, HEX_CATEGORIA } from '@/lib/refri/categorias';
+import { categorias, HEX_CATEGORIA } from '@/lib/refri/categorias';
 import type { CategoriaItem, TipoTracking } from '@/lib/types/database';
 
 type ReferenciaItem = { nombre: string; categoria: 'fruta' | 'verdura'; dias_estimados: number };
@@ -38,13 +39,15 @@ export function ItemForm({
   referencia,
   itemInicial,
   action,
-  textoBoton = 'Guardar',
+  textoBoton,
 }: {
   referencia: ReferenciaItem[];
   itemInicial?: ItemInicial;
   action: (formData: FormData) => void;
   textoBoton?: string;
 }) {
+  const t = useTranslations('Refri');
+  const tCategorias = useTranslations('Categorias');
   const [nombre, setNombre] = useState(itemInicial?.nombre ?? '');
   const [categoria, setCategoria] = useState<CategoriaItem>(itemInicial?.categoria ?? 'fruta');
   const [tipoTracking, setTipoTracking] = useState<TipoTracking>(itemInicial?.tipo_tracking ?? 'dias');
@@ -79,11 +82,11 @@ export function ItemForm({
   return (
     <form action={action} className="space-y-4">
       <Input
-        label="Nombre"
+        label={t('nombre')}
         name="nombre"
         value={nombre}
         onChange={(e) => manejarCambioNombre(e.target.value)}
-        placeholder="Ej. Plátano, leche, pollo…"
+        placeholder={t('ejemploNombre')}
         required
         maxLength={100}
       />
@@ -96,14 +99,14 @@ export function ItemForm({
               className="inline-block h-2.5 w-2.5 rounded-full"
               style={{ backgroundColor: HEX_CATEGORIA[categoria] }}
             />
-            Categoría
+            {t('categoria')}
           </span>
         }
         name="categoria"
         value={categoria}
         onChange={(e) => setCategoria(e.target.value as CategoriaItem)}
       >
-        {CATEGORIAS.map((c) => (
+        {categorias(tCategorias).map((c) => (
           <option key={c.value} value={c.value}>
             {c.label}
           </option>
@@ -111,15 +114,11 @@ export function ItemForm({
       </Select>
 
       {esFrutaOVerdura && autocompletado && (
-        <p className="text-xs font-medium text-cocoa dark:text-camel">
-          Duración autocompletada según nuestra tabla de referencia. Puedes ajustarla.
-        </p>
+        <p className="text-xs font-medium text-cocoa dark:text-camel">{t('duracionAutocompletada')}</p>
       )}
 
       <div className="space-y-2">
-        <span className="block text-sm font-semibold text-cocoa dark:text-linen">
-          ¿Cómo quieres controlar la caducidad?
-        </span>
+        <span className="block text-sm font-semibold text-cocoa dark:text-linen">{t('comoControlarCaducidad')}</span>
         <div className="flex gap-2">
           <button
             type="button"
@@ -130,7 +129,7 @@ export function ItemForm({
                 : 'border-camel bg-linen text-cocoa dark:border-cocoa dark:bg-[#3a2820] dark:text-linen'
             }`}
           >
-            Por días
+            {t('porDias')}
           </button>
           <button
             type="button"
@@ -141,7 +140,7 @@ export function ItemForm({
                 : 'border-camel bg-linen text-cocoa dark:border-cocoa dark:bg-[#3a2820] dark:text-linen'
             }`}
           >
-            Por fecha exacta
+            {t('porFechaExacta')}
           </button>
         </div>
         <input type="hidden" name="tipo_tracking" value={tipoTracking} />
@@ -149,7 +148,7 @@ export function ItemForm({
 
       {tipoTracking === 'dias' ? (
         <Input
-          label="Días estimados de duración"
+          label={t('diasEstimados')}
           name="dias_estimados"
           type="number"
           min={1}
@@ -162,7 +161,7 @@ export function ItemForm({
         />
       ) : (
         <Input
-          label="Fecha de caducidad"
+          label={t('fechaCaducidad')}
           name="fecha_caducidad"
           type="date"
           value={fechaCaducidad}
@@ -172,13 +171,13 @@ export function ItemForm({
       )}
 
       <Input
-        label="Fecha de entrada al refri"
+        label={t('fechaEntrada')}
         name="fecha_entrada"
         type="date"
         defaultValue={itemInicial?.fecha_entrada ?? hoyISO()}
       />
 
-      <SubmitButton className="w-full">{textoBoton}</SubmitButton>
+      <SubmitButton className="w-full">{textoBoton ?? t('guardar')}</SubmitButton>
     </form>
   );
 }

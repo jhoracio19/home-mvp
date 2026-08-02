@@ -4,7 +4,7 @@
 // de respaldo /offline y los assets estáticos ya visitados.
 
 const CACHE = 'gestion-domestica-v1';
-const RUTAS_PRECACHE = ['/offline', '/icons/icon-192.png', '/icons/icon-512.png'];
+const RUTAS_PRECACHE = ['/es/offline', '/en/offline', '/icons/icon-192.png', '/icons/icon-512.png'];
 
 self.addEventListener('install', (event) => {
   event.waitUntil(
@@ -33,7 +33,12 @@ self.addEventListener('fetch', (event) => {
   // Navegación (ir a una página): red primero, y si no hay conexión,
   // muestra la página de respaldo en vez del error feo del navegador.
   if (request.mode === 'navigate') {
-    event.respondWith(fetch(request).catch(() => caches.match('/offline')));
+    event.respondWith(
+      fetch(request).catch(() => {
+        const locale = url.pathname.startsWith('/en') ? 'en' : 'es';
+        return caches.match(`/${locale}/offline`);
+      })
+    );
     return;
   }
 
@@ -62,7 +67,7 @@ self.addEventListener('push', (event) => {
     datos = { body: event.data ? event.data.text() : '' };
   }
 
-  const titulo = datos.title || 'Gestión doméstica';
+  const titulo = datos.title || 'RemindHome';
   const opciones = {
     body: datos.body || '',
     icon: '/icons/icon-192.png',

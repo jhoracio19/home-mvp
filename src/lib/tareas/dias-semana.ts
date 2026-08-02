@@ -1,30 +1,28 @@
+type Traductor = (key: string) => string;
+
 // Valor = Date.prototype.getDay() (0 = domingo ... 6 = sábado), para que
 // el cálculo de "próximo día que aplica" sea directo. Se muestran en
 // orden lunes-a-domingo porque así se piensa la semana en la UI.
-export const DIAS_SEMANA = [
-  { valor: 1, corta: 'L', nombre: 'Lunes' },
-  { valor: 2, corta: 'M', nombre: 'Martes' },
-  { valor: 3, corta: 'M', nombre: 'Miércoles' },
-  { valor: 4, corta: 'J', nombre: 'Jueves' },
-  { valor: 5, corta: 'V', nombre: 'Viernes' },
-  { valor: 6, corta: 'S', nombre: 'Sábado' },
-  { valor: 0, corta: 'D', nombre: 'Domingo' },
+const CLAVES_ORDEN_LUNES_A_PRIMERO = [
+  { valor: 1, clave: 'lunes' },
+  { valor: 2, clave: 'martes' },
+  { valor: 3, clave: 'miercoles' },
+  { valor: 4, clave: 'jueves' },
+  { valor: 5, clave: 'viernes' },
+  { valor: 6, clave: 'sabado' },
+  { valor: 0, clave: 'domingo' },
 ] as const;
 
-const ABREVIATURAS: Record<number, string> = {
-  0: 'Dom',
-  1: 'Lun',
-  2: 'Mar',
-  3: 'Mié',
-  4: 'Jue',
-  5: 'Vie',
-  6: 'Sáb',
-};
+export function diasSemana(t: Traductor) {
+  return CLAVES_ORDEN_LUNES_A_PRIMERO.map(({ valor, clave }) => ({
+    valor,
+    corta: t(`${clave}Corta`),
+    nombre: t(clave),
+  }));
+}
 
-export function etiquetaDiasSemana(dias: number[]): string {
-  const ordenLunesAPrimero = [1, 2, 3, 4, 5, 6, 0];
-  return ordenLunesAPrimero
-    .filter((d) => dias.includes(d))
-    .map((d) => ABREVIATURAS[d])
+export function etiquetaDiasSemana(dias: number[], t: Traductor): string {
+  return CLAVES_ORDEN_LUNES_A_PRIMERO.filter(({ valor }) => dias.includes(valor))
+    .map(({ clave }) => t(`${clave}Abrev`))
     .join(', ');
 }

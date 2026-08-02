@@ -1,7 +1,8 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { guardarSuscripcion, eliminarSuscripcion } from '@/app/(app)/notificaciones/actions';
+import { useTranslations } from 'next-intl';
+import { guardarSuscripcion, eliminarSuscripcion } from '@/app/[locale]/(app)/notificaciones/actions';
 import { itemClase, iconoClase } from '@/components/layout/menu-clases';
 
 type Estado = 'verificando' | 'no-soportado' | 'inactivo' | 'activo' | 'denegado' | 'procesando';
@@ -17,6 +18,7 @@ function base64UrlAUint8Array(base64Url: string): Uint8Array {
 
 export function NotificacionesToggle() {
   const [estado, setEstado] = useState<Estado>('verificando');
+  const t = useTranslations('Nav');
 
   useEffect(() => {
     let cancelado = false;
@@ -103,7 +105,7 @@ export function NotificacionesToggle() {
     return (
       <p className={`${itemClase} cursor-default text-cocoa/50`}>
         {campana}
-        Notificaciones bloqueadas por el navegador
+        {t('notificacionesBloqueadas')}
       </p>
     );
   }
@@ -119,7 +121,7 @@ export function NotificacionesToggle() {
       className={`w-full text-left ${itemClase} disabled:opacity-50`}
     >
       {campana}
-      {activo ? 'Desactivar notificaciones' : 'Activar notificaciones'}
+      {activo ? t('desactivarNotificaciones') : t('activarNotificaciones')}
     </button>
   );
 }

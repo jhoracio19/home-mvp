@@ -1,5 +1,6 @@
 import webpush, { WebPushError } from 'web-push';
 import { createAdminClient } from '@/lib/supabase/admin';
+import type { Locale } from '@/i18n/routing';
 
 let vapidConfigurado = false;
 function asegurarVapid() {
@@ -13,12 +14,23 @@ function asegurarVapid() {
 }
 
 type Notificacion = { title: string; body: string; url?: string };
+type ConstructorNotificacion = (locale: Locale) => Notificacion | Promise<Notificacion>;
 
 // Le manda un push a TODOS los dispositivos suscritos de un usuario
 // (puede tener varios: celular, laptop, etc). Usa la service role para
 // leer sus suscripciones sin depender de la sesión de quien dispara la
 // notificación (puede ser otro usuario, o el cron).
-export async function enviarNotificacionAUsuario(usuarioId: string, notificacion: Notificacion): Promise<number> {
+//
+// `notificacion` acepta un objeto fijo o un constructor (locale) =>
+// Notificacion: esto último es lo normal, porque el idioma correcto
+// es el del DESTINATARIO (perfiles.idioma), no el de quien dispara la
+// acción — un push no tiene cookie/request de por medio para saber
+// "en qué idioma está viendo esto la persona que dispara la acción",
+// así que hay que ir a buscar el del destinatario explícitamente.
+export async function enviarNotificacionAUsuario(
+  usuarioId: string,
+  notificacion: Notificacion | ConstructorNotificacion
+): Promise<number> {
   asegurarVapid();
   const supabase = createAdminClient();
 
@@ -29,7 +41,15 @@ export async function enviarNotificacionAUsuario(usuarioId: string, notificacion
 
   if (!suscripciones || suscripciones.length === 0) return 0;
 
-  const payload = JSON.stringify({ ...notificacion, url: notificacion.url ?? '/dashboard' });
+  let contenido: Notificacion;
+  if (typeof notificacion === 'function') {
+    const { data: perfil } = await supabase.from('perfiles').select('idioma').eq('id', usuarioId).maybeSingle();
+    contenido = await notificacion((perfil?.idioma as Locale) ?? 'es');
+  } else {
+    contenido = notificacion;
+  }
+
+  const payload = JSON.stringify({ ...contenido, url: contenido.url ?? '/dashboard' });
   const endpointsExpirados: string[] = [];
   let enviados = 0;
 

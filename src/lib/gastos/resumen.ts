@@ -1,8 +1,11 @@
+import { intlLocale } from '@/lib/intl-locale';
+import type { Locale } from '@/i18n/routing';
+
 type GastoParaResumen = { monto: number; pagado_por: string; fecha: string };
 
 export type ResumenMes = {
   clave: string; // 'YYYY-MM', para ordenar
-  etiqueta: string; // 'Agosto 2026', para mostrar
+  etiqueta: string; // 'Agosto 2026' / 'August 2026', para mostrar
   total: number;
   porPersona: Map<string, number>;
 };
@@ -10,7 +13,7 @@ export type ResumenMes = {
 // Agrupa gastos por mes calendario (según `fecha`, no `created_at`) —
 // solo gastos, no pagos: un pago no es "lo que se gastó ese mes", es
 // liquidar una deuda de gastos ya contados.
-export function agruparPorMes(gastos: GastoParaResumen[]): ResumenMes[] {
+export function agruparPorMes(gastos: GastoParaResumen[], locale: Locale): ResumenMes[] {
   const meses = new Map<string, ResumenMes>();
 
   for (const gasto of gastos) {
@@ -18,7 +21,7 @@ export function agruparPorMes(gastos: GastoParaResumen[]): ResumenMes[] {
 
     if (!meses.has(clave)) {
       const [anio, mes] = clave.split('-').map(Number);
-      const etiquetaCruda = new Intl.DateTimeFormat('es-MX', { month: 'long', year: 'numeric' }).format(
+      const etiquetaCruda = new Intl.DateTimeFormat(intlLocale(locale), { month: 'long', year: 'numeric' }).format(
         new Date(anio, mes - 1, 1)
       );
       meses.set(clave, {

@@ -2,10 +2,12 @@
 
 import { useEffect, useRef } from 'react';
 import type { FormEvent } from 'react';
-import Link from 'next/link';
-import { logout } from '@/app/auth/actions';
-import { salirDeCasa } from '@/app/(app)/casas/actions';
+import { useTranslations } from 'next-intl';
+import { Link } from '@/i18n/navigation';
+import { logout } from '@/app/[locale]/auth/actions';
+import { salirDeCasa } from '@/app/[locale]/(app)/casas/actions';
 import { NotificacionesToggle } from '@/components/notificaciones/NotificacionesToggle';
+import { LocaleSwitcher } from './LocaleSwitcher';
 import { itemClase, iconoClase } from './menu-clases';
 
 // <details>/<summary> nativo para el desplegable en sí (accesible,
@@ -13,6 +15,7 @@ import { itemClase, iconoClase } from './menu-clases';
 // clic afuera o al elegir una opción, que <details> no trae de fábrica.
 export function MenuUsuario({ dentroDeCasa, esAdmin }: { dentroDeCasa: boolean; esAdmin: boolean }) {
   const detailsRef = useRef<HTMLDetailsElement>(null);
+  const t = useTranslations('Nav');
 
   useEffect(() => {
     function cerrarSiEsClicFuera(evento: MouseEvent) {
@@ -30,7 +33,7 @@ export function MenuUsuario({ dentroDeCasa, esAdmin }: { dentroDeCasa: boolean; 
   }
 
   function confirmarSalida(evento: FormEvent<HTMLFormElement>) {
-    if (!window.confirm('¿Seguro que quieres salir de esta casa?')) {
+    if (!window.confirm(t('confirmarSalida'))) {
       evento.preventDefault();
     }
   }
@@ -58,7 +61,7 @@ export function MenuUsuario({ dentroDeCasa, esAdmin }: { dentroDeCasa: boolean; 
                 <line x1="19" y1="8" x2="19" y2="14" />
                 <line x1="16" y1="11" x2="22" y2="11" />
               </svg>
-              Invitar miembros
+              {t('invitarMiembros')}
             </Link>
             <Link href="/notas" className={itemClase}>
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={iconoClase}>
@@ -67,7 +70,7 @@ export function MenuUsuario({ dentroDeCasa, esAdmin }: { dentroDeCasa: boolean; 
                 <line x1="8" y1="13" x2="16" y2="13" />
                 <line x1="8" y1="17" x2="13" y2="17" />
               </svg>
-              Notas de la casa
+              {t('notasDeLaCasa')}
             </Link>
             <Link href="/gastos" className={itemClase}>
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={iconoClase}>
@@ -75,7 +78,7 @@ export function MenuUsuario({ dentroDeCasa, esAdmin }: { dentroDeCasa: boolean; 
                 <path d="M12 7v10" />
                 <path d="M15 9.5c0-1.1-1.34-2-3-2s-3 .9-3 2 1.34 2 3 2 3 .9 3 2-1.34 2-3 2-3-.9-3-2" />
               </svg>
-              Gastos compartidos
+              {t('gastosCompartidos')}
             </Link>
             <Link href="/casas" className={itemClase}>
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={iconoClase}>
@@ -84,7 +87,7 @@ export function MenuUsuario({ dentroDeCasa, esAdmin }: { dentroDeCasa: boolean; 
                 <polyline points="7 23 3 19 7 15" />
                 <path d="M21 13v2a4 4 0 0 1-4 4H3" />
               </svg>
-              Cambiar casa
+              {t('cambiarCasa')}
             </Link>
             {esAdmin && (
               <Link href="/casas/configuracion" className={itemClase}>
@@ -92,7 +95,7 @@ export function MenuUsuario({ dentroDeCasa, esAdmin }: { dentroDeCasa: boolean; 
                   <circle cx="12" cy="12" r="3" />
                   <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09a1.65 1.65 0 0 0-1-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09a1.65 1.65 0 0 0 1.51-1 1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1Z" />
                 </svg>
-                Configuración de la casa
+                {t('configuracionCasa')}
               </Link>
             )}
           </>
@@ -103,15 +106,16 @@ export function MenuUsuario({ dentroDeCasa, esAdmin }: { dentroDeCasa: boolean; 
             <circle cx="12" cy="8" r="4" />
             <path d="M4 21c0-4 3.5-7 8-7s8 3 8 7" />
           </svg>
-          Mi perfil
+          {t('miPerfil')}
         </Link>
 
         <NotificacionesToggle />
+        <LocaleSwitcher variant="menuItem" />
 
         <div className="border-t border-khaki" />
 
         <a
-          href="mailto:jhoracio19@hotmail.com?subject=Problema%20en%20Gesti%C3%B3n%20dom%C3%A9stica"
+          href={`mailto:jhoracio19@hotmail.com?subject=${encodeURIComponent(t('asuntoReporte'))}`}
           className={itemClase}
         >
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={iconoClase}>
@@ -119,7 +123,7 @@ export function MenuUsuario({ dentroDeCasa, esAdmin }: { dentroDeCasa: boolean; 
             <path d="M12 17h.01" />
             <path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0Z" />
           </svg>
-          Reportar un problema
+          {t('reportarProblema')}
         </a>
 
         <a
@@ -135,7 +139,7 @@ export function MenuUsuario({ dentroDeCasa, esAdmin }: { dentroDeCasa: boolean; 
             <line x1="10" y1="1" x2="10" y2="4" />
             <line x1="14" y1="1" x2="14" y2="4" />
           </svg>
-          Buy me a coffee
+          {t('buyMeACoffee')}
         </a>
 
         <div className="border-t border-khaki" />
@@ -148,7 +152,7 @@ export function MenuUsuario({ dentroDeCasa, esAdmin }: { dentroDeCasa: boolean; 
                 <polyline points="9 8 5 12 9 16" />
                 <line x1="5" y1="12" x2="17" y2="12" />
               </svg>
-              Salir de esta casa
+              {t('salirDeCasa')}
             </button>
           </form>
         )}
@@ -163,7 +167,7 @@ export function MenuUsuario({ dentroDeCasa, esAdmin }: { dentroDeCasa: boolean; 
               <polyline points="16 17 21 12 16 7" />
               <line x1="21" y1="12" x2="9" y2="12" />
             </svg>
-            Cerrar sesión
+            {t('cerrarSesion')}
           </button>
         </form>
       </div>

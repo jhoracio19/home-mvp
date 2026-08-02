@@ -1,18 +1,19 @@
 'use client';
 
-import Link from 'next/link';
-import { usePathname } from 'next/navigation';
-
-const TABS = [
-  { href: '/dashboard', label: 'Refri', match: (p: string) => p === '/dashboard' || p.startsWith('/refri') },
-  { href: '/compras', label: 'Compras', match: (p: string) => p.startsWith('/compras') },
-  { href: '/tareas', label: 'Tareas', match: (p: string) => p.startsWith('/tareas') },
-];
+import { useTranslations } from 'next-intl';
+import { Link, usePathname } from '@/i18n/navigation';
 
 const RUTAS_CON_NAV = ['/dashboard', '/refri', '/compras', '/tareas'];
 
 export function BottomNav() {
   const pathname = usePathname();
+  const t = useTranslations('Nav');
+
+  const TABS = [
+    { href: '/dashboard', label: t('refri'), match: (p: string) => p === '/dashboard' || p.startsWith('/refri') },
+    { href: '/compras', label: t('compras'), match: (p: string) => p.startsWith('/compras') },
+    { href: '/tareas', label: t('tareas'), match: (p: string) => p.startsWith('/tareas') },
+  ];
 
   // Fuera de una casa (ej. eligiendo/cambiando casa, invitando) el nav
   // de Refri/Tareas no aplica — mostrarlo ahí confunde más que ayuda.

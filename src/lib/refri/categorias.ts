@@ -1,22 +1,19 @@
 import type { CategoriaItem } from '@/lib/types/database';
 
-export const CATEGORIAS: { value: CategoriaItem; label: string }[] = [
-  { value: 'fruta', label: 'Fruta' },
-  { value: 'verdura', label: 'Verdura' },
-  { value: 'lacteo', label: 'Lácteo' },
-  { value: 'carne', label: 'Carne' },
-  { value: 'preparado', label: 'Preparado' },
-  { value: 'otro', label: 'Otro' },
-];
+const VALORES_CATEGORIA: CategoriaItem[] = ['fruta', 'verdura', 'lacteo', 'carne', 'preparado', 'otro'];
 
-const VALORES_CATEGORIA = CATEGORIAS.map((c) => c.value);
+type Traductor = (key: string) => string;
+
+export function categorias(t: Traductor): { value: CategoriaItem; label: string }[] {
+  return VALORES_CATEGORIA.map((value) => ({ value, label: t(value) }));
+}
 
 export function esCategoriaValida(valor: string): valor is CategoriaItem {
   return (VALORES_CATEGORIA as string[]).includes(valor);
 }
 
-export function etiquetaCategoria(categoria: CategoriaItem): string {
-  return CATEGORIAS.find((c) => c.value === categoria)?.label ?? categoria;
+export function etiquetaCategoria(categoria: CategoriaItem, t: Traductor): string {
+  return t(categoria);
 }
 
 // "Opción B" (mercado): cada categoría tiene su propio color real, en

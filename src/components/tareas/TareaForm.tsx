@@ -1,11 +1,12 @@
 'use client';
 
 import { useState } from 'react';
+import { useTranslations } from 'next-intl';
 import { Input } from '@/components/ui/Input';
 import { Select } from '@/components/ui/Select';
 import { SubmitButton } from '@/components/ui/SubmitButton';
 import { nombreMiembro } from '@/lib/casas/nombre-miembro';
-import { DIAS_SEMANA } from '@/lib/tareas/dias-semana';
+import { diasSemana } from '@/lib/tareas/dias-semana';
 import type { TipoFrecuencia } from '@/lib/types/database';
 
 type Miembro = { usuario_id: string; email: string; rol: string; nombre: string | null; apellido: string | null };
@@ -22,13 +23,15 @@ export function TareaForm({
   miembros,
   tareaInicial,
   action,
-  textoBoton = 'Guardar',
+  textoBoton,
 }: {
   miembros: Miembro[];
   tareaInicial?: TareaInicial;
   action: (formData: FormData) => void;
   textoBoton?: string;
 }) {
+  const t = useTranslations('Tareas');
+  const tDias = useTranslations('Dias');
   const [tipoFrecuencia, setTipoFrecuencia] = useState<TipoFrecuencia>(
     tareaInicial?.tipo_frecuencia ?? 'intervalo'
   );
@@ -46,16 +49,16 @@ export function TareaForm({
   return (
     <form action={action} className="space-y-4">
       <Input
-        label="Nombre de la tarea"
+        label={t('nombreDeLaTarea')}
         name="nombre"
-        placeholder="Ej. Lavar trastes"
+        placeholder={t('ejemploNombre')}
         defaultValue={tareaInicial?.nombre}
         required
         maxLength={100}
       />
 
       <div className="space-y-2">
-        <span className="block text-sm font-semibold text-cocoa dark:text-linen">¿Cómo se repite?</span>
+        <span className="block text-sm font-semibold text-cocoa dark:text-linen">{t('comoSeRepite')}</span>
         <div className="flex gap-2">
           <button
             type="button"
@@ -66,7 +69,7 @@ export function TareaForm({
                 : 'border-camel bg-linen text-cocoa dark:border-cocoa dark:bg-[#3a2820] dark:text-linen'
             }`}
           >
-            Cada N días
+            {t('cadaNDias')}
           </button>
           <button
             type="button"
@@ -77,7 +80,7 @@ export function TareaForm({
                 : 'border-camel bg-linen text-cocoa dark:border-cocoa dark:bg-[#3a2820] dark:text-linen'
             }`}
           >
-            Días de la semana
+            {t('diasDeLaSemana')}
           </button>
         </div>
         <input type="hidden" name="tipo_frecuencia" value={tipoFrecuencia} />
@@ -85,7 +88,7 @@ export function TareaForm({
 
       {tipoFrecuencia === 'intervalo' ? (
         <Input
-          label="Cada cuántos días se repite"
+          label={t('cadaCuantosDias')}
           name="frecuencia_dias"
           type="number"
           min={1}
@@ -95,11 +98,9 @@ export function TareaForm({
         />
       ) : (
         <div className="space-y-2">
-          <span className="block text-sm font-semibold text-cocoa dark:text-linen">
-            ¿Qué días toca? (elige uno o varios)
-          </span>
+          <span className="block text-sm font-semibold text-cocoa dark:text-linen">{t('queDiasToca')}</span>
           <div className="grid grid-cols-7 gap-1.5">
-            {DIAS_SEMANA.map((dia) => {
+            {diasSemana(tDias).map((dia) => {
               const activo = diasSeleccionados.includes(dia.valor);
               return (
                 <button
@@ -125,15 +126,15 @@ export function TareaForm({
         </div>
       )}
 
-      <Select label="Asignar a" name="asignado_a" defaultValue={tareaInicial?.asignado_a ?? ''}>
-        <option value="">Sin asignar</option>
+      <Select label={t('asignarA')} name="asignado_a" defaultValue={tareaInicial?.asignado_a ?? ''}>
+        <option value="">{t('sinAsignar')}</option>
         {miembros.map((m) => (
           <option key={m.usuario_id} value={m.usuario_id}>
             {nombreMiembro(m)}
           </option>
         ))}
       </Select>
-      <SubmitButton className="w-full">{textoBoton}</SubmitButton>
+      <SubmitButton className="w-full">{textoBoton ?? t('guardar')}</SubmitButton>
     </form>
   );
 }

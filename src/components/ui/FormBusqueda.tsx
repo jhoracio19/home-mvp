@@ -2,6 +2,7 @@
 
 import { useRouter, usePathname } from 'next/navigation';
 import { useTransition, type FormEvent, type ReactNode } from 'react';
+import { useTranslations } from 'next-intl';
 import { Button } from './Button';
 
 // Envuelve los campos de búsqueda/filtro (Input, Select, etc.) y hace la
@@ -13,6 +14,7 @@ export function FormBusqueda({ children }: { children: ReactNode }) {
   const router = useRouter();
   const pathname = usePathname();
   const [pendiente, startTransition] = useTransition();
+  const t = useTranslations('Common');
 
   function manejarSubmit(evento: FormEvent<HTMLFormElement>) {
     evento.preventDefault();
@@ -41,7 +43,7 @@ export function FormBusqueda({ children }: { children: ReactNode }) {
             />
           </svg>
         )}
-        {pendiente ? 'Buscando…' : 'Buscar'}
+        {pendiente ? t('buscando') : t('buscar')}
       </Button>
     </form>
   );

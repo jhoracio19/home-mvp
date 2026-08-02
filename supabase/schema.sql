@@ -695,3 +695,37 @@ alter publication supabase_realtime add table pagos;
 -- cuentan desde aquí en adelante (calcularLogros en
 -- lib/tareas/logros.ts filtra explícitamente los null).
 alter table historial_tareas add column if not exists a_tiempo boolean;
+
+-- ------------------------------------------------------------
+-- Idioma preferido (para notificaciones push)
+-- ------------------------------------------------------------
+
+-- La app ya es bilingüe (next-intl), pero las notificaciones push se
+-- mandan desde el servidor sin ningún request/cookie del destinatario
+-- de por medio, así que necesitan este dato guardado para saber en
+-- qué idioma escribirle a cada quien. Default 'es' para cuentas
+-- existentes y para altas por Google (que no manda idioma en su
+-- metadata); LocaleSwitcher.tsx lo actualiza cuando alguien
+-- autenticado cambia de idioma a mano.
+alter table perfiles add column if not exists idioma text not null default 'es';
+alter table perfiles drop constraint if exists perfiles_idioma_check;
+alter table perfiles add constraint perfiles_idioma_check check (idioma in ('es', 'en'));
+
+create or replace function handle_nuevo_usuario()
+returns trigger
+language plpgsql
+security definer
+set search_path = public
+as $$
+begin
+  insert into perfiles (id, nombre, apellido, idioma)
+  values (
+    new.id,
+    coalesce(new.raw_user_meta_data ->> 'nombre', new.raw_user_meta_data ->> 'given_name'),
+    coalesce(new.raw_user_meta_data ->> 'apellido', new.raw_user_meta_data ->> 'family_name'),
+    coalesce(new.raw_user_meta_data ->> 'idioma', 'es')
+  )
+  on conflict (id) do nothing;
+  return new;
+end;
+$$;

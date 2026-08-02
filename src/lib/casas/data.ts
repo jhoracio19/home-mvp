@@ -1,8 +1,9 @@
 import { cache } from 'react';
 import { cookies } from 'next/headers';
-import { redirect } from 'next/navigation';
+import { getLocale } from 'next-intl/server';
 import type { User } from '@supabase/supabase-js';
 import { createClient } from '@/lib/supabase/server';
+import { redirect } from '@/i18n/navigation';
 
 export const CASA_ACTIVA_COOKIE = 'casa_activa_id';
 
@@ -54,7 +55,7 @@ export const getSesion = cache(async () => {
     data: { user },
   } = await getUserConReintento(supabase);
 
-  if (!user) redirect('/login');
+  if (!user) redirect({ href: '/login', locale: await getLocale() });
   return { supabase, user };
 });
 
@@ -90,7 +91,7 @@ export const getCasaActiva = cache(async () => {
 
 export const getCasaActivaOrRedirect = cache(async () => {
   const casa = await getCasaActiva();
-  if (!casa) redirect('/casas');
+  if (!casa) redirect({ href: '/casas', locale: await getLocale() });
   return casa;
 });
 
