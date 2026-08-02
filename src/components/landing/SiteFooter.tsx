@@ -44,6 +44,16 @@ export function SiteFooter() {
                 </Link>
               </li>
               <li>
+                <Link href="/#gastos" className={enlaceClase}>
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={iconoClase}>
+                    <circle cx="12" cy="12" r="9" />
+                    <path d="M12 7v10" />
+                    <path d="M15 9.5c0-1.1-1.34-2-3-2s-3 .9-3 2 1.34 2 3 2 3 .9 3 2-1.34 2-3 2-3-.9-3-2" />
+                  </svg>
+                  Gastos
+                </Link>
+              </li>
+              <li>
                 <Link href="/#tareas" className={enlaceClase}>
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={iconoClase}>
                     <rect x="3" y="3" width="18" height="18" rx="2" />

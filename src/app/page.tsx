@@ -125,6 +125,26 @@ function MockupCompras() {
   );
 }
 
+function MockupGastos() {
+  const balances = [
+    { nombre: 'Ana', monto: '$450', positivo: true },
+    { nombre: 'Luis', monto: '$450', positivo: false },
+  ];
+  return (
+    <div className="grid w-full max-w-sm grid-cols-2 gap-3">
+      {balances.map((b) => (
+        <div key={b.nombre} className="rounded-lg border border-camel bg-khaki p-4 shadow-sm">
+          <p className="truncate text-xs font-semibold text-cocoa">{b.nombre}</p>
+          <p className={`mt-1 text-lg font-bold ${b.positivo ? 'text-[#6B8F5A]' : 'text-[#a8422e]'}`}>{b.monto}</p>
+          <p className="text-[0.65rem] font-medium uppercase tracking-wide text-cocoa/60">
+            {b.positivo ? 'le deben' : 'debe'}
+          </p>
+        </div>
+      ))}
+    </div>
+  );
+}
+
 function MockupNotas() {
   return (
     <div className="w-full max-w-sm rounded-lg border-2 border-camel bg-khaki p-4 shadow-sm">
@@ -259,6 +279,25 @@ export default async function RootPage() {
         </div>
       </section>
 
+      {/* Gastos */}
+      <section id="gastos" className="scroll-mt-20 border-t border-camel/40 px-4 py-14 sm:px-8">
+        <div className="mx-auto grid w-full max-w-5xl items-center gap-10 lg:grid-cols-2 lg:gap-16">
+          <div className="order-2 flex justify-center lg:order-1">
+            <MockupGastos />
+          </div>
+          <div className="order-1 space-y-4 text-center lg:order-2 lg:text-left">
+            <p className="text-xs font-bold uppercase tracking-[0.2em] text-camel">Gastos</p>
+            <h2 className="text-2xl font-bold text-espresso sm:text-3xl">
+              Renta, luz, súper — sin llevar la cuenta en la cabeza
+            </h2>
+            <p className="text-cocoa">
+              Registra qué se pagó y quién lo pagó; la app reparte en partes iguales entre todos y te dice al
+              instante quién va ganando y quién debe. Nada de recibos perdidos en el chat.
+            </p>
+          </div>
+        </div>
+      </section>
+
       {/* Tareas */}
       <section id="tareas" className="scroll-mt-20 border-t border-camel/40 bg-khaki/30 px-4 py-14 sm:px-8">
         <div className="mx-auto grid w-full max-w-5xl items-center gap-10 lg:grid-cols-2 lg:gap-16">
@@ -344,11 +383,11 @@ export default async function RootPage() {
           <p className="text-xs font-bold uppercase tracking-[0.2em] text-camel">Próximamente</p>
           <h2 className="mt-2 text-2xl font-bold text-espresso sm:text-3xl">Esto apenas empieza</h2>
           <p className="mx-auto mt-3 max-w-md text-cocoa">
-            Seguimos construyendo más para el hogar — gastos compartidos, notificaciones más a tu medida, y lo
-            que ustedes nos vayan pidiendo.
+            Seguimos construyendo más para el hogar — notificaciones más a tu medida, y lo que ustedes nos vayan
+            pidiendo.
           </p>
           <div className="mt-6 flex flex-wrap justify-center gap-2">
-            {['Gastos compartidos', 'Notificaciones a tu medida', 'Más módulos para la casa'].map((item) => (
+            {['Notificaciones a tu medida', 'Más módulos para la casa'].map((item) => (
               <span
                 key={item}
                 className="rounded-full border border-camel bg-linen px-3 py-1.5 text-xs font-semibold text-cocoa"
