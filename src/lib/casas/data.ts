@@ -1,25 +1,43 @@
 import { cache } from 'react';
 import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
+import type { User } from '@supabase/supabase-js';
 import { createClient } from '@/lib/supabase/server';
 
 export const CASA_ACTIVA_COOKIE = 'casa_activa_id';
+
+function esErrorDeReloj(err: unknown): boolean {
+  return err instanceof Error && err.message.includes('issued at future');
+}
 
 // Justo después de emitir un token nuevo (login, actualizar contraseña,
 // etc.) puede haber unos milisegundos de diferencia de reloj entre el
 // servidor de Supabase (que puso el `iat`) y el de Vercel (que lo
 // valida), y getUser() truena con "JWT issued at future" — no es un
-// bug real, se autocorrige solo casi de inmediato. Reintentar una vez
-// con un respiro corto evita que la persona vea una pantalla de error
-// por algo que se resuelve solo un instante después.
-async function getUserConReintento(supabase: Awaited<ReturnType<typeof createClient>>) {
+// bug real, se autocorrige solo casi de inmediato. Reintentamos un par
+// de veces con pausas cortas; si aun así sigue fallando, lo tratamos
+// como "no hay sesión" (manda a /login) en vez de tronar con la
+// pantalla de error genérica — eso confundía más de lo que ayudaba: la
+// acción (login, cambio de contraseña) sí había funcionado, solo esta
+// validación puntual se tropezó. Pedirle a la persona que vuelva a
+// entrar es un mensaje normal; "algo salió mal" no lo es.
+async function getUserConReintento(supabase: Awaited<ReturnType<typeof createClient>>): Promise<{ data: { user: User | null } }> {
+  const pausas = [300, 700];
+
+  for (const pausa of pausas) {
+    try {
+      return await supabase.auth.getUser();
+    } catch (err) {
+      if (!esErrorDeReloj(err)) throw err;
+      await new Promise((resolve) => setTimeout(resolve, pausa));
+    }
+  }
+
   try {
     return await supabase.auth.getUser();
   } catch (err) {
-    const esErrorDeReloj = err instanceof Error && err.message.includes('issued at future');
-    if (!esErrorDeReloj) throw err;
-    await new Promise((resolve) => setTimeout(resolve, 400));
-    return supabase.auth.getUser();
+    if (!esErrorDeReloj(err)) throw err;
+    return { data: { user: null } };
   }
 }
 
