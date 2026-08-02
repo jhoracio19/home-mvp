@@ -23,7 +23,12 @@ export default function PrivacidadPage() {
             <h2 className="text-lg font-bold text-cocoa">Qué información guardamos</h2>
             <ul className="list-disc space-y-1.5 pl-5 text-sm text-cocoa">
               <li>Tu correo, nombre y apellido, y tu contraseña (guardada cifrada, nunca en texto plano).</li>
-              <li>Lo que tú agregues: nombres de casas, integrantes, productos del refri y tareas.</li>
+              <li>
+                Si entras con <strong>&ldquo;Continuar con Google&rdquo;</strong>, en vez de pedirte que escribas
+                nombre/correo/contraseña, los recibimos directo de Google (tu nombre, correo y foto de perfil).
+                No le compartimos nada tuyo a Google que Google no supiera ya.
+              </li>
+              <li>Lo que tú agregues: nombres de casas, integrantes, productos del refri, tareas, gastos y notas.</li>
               <li>
                 Si activas notificaciones, la información técnica necesaria para mandarte avisos push a ese
                 dispositivo.
@@ -47,6 +52,7 @@ export default function PrivacidadPage() {
             </p>
             <ul className="list-disc space-y-1.5 pl-5 text-sm text-cocoa">
               <li><strong>Supabase</strong> — guarda la base de datos y maneja el inicio de sesión.</li>
+              <li><strong>Google</strong> — solo si eliges &ldquo;Continuar con Google&rdquo;, para confirmar que eres tú.</li>
               <li><strong>Resend</strong> — manda los correos de confirmación y recuperación de contraseña.</li>
               <li><strong>Vercel</strong> — aloja la app y nos da estadísticas anónimas de visitas (no identifican a ninguna persona).</li>
             </ul>
