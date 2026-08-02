@@ -5,10 +5,11 @@ import { usePathname } from 'next/navigation';
 
 const TABS = [
   { href: '/dashboard', label: 'Refri', match: (p: string) => p === '/dashboard' || p.startsWith('/refri') },
+  { href: '/compras', label: 'Compras', match: (p: string) => p.startsWith('/compras') },
   { href: '/tareas', label: 'Tareas', match: (p: string) => p.startsWith('/tareas') },
 ];
 
-const RUTAS_CON_NAV = ['/dashboard', '/refri', '/tareas'];
+const RUTAS_CON_NAV = ['/dashboard', '/refri', '/compras', '/tareas'];
 
 export function BottomNav() {
   const pathname = usePathname();

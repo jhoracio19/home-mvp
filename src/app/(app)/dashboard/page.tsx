@@ -2,6 +2,7 @@ import Link from 'next/link';
 import { getCasaActivaOrRedirect } from '@/lib/casas/data';
 import { getItemsRefri } from '@/lib/refri/data';
 import { eliminarItem } from '@/app/(app)/refri/actions';
+import { agregarALista } from '@/app/(app)/compras/actions';
 import {
   calcularDiasRestantes,
   calcularFechaVencimiento,
@@ -26,9 +27,9 @@ const ESTILOS_URGENCIA: Record<Urgencia, string> = {
 export default async function DashboardPage({
   searchParams,
 }: {
-  searchParams: Promise<{ q?: string; categoria?: string }>;
+  searchParams: Promise<{ q?: string; categoria?: string; agregado?: string }>;
 }) {
-  const [casaActiva, items, { q, categoria }] = await Promise.all([
+  const [casaActiva, items, { q, categoria, agregado }] = await Promise.all([
     getCasaActivaOrRedirect(),
     getItemsRefri(),
     searchParams,
@@ -63,6 +64,12 @@ export default async function DashboardPage({
             + Agregar
           </Link>
         </div>
+
+        {agregado && (
+          <p className="rounded-lg border-2 border-camel bg-camel/25 px-4 py-3 text-sm font-semibold text-cocoa">
+            &ldquo;{agregado}&rdquo; se agregó a la lista de compras.
+          </p>
+        )}
 
         {(items.length > 0 || hayFiltros) && (
           <FormBusqueda>
@@ -109,6 +116,15 @@ export default async function DashboardPage({
                   </span>
                 </div>
                 <div className="mt-3 flex items-center gap-3">
+                  <form action={agregarALista.bind(null, item.nombre)}>
+                    <SubmitButton
+                      variant="secondary"
+                      className="min-h-0 px-2 py-1 text-xs"
+                      pendingText="Agregando…"
+                    >
+                      + Lista
+                    </SubmitButton>
+                  </form>
                   <Link
                     href={`/refri/${item.id}/editar`}
                     className="text-xs font-semibold text-camel hover:underline"

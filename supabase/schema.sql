@@ -522,3 +522,43 @@ alter table tareas add constraint tareas_nombre_longitud check (char_length(nomb
 alter table items_refri add constraint items_refri_nombre_longitud check (char_length(nombre) <= 100);
 alter table perfiles add constraint perfiles_nombre_longitud check (nombre is null or char_length(nombre) <= 60);
 alter table perfiles add constraint perfiles_apellido_longitud check (apellido is null or char_length(apellido) <= 60);
+
+-- ------------------------------------------------------------
+-- Lista de compras compartida
+-- ------------------------------------------------------------
+
+-- `comprado` se queda marcado (no se borra solo al tacharlo) para que
+-- la lista se comporte como una lista física: vas tachando conforme
+-- compras, y "Limpiar comprados" la deja lista para el siguiente viaje
+-- al súper. Sin RETURNING problemático aquí (a diferencia de casas):
+-- no hay trigger que dependa de leer la fila recién insertada.
+create table if not exists lista_compras (
+  id uuid primary key default gen_random_uuid(),
+  casa_id uuid not null references casas(id) on delete cascade,
+  nombre text not null,
+  agregado_por uuid not null references auth.users(id) on delete cascade,
+  comprado boolean not null default false,
+  comprado_por uuid references auth.users(id) on delete set null,
+  comprado_en timestamptz,
+  created_at timestamptz not null default now(),
+  constraint lista_compras_nombre_longitud check (char_length(nombre) <= 100)
+);
+
+create index if not exists idx_lista_compras_casa on lista_compras (casa_id, comprado, created_at);
+
+alter table lista_compras enable row level security;
+
+create policy lista_compras_select on lista_compras
+  for select using (is_member_of_casa(casa_id));
+
+create policy lista_compras_insert on lista_compras
+  for insert with check (is_member_of_casa(casa_id) and auth.uid() = agregado_por);
+
+-- "update" cubre tanto marcar/desmarcar comprado como cualquier otro
+-- miembro tachándolo (no solo quien lo agregó) — así funciona una
+-- lista compartida de verdad.
+create policy lista_compras_update on lista_compras
+  for update using (is_member_of_casa(casa_id));
+
+create policy lista_compras_delete on lista_compras
+  for delete using (is_member_of_casa(casa_id));

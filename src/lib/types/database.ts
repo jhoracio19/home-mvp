@@ -236,6 +236,39 @@ export interface Database {
         };
         Relationships: [];
       };
+      lista_compras: {
+        Row: {
+          id: string;
+          casa_id: string;
+          nombre: string;
+          agregado_por: string;
+          comprado: boolean;
+          comprado_por: string | null;
+          comprado_en: string | null;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          casa_id: string;
+          nombre: string;
+          agregado_por: string;
+          comprado?: boolean;
+          comprado_por?: string | null;
+          comprado_en?: string | null;
+          created_at?: string;
+        };
+        Update: {
+          id?: string;
+          casa_id?: string;
+          nombre?: string;
+          agregado_por?: string;
+          comprado?: boolean;
+          comprado_por?: string | null;
+          comprado_en?: string | null;
+          created_at?: string;
+        };
+        Relationships: [];
+      };
     };
     Views: Record<string, never>;
     Functions: {
