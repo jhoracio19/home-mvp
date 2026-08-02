@@ -363,8 +363,11 @@ export default async function RootPage() {
           <div className="mt-10 grid gap-8 sm:grid-cols-3">
             {[
               { paso: '1', texto: 'Crea tu casa, o únete con el código que te compartan.' },
-              { paso: '2', texto: 'Agreguen lo que hay en el refri y las tareas de siempre.' },
-              { paso: '3', texto: 'Repártanse, marquen como hecho, y dejen que la app avise.' },
+              {
+                paso: '2',
+                texto: 'Agreguen lo del refri, la lista de compras, las tareas, los gastos y las notas de la casa.',
+              },
+              { paso: '3', texto: 'Repártanse, marquen, tachen, paguen — y dejen que la app avise y actualice a todos en vivo.' },
             ].map(({ paso, texto }) => (
               <div key={paso} className="text-center">
                 <div className="mx-auto flex h-10 w-10 items-center justify-center rounded-full bg-espresso text-sm font-bold text-linen">
