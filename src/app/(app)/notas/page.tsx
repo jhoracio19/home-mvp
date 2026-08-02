@@ -52,7 +52,11 @@ export default async function NotasPage({
         )}
 
         <form action={actualizarNotaCasa} className="space-y-3">
+          <label htmlFor="contenido" className="sr-only">
+            Notas de la casa
+          </label>
           <textarea
+            id="contenido"
             name="contenido"
             defaultValue={nota?.contenido ?? ''}
             maxLength={5000}

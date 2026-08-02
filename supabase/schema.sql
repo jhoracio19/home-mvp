@@ -591,3 +591,8 @@ create policy notas_casa_insert on notas_casa
 
 create policy notas_casa_update on notas_casa
   for update using (is_member_of_casa(casa_id));
+
+-- Cantidad opcional en la lista de compras (ej. "2 litros", "1 paquete").
+alter table lista_compras add column if not exists cantidad text;
+alter table lista_compras add constraint lista_compras_cantidad_longitud
+  check (cantidad is null or char_length(cantidad) <= 30);

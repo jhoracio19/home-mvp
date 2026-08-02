@@ -7,9 +7,9 @@ import { SubmitButton } from '@/components/ui/SubmitButton';
 export default async function ComprasPage({
   searchParams,
 }: {
-  searchParams: Promise<{ error?: string }>;
+  searchParams: Promise<{ error?: string; message?: string }>;
 }) {
-  const [casa, items, { error }] = await Promise.all([
+  const [casa, items, { error, message }] = await Promise.all([
     getCasaActivaOrRedirect(),
     getListaCompras(),
     searchParams,
@@ -26,15 +26,23 @@ export default async function ComprasPage({
           <h1 className="mt-1 text-2xl font-bold text-cocoa">{casa.nombre}</h1>
         </div>
 
+        {message && (
+          <p className="rounded-lg border-2 border-camel bg-camel/25 px-3 py-2 text-sm font-semibold text-cocoa">
+            {message}
+          </p>
+        )}
         {error && (
           <p className="rounded-lg border border-[#a8422e] bg-[#a8422e]/10 px-3 py-2 text-sm font-medium text-[#a8422e]">
             {error}
           </p>
         )}
 
-        <form action={agregarItemCompra} className="flex items-end gap-3">
+        <form action={agregarItemCompra} className="flex flex-wrap items-end gap-3">
           <div className="min-w-0 flex-1">
             <Input label="Agregar a la lista" name="nombre" placeholder="Ej. Leche, papel de baño…" maxLength={100} required />
+          </div>
+          <div className="w-28 shrink-0">
+            <Input label="Cantidad" name="cantidad" placeholder="Ej. 2 litros" maxLength={30} />
           </div>
           <SubmitButton pendingText="Agregando…">+ Agregar</SubmitButton>
         </form>
@@ -55,11 +63,19 @@ export default async function ComprasPage({
                     <form action={alternarComprado.bind(null, item.id, true)} className="min-w-0 flex-1">
                       <button type="submit" className="flex w-full items-center gap-3 text-left">
                         <span className="h-5 w-5 shrink-0 rounded-full border-2 border-camel" />
-                        <span className="truncate text-sm font-medium text-cocoa">{item.nombre}</span>
+                        <span className="min-w-0 flex-1 truncate text-sm font-medium text-cocoa">
+                          {item.nombre}
+                          {item.cantidad && <span className="text-cocoa/60"> · {item.cantidad}</span>}
+                        </span>
                       </button>
                     </form>
                     <form action={eliminarItemCompra.bind(null, item.id)}>
-                      <SubmitButton variant="secondary" className="min-h-0 px-2 py-1 text-xs" pendingText="…">
+                      <SubmitButton
+                        variant="secondary"
+                        className="min-h-0 px-2 py-1 text-xs"
+                        pendingText="…"
+                        confirmMessage={`¿Quitar "${item.nombre}" de la lista?`}
+                      >
                         Quitar
                       </SubmitButton>
                     </form>
@@ -99,7 +115,10 @@ export default async function ComprasPage({
                               <polyline points="20 6 9 17 4 12" />
                             </svg>
                           </span>
-                          <span className="truncate text-sm font-medium text-cocoa/60 line-through">{item.nombre}</span>
+                          <span className="min-w-0 flex-1 truncate text-sm font-medium text-cocoa/60 line-through">
+                            {item.nombre}
+                            {item.cantidad && <span> · {item.cantidad}</span>}
+                          </span>
                         </button>
                       </form>
                     </li>

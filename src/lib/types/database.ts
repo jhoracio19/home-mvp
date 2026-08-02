@@ -241,6 +241,7 @@ export interface Database {
           id: string;
           casa_id: string;
           nombre: string;
+          cantidad: string | null;
           agregado_por: string;
           comprado: boolean;
           comprado_por: string | null;
@@ -251,6 +252,7 @@ export interface Database {
           id?: string;
           casa_id: string;
           nombre: string;
+          cantidad?: string | null;
           agregado_por: string;
           comprado?: boolean;
           comprado_por?: string | null;
@@ -261,6 +263,7 @@ export interface Database {
           id?: string;
           casa_id?: string;
           nombre?: string;
+          cantidad?: string | null;
           agregado_por?: string;
           comprado?: boolean;
           comprado_por?: string | null;

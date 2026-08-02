@@ -27,9 +27,9 @@ const ESTILOS_URGENCIA: Record<Urgencia, string> = {
 export default async function DashboardPage({
   searchParams,
 }: {
-  searchParams: Promise<{ q?: string; categoria?: string; agregado?: string }>;
+  searchParams: Promise<{ q?: string; categoria?: string; agregado?: string; yaExistia?: string }>;
 }) {
-  const [casaActiva, items, { q, categoria, agregado }] = await Promise.all([
+  const [casaActiva, items, { q, categoria, agregado, yaExistia }] = await Promise.all([
     getCasaActivaOrRedirect(),
     getItemsRefri(),
     searchParams,
@@ -67,7 +67,9 @@ export default async function DashboardPage({
 
         {agregado && (
           <p className="rounded-lg border-2 border-camel bg-camel/25 px-4 py-3 text-sm font-semibold text-cocoa">
-            &ldquo;{agregado}&rdquo; se agregó a la lista de compras.
+            {yaExistia
+              ? `"${agregado}" ya estaba en la lista de compras.`
+              : `"${agregado}" se agregó a la lista de compras.`}
           </p>
         )}
 
