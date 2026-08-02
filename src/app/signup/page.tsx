@@ -5,6 +5,7 @@ import { PasswordInput } from '@/components/ui/PasswordInput';
 import { SubmitButton } from '@/components/ui/SubmitButton';
 import { SiteHeader } from '@/components/landing/SiteHeader';
 import { SiteFooter } from '@/components/landing/SiteFooter';
+import { BotonGoogle } from '@/components/auth/BotonGoogle';
 
 export default async function SignupPage({
   searchParams,
@@ -53,6 +54,14 @@ export default async function SignupPage({
             />
             <SubmitButton className="w-full">Crear cuenta</SubmitButton>
           </form>
+
+          <div className="flex items-center gap-3">
+            <div className="h-px flex-1 bg-camel/40" />
+            <span className="text-xs font-semibold uppercase tracking-wide text-cocoa/60">o</span>
+            <div className="h-px flex-1 bg-camel/40" />
+          </div>
+
+          <BotonGoogle next={next} />
 
           <p className="text-center text-sm text-cocoa">
             ¿Ya tienes cuenta?{' '}
