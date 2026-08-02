@@ -5,6 +5,24 @@ import { createClient } from '@/lib/supabase/server';
 
 export const CASA_ACTIVA_COOKIE = 'casa_activa_id';
 
+// Justo después de emitir un token nuevo (login, actualizar contraseña,
+// etc.) puede haber unos milisegundos de diferencia de reloj entre el
+// servidor de Supabase (que puso el `iat`) y el de Vercel (que lo
+// valida), y getUser() truena con "JWT issued at future" — no es un
+// bug real, se autocorrige solo casi de inmediato. Reintentar una vez
+// con un respiro corto evita que la persona vea una pantalla de error
+// por algo que se resuelve solo un instante después.
+async function getUserConReintento(supabase: Awaited<ReturnType<typeof createClient>>) {
+  try {
+    return await supabase.auth.getUser();
+  } catch (err) {
+    const esErrorDeReloj = err instanceof Error && err.message.includes('issued at future');
+    if (!esErrorDeReloj) throw err;
+    await new Promise((resolve) => setTimeout(resolve, 400));
+    return supabase.auth.getUser();
+  }
+}
+
 // Par atómico cliente+usuario: @supabase/ssr inicializa la sesión de
 // forma perezosa (el JWT no se carga hasta llamar getUser()/getSession()
 // EN ESA instancia puntual). Si "quién soy" y "con qué cliente consulto"
@@ -16,7 +34,7 @@ export const getSesion = cache(async () => {
   const supabase = await createClient();
   const {
     data: { user },
-  } = await supabase.auth.getUser();
+  } = await getUserConReintento(supabase);
 
   if (!user) redirect('/login');
   return { supabase, user };

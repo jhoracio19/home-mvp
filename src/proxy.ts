@@ -31,7 +31,19 @@ export async function proxy(request: NextRequest) {
 
   // Refresca la sesión si el access token expiró. Necesario para
   // que Server Components puedan leer una sesión válida.
-  await supabase.auth.getUser();
+  //
+  // Envuelto en try/catch a propósito: justo tras emitir un token
+  // nuevo (login, cambio de contraseña) puede haber un desfase de
+  // reloj de milisegundos entre Supabase y Vercel que hace tronar
+  // getUser() con "JWT issued at future" — transitorio y se
+  // autocorrige solo. Si truena aquí, mejor dejar pasar la petición
+  // sin refrescar que tumbar la página completa; getSesion() (con su
+  // propio reintento) es quien de verdad decide si hay sesión válida.
+  try {
+    await supabase.auth.getUser();
+  } catch {
+    // Silencioso a propósito — ver comentario arriba.
+  }
 
   return response;
 }
