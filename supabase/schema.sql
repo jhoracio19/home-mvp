@@ -648,3 +648,36 @@ create policy gastos_delete on gastos
   for delete using (is_member_of_casa(casa_id));
 
 alter publication supabase_realtime add table gastos;
+
+-- Pagos entre miembros para "liquidar" un balance (ej. Luis le paga a
+-- Ana lo que le debía). Es una tabla aparte de `gastos` a propósito:
+-- si en vez de esto restáramos directo del balance sin dejar rastro,
+-- se perdería el historial de "quién le pagó a quién y cuándo". El
+-- cálculo de balances (calcularBalances en lib/gastos/balance.ts)
+-- combina gastos + pagos para dar el neto final.
+create table if not exists pagos (
+  id uuid primary key default gen_random_uuid(),
+  casa_id uuid not null references casas(id) on delete cascade,
+  de_usuario_id uuid not null references auth.users(id) on delete cascade,
+  a_usuario_id uuid not null references auth.users(id) on delete cascade,
+  monto numeric(10, 2) not null check (monto > 0 and monto <= 999999.99),
+  fecha date not null default current_date,
+  creado_por uuid not null references auth.users(id) on delete cascade,
+  created_at timestamptz not null default now(),
+  constraint pagos_no_a_uno_mismo check (de_usuario_id <> a_usuario_id)
+);
+
+create index if not exists idx_pagos_casa on pagos (casa_id, fecha desc);
+
+alter table pagos enable row level security;
+
+create policy pagos_select on pagos
+  for select using (is_member_of_casa(casa_id));
+
+create policy pagos_insert on pagos
+  for insert with check (is_member_of_casa(casa_id) and auth.uid() = creado_por);
+
+create policy pagos_delete on pagos
+  for delete using (is_member_of_casa(casa_id));
+
+alter publication supabase_realtime add table pagos;

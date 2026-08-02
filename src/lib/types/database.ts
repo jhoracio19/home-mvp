@@ -326,6 +326,39 @@ export interface Database {
         };
         Relationships: [];
       };
+      pagos: {
+        Row: {
+          id: string;
+          casa_id: string;
+          de_usuario_id: string;
+          a_usuario_id: string;
+          monto: number;
+          fecha: string;
+          creado_por: string;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          casa_id: string;
+          de_usuario_id: string;
+          a_usuario_id: string;
+          monto: number;
+          fecha?: string;
+          creado_por: string;
+          created_at?: string;
+        };
+        Update: {
+          id?: string;
+          casa_id?: string;
+          de_usuario_id?: string;
+          a_usuario_id?: string;
+          monto?: number;
+          fecha?: string;
+          creado_por?: string;
+          created_at?: string;
+        };
+        Relationships: [];
+      };
     };
     Views: Record<string, never>;
     Functions: {

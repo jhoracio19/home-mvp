@@ -15,3 +15,18 @@ export const getGastos = cache(async () => {
   if (error) throw new Error(error.message);
   return data;
 });
+
+export const getPagos = cache(async () => {
+  const casa = await getCasaActivaOrRedirect();
+  const { supabase } = await getSesion();
+
+  const { data, error } = await supabase
+    .from('pagos')
+    .select('*')
+    .eq('casa_id', casa.id)
+    .order('fecha', { ascending: false })
+    .order('created_at', { ascending: false });
+
+  if (error) throw new Error(error.message);
+  return data;
+});
