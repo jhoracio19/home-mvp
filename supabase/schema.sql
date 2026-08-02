@@ -609,3 +609,42 @@ alter publication supabase_realtime add table items_refri;
 alter publication supabase_realtime add table tareas;
 alter publication supabase_realtime add table lista_compras;
 alter publication supabase_realtime add table notas_casa;
+
+-- ------------------------------------------------------------
+-- Gastos compartidos
+-- ------------------------------------------------------------
+
+-- MVP simple a propósito: cada gasto se divide en partes iguales entre
+-- los miembros ACTUALES de la casa (calculado al vuelo en la app, no
+-- guardado por gasto) — no hay selección de participantes por gasto.
+-- Si alguien entra o sale de la casa, los repartos de gastos viejos
+-- se recalculan con la membresía de hoy; para el tamaño de casa que
+-- maneja esta app (pocas personas, poco movimiento) es una
+-- simplificación razonable frente a la complejidad de "quién
+-- participaba en cada gasto en su momento".
+create table if not exists gastos (
+  id uuid primary key default gen_random_uuid(),
+  casa_id uuid not null references casas(id) on delete cascade,
+  descripcion text not null,
+  monto numeric(10, 2) not null check (monto > 0 and monto <= 999999.99),
+  pagado_por uuid not null references auth.users(id) on delete cascade,
+  fecha date not null default current_date,
+  creado_por uuid not null references auth.users(id) on delete cascade,
+  created_at timestamptz not null default now(),
+  constraint gastos_descripcion_longitud check (char_length(descripcion) <= 100)
+);
+
+create index if not exists idx_gastos_casa on gastos (casa_id, fecha desc);
+
+alter table gastos enable row level security;
+
+create policy gastos_select on gastos
+  for select using (is_member_of_casa(casa_id));
+
+create policy gastos_insert on gastos
+  for insert with check (is_member_of_casa(casa_id) and auth.uid() = creado_por);
+
+create policy gastos_delete on gastos
+  for delete using (is_member_of_casa(casa_id));
+
+alter publication supabase_realtime add table gastos;

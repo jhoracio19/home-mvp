@@ -69,6 +69,14 @@ export function MenuUsuario({ dentroDeCasa, esAdmin }: { dentroDeCasa: boolean; 
               </svg>
               Notas de la casa
             </Link>
+            <Link href="/gastos" className={itemClase}>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={iconoClase}>
+                <circle cx="12" cy="12" r="9" />
+                <path d="M12 7v10" />
+                <path d="M15 9.5c0-1.1-1.34-2-3-2s-3 .9-3 2 1.34 2 3 2 3 .9 3 2-1.34 2-3 2-3-.9-3-2" />
+              </svg>
+              Gastos compartidos
+            </Link>
             <Link href="/casas" className={itemClase}>
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={iconoClase}>
                 <polyline points="17 1 21 5 17 9" />
