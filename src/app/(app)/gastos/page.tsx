@@ -72,6 +72,10 @@ export default async function GastosPage({
           </p>
         </div>
 
+        <Link href="/gastos/resumen" className="inline-block text-xs font-semibold text-camel hover:underline">
+          Ver resumen por mes
+        </Link>
+
         {error && (
           <p className="rounded-lg border border-[#a8422e] bg-[#a8422e]/10 px-3 py-2 text-sm font-medium text-[#a8422e]">
             {error}

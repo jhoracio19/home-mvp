@@ -1,9 +1,10 @@
 import Link from 'next/link';
-import { getCasaActivaOrRedirect, getMiembrosCasaActiva } from '@/lib/casas/data';
+import { getCasaActivaOrRedirect, getMiembrosCasaActiva, getUsuarioActual } from '@/lib/casas/data';
 import { nombreMiembro } from '@/lib/casas/nombre-miembro';
-import { getTareas } from '@/lib/tareas/data';
+import { getTareas, getHistorialTareas } from '@/lib/tareas/data';
 import { completarTarea, eliminarTarea } from './actions';
 import { calcularProximaFecha } from '@/lib/tareas/urgencia';
+import { calcularLogros } from '@/lib/tareas/logros';
 import { etiquetaDiasSemana } from '@/lib/tareas/dias-semana';
 import { calcularDiasRestantes, clasificarUrgencia, etiquetaUrgencia, type Urgencia } from '@/lib/urgencia';
 import { buttonClasses } from '@/components/ui/Button';
@@ -24,13 +25,16 @@ export default async function TareasPage({
 }: {
   searchParams: Promise<{ completada?: string; proxima?: string; completadaId?: string; q?: string }>;
 }) {
-  const [casa, tareas, miembros, { completada, proxima, completadaId, q }] = await Promise.all([
+  const [casa, tareas, miembros, usuario, historial, { completada, proxima, completadaId, q }] = await Promise.all([
     getCasaActivaOrRedirect(),
     getTareas(),
     getMiembrosCasaActiva(),
+    getUsuarioActual(),
+    getHistorialTareas(),
     searchParams,
   ]);
   const nombrePorId = new Map(miembros.map((m) => [m.usuario_id, nombreMiembro(m)]));
+  const logros = calcularLogros(historial, usuario.id);
 
   const busqueda = (q ?? '').trim().toLowerCase();
   const hayFiltros = Boolean(busqueda);
@@ -61,6 +65,34 @@ export default async function TareasPage({
         <Link href="/tareas/historial" className="inline-block text-xs font-semibold text-camel hover:underline">
           Ver historial de tareas completadas
         </Link>
+
+        {logros.puntos > 0 && (
+          <div className="flex items-center gap-4 rounded-lg border border-camel bg-khaki/60 px-4 py-3 dark:border-cocoa dark:bg-[#3a2820]/60">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-6 w-6 shrink-0 text-camel">
+              <circle cx="12" cy="8" r="6" />
+              <path d="M8.21 13.89 7 23l5-3 5 3-1.21-9.12" />
+            </svg>
+            <div className="flex gap-6 text-sm">
+              <div>
+                <p className="font-bold text-cocoa dark:text-linen">{logros.puntos}</p>
+                <p className="text-xs text-cocoa/70">
+                  {logros.puntos === 1 ? 'tarea a tiempo' : 'tareas a tiempo'}
+                </p>
+              </div>
+              {logros.racha >= 2 && (
+                <div>
+                  <p className="flex items-center gap-1 font-bold text-cocoa dark:text-linen">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-4 w-4 shrink-0 text-[#c9702f]">
+                      <path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5Z" />
+                    </svg>
+                    {logros.racha}
+                  </p>
+                  <p className="text-xs text-cocoa/70">racha seguida</p>
+                </div>
+              )}
+            </div>
+          </div>
+        )}
 
         {completada && (
           <p className="flex items-center gap-2 rounded-lg border-2 border-camel bg-camel/25 px-4 py-3 text-sm font-semibold text-cocoa dark:text-linen">

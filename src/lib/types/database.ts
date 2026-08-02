@@ -215,6 +215,7 @@ export interface Database {
           usuario_id: string;
           nombre_usuario: string;
           completada_en: string;
+          a_tiempo: boolean | null;
         };
         Insert: {
           id?: string;
@@ -224,6 +225,7 @@ export interface Database {
           usuario_id: string;
           nombre_usuario: string;
           completada_en?: string;
+          a_tiempo?: boolean | null;
         };
         Update: {
           id?: string;
@@ -233,6 +235,7 @@ export interface Database {
           usuario_id?: string;
           nombre_usuario?: string;
           completada_en?: string;
+          a_tiempo?: boolean | null;
         };
         Relationships: [];
       };

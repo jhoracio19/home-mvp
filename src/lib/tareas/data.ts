@@ -36,7 +36,7 @@ export const getHistorialTareas = cache(async () => {
 
   const { data, error } = await supabase
     .from('historial_tareas')
-    .select('id, nombre_tarea, nombre_usuario, completada_en')
+    .select('id, nombre_tarea, nombre_usuario, completada_en, usuario_id, a_tiempo')
     .eq('casa_id', casa.id)
     .order('completada_en', { ascending: false })
     .limit(100);

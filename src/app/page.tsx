@@ -131,16 +131,48 @@ function MockupGastos() {
     { nombre: 'Luis', monto: '$450', positivo: false },
   ];
   return (
-    <div className="grid w-full max-w-sm grid-cols-2 gap-3">
-      {balances.map((b) => (
-        <div key={b.nombre} className="rounded-lg border border-camel bg-khaki p-4 shadow-sm">
-          <p className="truncate text-xs font-semibold text-cocoa">{b.nombre}</p>
-          <p className={`mt-1 text-lg font-bold ${b.positivo ? 'text-[#6B8F5A]' : 'text-[#a8422e]'}`}>{b.monto}</p>
-          <p className="text-[0.65rem] font-medium uppercase tracking-wide text-cocoa/60">
-            {b.positivo ? 'le deben' : 'debe'}
-          </p>
+    <div className="w-full max-w-sm space-y-3">
+      <div className="flex items-center justify-between rounded-lg border border-dashed border-camel bg-linen px-4 py-2">
+        <span className="text-xs font-semibold text-cocoa/70">Agosto 2026</span>
+        <span className="text-sm font-bold text-cocoa">$1,850</span>
+      </div>
+      <div className="grid grid-cols-2 gap-3">
+        {balances.map((b) => (
+          <div key={b.nombre} className="rounded-lg border border-camel bg-khaki p-4 shadow-sm">
+            <p className="truncate text-xs font-semibold text-cocoa">{b.nombre}</p>
+            <p className={`mt-1 text-lg font-bold ${b.positivo ? 'text-[#6B8F5A]' : 'text-[#a8422e]'}`}>{b.monto}</p>
+            <p className="text-[0.65rem] font-medium uppercase tracking-wide text-cocoa/60">
+              {b.positivo ? 'le deben' : 'debe'}
+            </p>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function MockupLogros() {
+  return (
+    <div className="flex w-full max-w-sm items-center gap-4 rounded-lg border border-camel bg-khaki p-4 shadow-sm">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-8 w-8 shrink-0 text-camel">
+        <circle cx="12" cy="8" r="6" />
+        <path d="M8.21 13.89 7 23l5-3 5 3-1.21-9.12" />
+      </svg>
+      <div className="flex gap-6">
+        <div>
+          <p className="text-lg font-bold text-cocoa">12</p>
+          <p className="text-xs text-cocoa/70">tareas a tiempo</p>
         </div>
-      ))}
+        <div>
+          <p className="flex items-center gap-1 text-lg font-bold text-cocoa">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-4 w-4 text-[#c9702f]">
+              <path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5Z" />
+            </svg>
+            5
+          </p>
+          <p className="text-xs text-cocoa/70">racha seguida</p>
+        </div>
+      </div>
     </div>
   );
 }
@@ -301,7 +333,8 @@ export default async function RootPage() {
             </h2>
             <p className="text-cocoa">
               Registra qué se pagó y quién lo pagó; la app reparte en partes iguales entre todos y te dice al
-              instante quién va ganando y quién debe. Nada de recibos perdidos en el chat.
+              instante quién va ganando y quién debe. Nada de recibos perdidos en el chat. También puedes ver un
+              resumen de cuánto se gastó cada mes, y registrar cuando alguien ya le pagó a otra persona.
             </p>
           </div>
         </div>
@@ -323,6 +356,26 @@ export default async function RootPage() {
           </div>
           <div className="flex justify-center">
             <MockupTareas />
+          </div>
+        </div>
+      </section>
+
+      {/* Logros */}
+      <section id="logros" className="scroll-mt-20 border-t border-camel/40 px-4 py-14 sm:px-8">
+        <div className="mx-auto grid w-full max-w-5xl items-center gap-10 lg:grid-cols-2 lg:gap-16">
+          <div className="space-y-4 text-center lg:text-left">
+            <p className="text-xs font-bold uppercase tracking-[0.2em] text-camel">Logros</p>
+            <h2 className="text-2xl font-bold text-espresso sm:text-3xl">
+              Un empujoncito para no dejar las tareas para después
+            </h2>
+            <p className="text-cocoa">
+              Cada tarea que completas a tiempo suma un punto y alimenta tu racha — nada más tuyo, para que se
+              sienta como un logro personal, no una competencia contra tus compañeros de casa. Nadie más ve tu
+              número.
+            </p>
+          </div>
+          <div className="flex justify-center">
+            <MockupLogros />
           </div>
         </div>
       </section>

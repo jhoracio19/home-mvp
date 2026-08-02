@@ -681,3 +681,17 @@ create policy pagos_delete on pagos
   for delete using (is_member_of_casa(casa_id));
 
 alter publication supabase_realtime add table pagos;
+
+-- ------------------------------------------------------------
+-- Logros: puntos y racha por tareas completadas a tiempo
+-- ------------------------------------------------------------
+
+-- `a_tiempo` se calcula y guarda en el momento de completar la tarea
+-- (comparando contra la fecha de vencimiento que tenía ANTES de
+-- marcarse como hecha) — no se puede recalcular después, porque para
+-- entonces la tarea ya avanzó a su siguiente fecha. Nullable a
+-- propósito: las filas de historial_tareas de antes de este cambio no
+-- tienen este dato, y no vamos a inventarlo — puntos y racha solo
+-- cuentan desde aquí en adelante (calcularLogros en
+-- lib/tareas/logros.ts filtra explícitamente los null).
+alter table historial_tareas add column if not exists a_tiempo boolean;

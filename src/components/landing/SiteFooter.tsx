@@ -63,6 +63,15 @@ export function SiteFooter() {
                 </Link>
               </li>
               <li>
+                <Link href="/#logros" className={enlaceClase}>
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={iconoClase}>
+                    <circle cx="12" cy="8" r="6" />
+                    <path d="M8.21 13.89 7 23l5-3 5 3-1.21-9.12" />
+                  </svg>
+                  Logros
+                </Link>
+              </li>
+              <li>
                 <Link href="/#notas" className={enlaceClase}>
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={iconoClase}>
                     <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z" />

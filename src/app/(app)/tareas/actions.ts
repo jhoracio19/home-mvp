@@ -196,6 +196,21 @@ export async function completarTarea(tareaId: string) {
   const casa = await getCasaActivaOrRedirect();
   const { supabase, user } = await getSesion();
 
+  // Hay que leer el estado ANTES de actualizar: "a tiempo" se define
+  // contra la fecha de vencimiento que tenía la tarea justo antes de
+  // marcarse hecha. Una vez que se actualiza ultima_ejecucion, esa
+  // fecha ya avanzó a la siguiente y no se puede recuperar.
+  const { data: antes } = await supabase
+    .from('tareas')
+    .select('nombre, tipo_frecuencia, frecuencia_dias, dias_semana, ultima_ejecucion, created_at')
+    .eq('id', tareaId)
+    .eq('casa_id', casa.id)
+    .maybeSingle();
+
+  if (!antes) redirect('/tareas');
+
+  const aTiempo = calcularDiasRestantes(calcularProximaFecha(antes)) >= 0;
+
   const hoy = new Date();
   const hoyISO = `${hoy.getFullYear()}-${String(hoy.getMonth() + 1).padStart(2, '0')}-${String(
     hoy.getDate()
@@ -221,6 +236,7 @@ export async function completarTarea(tareaId: string) {
     nombre_tarea: data.nombre,
     usuario_id: user.id,
     nombre_usuario: nombreMiembro({ email: user.email ?? '', nombre: perfil?.nombre ?? null, apellido: perfil?.apellido ?? null }),
+    a_tiempo: aTiempo,
   });
 
   const diasRestantes = calcularDiasRestantes(calcularProximaFecha(data));
