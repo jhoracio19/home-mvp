@@ -190,6 +190,10 @@ export default async function RootPage() {
             </Link>
           </div>
           <p className="text-xs text-cocoa/70">Gratis. Se instala como app en tu celular, sin tienda de por medio.</p>
+          <p className="inline-flex items-center gap-1.5 text-xs font-semibold text-cocoa">
+            <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-[#6B8F5A]" />
+            Se actualiza en vivo entre todos los de la casa, sin recargar la página.
+          </p>
         </div>
 
         <TelefonoRefri />
@@ -245,7 +249,8 @@ export default async function RootPage() {
             </h2>
             <p className="text-cocoa">
               Cuando algo se está acabando en el refri, mándalo a la lista con un clic. Cualquiera en la casa
-              agrega, tacha lo que ya compró, y de un botón limpian lo comprado para el siguiente viaje.
+              agrega, tacha lo que ya compró, y de un botón limpian lo comprado para el siguiente viaje. Si tú
+              estás en el súper y alguien agrega algo desde la casa, te aparece al instante.
             </p>
           </div>
           <div className="flex justify-center">
@@ -265,7 +270,7 @@ export default async function RootPage() {
             <p className="text-cocoa">
               Crea tareas que se repiten cada tantos días, o en días fijos de la semana — lavar trastes lunes,
               miércoles y viernes, por ejemplo. Asígnalas a quien le toque; al marcarlas como hechas, la app calcula
-              sola cuándo vuelven a tocar.
+              sola cuándo vuelven a tocar, y todos lo ven reflejado al momento, sin recargar nada.
             </p>
           </div>
           <div className="flex justify-center">
@@ -339,11 +344,11 @@ export default async function RootPage() {
           <p className="text-xs font-bold uppercase tracking-[0.2em] text-camel">Próximamente</p>
           <h2 className="mt-2 text-2xl font-bold text-espresso sm:text-3xl">Esto apenas empieza</h2>
           <p className="mx-auto mt-3 max-w-md text-cocoa">
-            Seguimos construyendo más para el hogar — sincronización en tiempo real, notificaciones más a tu
-            medida, y lo que ustedes nos vayan pidiendo.
+            Seguimos construyendo más para el hogar — gastos compartidos, notificaciones más a tu medida, y lo
+            que ustedes nos vayan pidiendo.
           </p>
           <div className="mt-6 flex flex-wrap justify-center gap-2">
-            {['Sincronización en vivo', 'Gastos compartidos', 'Notificaciones a tu medida'].map((item) => (
+            {['Gastos compartidos', 'Notificaciones a tu medida', 'Más módulos para la casa'].map((item) => (
               <span
                 key={item}
                 className="rounded-full border border-camel bg-linen px-3 py-1.5 text-xs font-semibold text-cocoa"

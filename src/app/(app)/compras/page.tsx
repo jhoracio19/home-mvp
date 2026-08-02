@@ -3,6 +3,7 @@ import { getListaCompras } from '@/lib/compras/data';
 import { agregarItemCompra, alternarComprado, eliminarItemCompra, limpiarComprados } from './actions';
 import { Input } from '@/components/ui/Input';
 import { SubmitButton } from '@/components/ui/SubmitButton';
+import { EscuchaRealtime } from '@/components/realtime/EscuchaRealtime';
 
 export default async function ComprasPage({
   searchParams,
@@ -20,6 +21,7 @@ export default async function ComprasPage({
 
   return (
     <main className="flex flex-1 bg-[radial-gradient(circle_at_top_left,_rgba(178,150,125,0.3),_transparent_34%)] bg-linen px-4 py-8">
+      <EscuchaRealtime tabla="lista_compras" casaId={casa.id} />
       <section className="mx-auto w-full max-w-2xl space-y-6">
         <div>
           <p className="text-xs font-bold uppercase tracking-[0.18em] text-camel">Lista de compras</p>

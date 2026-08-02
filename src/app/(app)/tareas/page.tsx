@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { getMiembrosCasaActiva } from '@/lib/casas/data';
+import { getCasaActivaOrRedirect, getMiembrosCasaActiva } from '@/lib/casas/data';
 import { nombreMiembro } from '@/lib/casas/nombre-miembro';
 import { getTareas } from '@/lib/tareas/data';
 import { completarTarea, eliminarTarea } from './actions';
@@ -10,6 +10,7 @@ import { buttonClasses } from '@/components/ui/Button';
 import { SubmitButton } from '@/components/ui/SubmitButton';
 import { Input } from '@/components/ui/Input';
 import { FormBusqueda } from '@/components/ui/FormBusqueda';
+import { EscuchaRealtime } from '@/components/realtime/EscuchaRealtime';
 
 const ESTILOS_URGENCIA: Record<Urgencia, string> = {
   vencido: 'border-[#a8422e] bg-[#a8422e]/10 text-[#a8422e] dark:bg-[#a8422e]/15 dark:text-[#e3a999]',
@@ -23,7 +24,8 @@ export default async function TareasPage({
 }: {
   searchParams: Promise<{ completada?: string; proxima?: string; completadaId?: string; q?: string }>;
 }) {
-  const [tareas, miembros, { completada, proxima, completadaId, q }] = await Promise.all([
+  const [casa, tareas, miembros, { completada, proxima, completadaId, q }] = await Promise.all([
+    getCasaActivaOrRedirect(),
     getTareas(),
     getMiembrosCasaActiva(),
     searchParams,
@@ -44,6 +46,7 @@ export default async function TareasPage({
 
   return (
     <main className="flex flex-1 bg-[radial-gradient(circle_at_top_left,_rgba(178,150,125,0.3),_transparent_34%)] bg-linen px-4 py-8 dark:bg-none dark:bg-espresso">
+      <EscuchaRealtime tabla="tareas" casaId={casa.id} />
       <section className="mx-auto w-full max-w-2xl space-y-6">
         <div className="flex items-center justify-between gap-3">
           <div>

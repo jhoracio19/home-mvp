@@ -596,3 +596,16 @@ create policy notas_casa_update on notas_casa
 alter table lista_compras add column if not exists cantidad text;
 alter table lista_compras add constraint lista_compras_cantidad_longitud
   check (cantidad is null or char_length(cantidad) <= 30);
+
+-- ------------------------------------------------------------
+-- Tiempo real
+-- ------------------------------------------------------------
+
+-- Habilita Supabase Realtime (postgres_changes) para las tablas que se
+-- comparten en vivo entre miembros de una misma casa. Es un comando de
+-- una sola vez: si lo vuelves a correr con la tabla ya agregada, da
+-- error de "ya existe" — no pasa nada, esa parte ya quedó.
+alter publication supabase_realtime add table items_refri;
+alter publication supabase_realtime add table tareas;
+alter publication supabase_realtime add table lista_compras;
+alter publication supabase_realtime add table notas_casa;

@@ -3,6 +3,7 @@ import { getCasaActivaOrRedirect } from '@/lib/casas/data';
 import { getNotaCasa } from '@/lib/notas/data';
 import { actualizarNotaCasa } from './actions';
 import { SubmitButton } from '@/components/ui/SubmitButton';
+import { EscuchaRealtime } from '@/components/realtime/EscuchaRealtime';
 
 const formatoFecha = new Intl.DateTimeFormat('es-MX', {
   dateStyle: 'medium',
@@ -23,6 +24,7 @@ export default async function NotasPage({
 
   return (
     <main className="flex flex-1 justify-center bg-[radial-gradient(circle_at_top_left,_rgba(178,150,125,0.3),_transparent_34%)] bg-linen px-4 py-8">
+      <EscuchaRealtime tabla="notas_casa" casaId={casa.id} />
       <section className="w-full max-w-2xl space-y-6">
         <Link href="/dashboard" className="inline-flex items-center gap-1 text-sm font-semibold text-cocoa hover:underline">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="h-4 w-4">
