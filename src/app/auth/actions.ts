@@ -100,7 +100,9 @@ export async function signup(formData: FormData) {
     redirect(`/signup?error=${encodeURIComponent(mensajeErrorAuth(error.message))}${nextParam}`);
   }
 
-  redirect(`/login?message=${encodeURIComponent('Revisa tu correo para confirmar tu cuenta.')}${nextParam}`);
+  redirect(
+    `/login?message=${encodeURIComponent('Revisa tu correo para confirmar tu cuenta — si no lo ves en unos minutos, checa spam o promociones.')}${nextParam}`
+  );
 }
 
 export async function signInWithGoogle(formData: FormData) {
@@ -137,7 +139,9 @@ export async function solicitarRecuperacion(formData: FormData) {
   });
 
   redirect(
-    `/login?message=${encodeURIComponent('Si ese correo tiene una cuenta, te enviamos un link para restablecer tu contraseña.')}`
+    `/login?message=${encodeURIComponent(
+      'Si ese correo tiene una cuenta, te enviamos un link para restablecer tu contraseña — si no lo ves en unos minutos, checa spam o promociones.'
+    )}`
   );
 }
 
