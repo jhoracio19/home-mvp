@@ -562,3 +562,32 @@ create policy lista_compras_update on lista_compras
 
 create policy lista_compras_delete on lista_compras
   for delete using (is_member_of_casa(casa_id));
+
+-- ------------------------------------------------------------
+-- Notas de la casa
+-- ------------------------------------------------------------
+
+-- Una sola nota compartida por casa (no una lista de varias) — como
+-- una hoja pegada en el refri: wifi, reglas, contactos, lo que sea,
+-- todo junto, cualquier miembro la puede editar. `casa_id` como llave
+-- primaria fuerza el 1:1. Se crea con upsert desde la app (no hace
+-- falta un trigger como el de miembros_casa: si la fila no existe
+-- todavía, el primer guardado la crea).
+create table if not exists notas_casa (
+  casa_id uuid primary key references casas(id) on delete cascade,
+  contenido text not null default '',
+  actualizado_por uuid references auth.users(id) on delete set null,
+  actualizado_en timestamptz not null default now(),
+  constraint notas_casa_contenido_longitud check (char_length(contenido) <= 5000)
+);
+
+alter table notas_casa enable row level security;
+
+create policy notas_casa_select on notas_casa
+  for select using (is_member_of_casa(casa_id));
+
+create policy notas_casa_insert on notas_casa
+  for insert with check (is_member_of_casa(casa_id));
+
+create policy notas_casa_update on notas_casa
+  for update using (is_member_of_casa(casa_id));

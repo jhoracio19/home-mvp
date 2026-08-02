@@ -269,6 +269,27 @@ export interface Database {
         };
         Relationships: [];
       };
+      notas_casa: {
+        Row: {
+          casa_id: string;
+          contenido: string;
+          actualizado_por: string | null;
+          actualizado_en: string;
+        };
+        Insert: {
+          casa_id: string;
+          contenido?: string;
+          actualizado_por?: string | null;
+          actualizado_en?: string;
+        };
+        Update: {
+          casa_id?: string;
+          contenido?: string;
+          actualizado_por?: string | null;
+          actualizado_en?: string;
+        };
+        Relationships: [];
+      };
     };
     Views: Record<string, never>;
     Functions: {

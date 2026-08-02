@@ -90,6 +90,52 @@ function MockupTareas() {
   );
 }
 
+function MockupCompras() {
+  const items = [
+    { nombre: 'Leche', comprado: false },
+    { nombre: 'Papel de baño', comprado: false },
+    { nombre: 'Plátano', comprado: true },
+  ];
+  return (
+    <div className="w-full max-w-sm space-y-2">
+      {items.map((item) => (
+        <div
+          key={item.nombre}
+          className={`flex items-center gap-3 rounded-lg border px-4 py-3 shadow-sm ${
+            item.comprado ? 'border-camel/50 bg-khaki/40' : 'border-camel bg-khaki'
+          }`}
+        >
+          <span
+            className={`flex h-5 w-5 shrink-0 items-center justify-center rounded-full border-2 ${
+              item.comprado ? 'border-cocoa bg-cocoa text-linen' : 'border-camel'
+            }`}
+          >
+            {item.comprado && (
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" className="h-3 w-3">
+                <polyline points="20 6 9 17 4 12" />
+              </svg>
+            )}
+          </span>
+          <span className={`text-sm font-medium ${item.comprado ? 'text-cocoa/50 line-through' : 'text-cocoa'}`}>
+            {item.nombre}
+          </span>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+function MockupNotas() {
+  return (
+    <div className="w-full max-w-sm rounded-lg border-2 border-camel bg-khaki p-4 shadow-sm">
+      <p className="text-xs font-bold uppercase tracking-wide text-camel">Notas de la casa</p>
+      <p className="mt-2 whitespace-pre-line text-sm leading-relaxed text-cocoa">
+        {'Wifi: MiCasa2024\nClave: ****\n\nNo fiestas después de las 11pm\n\nEmergencias: portero 555-123-4567'}
+      </p>
+    </div>
+  );
+}
+
 function MockupAvisos() {
   const avisos = [
     { titulo: 'Nueva tarea asignada', cuerpo: 'Te asignaron: Sacar la basura' },
@@ -189,8 +235,27 @@ export default async function RootPage() {
         </div>
       </section>
 
+      {/* Compras */}
+      <section id="compras" className="scroll-mt-20 border-t border-camel/40 px-4 py-14 sm:px-8">
+        <div className="mx-auto grid w-full max-w-5xl items-center gap-10 lg:grid-cols-2 lg:gap-16">
+          <div className="space-y-4 text-center lg:text-left">
+            <p className="text-xs font-bold uppercase tracking-[0.2em] text-camel">Compras</p>
+            <h2 className="text-2xl font-bold text-espresso sm:text-3xl">
+              La lista del súper que todos pueden ver y tachar
+            </h2>
+            <p className="text-cocoa">
+              Cuando algo se está acabando en el refri, mándalo a la lista con un clic. Cualquiera en la casa
+              agrega, tacha lo que ya compró, y de un botón limpian lo comprado para el siguiente viaje.
+            </p>
+          </div>
+          <div className="flex justify-center">
+            <MockupCompras />
+          </div>
+        </div>
+      </section>
+
       {/* Tareas */}
-      <section id="tareas" className="scroll-mt-20 px-4 py-14 sm:px-8">
+      <section id="tareas" className="scroll-mt-20 border-t border-camel/40 bg-khaki/30 px-4 py-14 sm:px-8">
         <div className="mx-auto grid w-full max-w-5xl items-center gap-10 lg:grid-cols-2 lg:gap-16">
           <div className="space-y-4 text-center lg:text-left">
             <p className="text-xs font-bold uppercase tracking-[0.2em] text-camel">Tareas</p>
@@ -205,6 +270,25 @@ export default async function RootPage() {
           </div>
           <div className="flex justify-center">
             <MockupTareas />
+          </div>
+        </div>
+      </section>
+
+      {/* Notas */}
+      <section id="notas" className="scroll-mt-20 border-t border-camel/40 px-4 py-14 sm:px-8">
+        <div className="mx-auto grid w-full max-w-5xl items-center gap-10 lg:grid-cols-2 lg:gap-16">
+          <div className="order-2 flex justify-center lg:order-1">
+            <MockupNotas />
+          </div>
+          <div className="order-1 space-y-4 text-center lg:order-2 lg:text-left">
+            <p className="text-xs font-bold uppercase tracking-[0.2em] text-camel">Notas</p>
+            <h2 className="text-2xl font-bold text-espresso sm:text-3xl">
+              La contraseña del wifi, en un solo lugar — no en el chat de hace 3 meses
+            </h2>
+            <p className="text-cocoa">
+              Una nota compartida por casa para lo que todos necesitan a la mano: wifi, reglas, contactos de
+              emergencia. Cualquiera la puede editar, sin tener que andarla buscando en el chat.
+            </p>
           </div>
         </div>
       </section>
@@ -259,7 +343,7 @@ export default async function RootPage() {
             medida, y lo que ustedes nos vayan pidiendo.
           </p>
           <div className="mt-6 flex flex-wrap justify-center gap-2">
-            {['Sincronización en vivo', 'Notificaciones a tu medida', 'Más módulos para la casa'].map((item) => (
+            {['Sincronización en vivo', 'Gastos compartidos', 'Notificaciones a tu medida'].map((item) => (
               <span
                 key={item}
                 className="rounded-full border border-camel bg-linen px-3 py-1.5 text-xs font-semibold text-cocoa"

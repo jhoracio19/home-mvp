@@ -34,12 +34,33 @@ export function SiteFooter() {
                 </Link>
               </li>
               <li>
+                <Link href="/#compras" className={enlaceClase}>
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={iconoClase}>
+                    <circle cx="9" cy="21" r="1" />
+                    <circle cx="19" cy="21" r="1" />
+                    <path d="M1 1h4l2.6 13.4a2 2 0 0 0 2 1.6h9.7a2 2 0 0 0 2-1.6L23 6H6" />
+                  </svg>
+                  Compras
+                </Link>
+              </li>
+              <li>
                 <Link href="/#tareas" className={enlaceClase}>
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={iconoClase}>
                     <rect x="3" y="3" width="18" height="18" rx="2" />
                     <polyline points="8 12 11 15 16 9" />
                   </svg>
                   Tareas
+                </Link>
+              </li>
+              <li>
+                <Link href="/#notas" className={enlaceClase}>
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={iconoClase}>
+                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z" />
+                    <polyline points="14 2 14 8 20 8" />
+                    <line x1="8" y1="13" x2="16" y2="13" />
+                    <line x1="8" y1="17" x2="13" y2="17" />
+                  </svg>
+                  Notas
                 </Link>
               </li>
               <li>
