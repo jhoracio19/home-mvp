@@ -387,6 +387,7 @@
     },
     "comoFunciona": {
       "titulo": "How it works",
+      "paso": "Step {n}",
       "paso1": "Create your house, or join with a code someone shares with you.",
       "paso2": "Add what's in the fridge, the shopping list, tasks, expenses, and house notes.",
       "paso3": "Split it up, check things off, pay each other back — and let the app notify and update everyone live."

@@ -387,6 +387,7 @@
     },
     "comoFunciona": {
       "titulo": "Cómo funciona",
+      "paso": "Paso {n}",
       "paso1": "Crea tu casa, o únete con el código que te compartan.",
       "paso2": "Agreguen lo del refri, la lista de compras, las tareas, los gastos y las notas de la casa.",
       "paso3": "Repártanse, marquen, tachen, paguen — y dejen que la app avise y actualice a todos en vivo."

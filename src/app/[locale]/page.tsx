@@ -7,6 +7,7 @@ import { Logomark } from '@/components/landing/Logomark';
 import { SiteHeader } from '@/components/landing/SiteHeader';
 import { SiteFooter } from '@/components/landing/SiteFooter';
 import { DemoTiempoReal } from '@/components/landing/DemoTiempoReal';
+import { StickyCTA } from '@/components/landing/StickyCTA';
 
 // Mismas clases que dashboard/page.tsx y tareas/page.tsx — los mockups
 // de abajo son una reproducción fiel del look real, no una versión
@@ -290,6 +291,7 @@ export default async function RootPage() {
               {t('hero.yaTengoCuenta')}
             </Link>
           </div>
+          <StickyCTA texto={t('crearCuentaGratis')} />
           <p className="text-xs text-cocoa/70">{t('hero.esGratis')}</p>
           <p className="inline-flex items-center gap-1.5 text-xs font-semibold text-cocoa">
             <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-[#6B8F5A]" />
@@ -333,7 +335,7 @@ export default async function RootPage() {
       </section>
 
       {/* Refri */}
-      <section id="refri" className="scroll-mt-20 border-t border-camel/40 bg-khaki/30 px-4 py-14 sm:px-8">
+      <section id="refri" className="scroll-mt-20 border-t border-camel/40 bg-khaki/30 textura-puntos px-4 py-14 sm:px-8">
         <div className="mx-auto grid w-full max-w-5xl items-center gap-10 lg:grid-cols-2 lg:gap-16">
           <div className="order-2 flex justify-center lg:order-1">
             <div className="w-full max-w-sm space-y-3">
@@ -406,7 +408,7 @@ export default async function RootPage() {
       </section>
 
       {/* Tareas */}
-      <section id="tareas" className="scroll-mt-20 border-t border-camel/40 bg-khaki/30 px-4 py-14 sm:px-8">
+      <section id="tareas" className="scroll-mt-20 border-t border-camel/40 bg-khaki/30 textura-puntos px-4 py-14 sm:px-8">
         <div className="mx-auto grid w-full max-w-5xl items-center gap-10 lg:grid-cols-2 lg:gap-16">
           <div className="space-y-4 text-center lg:text-left">
             <p className="text-xs font-bold uppercase tracking-[0.2em] text-camel">{t('tareas.eyebrow')}</p>
@@ -448,7 +450,7 @@ export default async function RootPage() {
       </section>
 
       {/* Avisos */}
-      <section id="avisos" className="scroll-mt-20 border-t border-camel/40 bg-khaki/30 px-4 py-14 sm:px-8">
+      <section id="avisos" className="scroll-mt-20 border-t border-camel/40 bg-khaki/30 textura-puntos px-4 py-14 sm:px-8">
         <div className="mx-auto grid w-full max-w-5xl items-center gap-10 lg:grid-cols-2 lg:gap-16">
           <div className="order-2 flex justify-center lg:order-1">
             <MockupAvisos {...traductores} />
@@ -467,13 +469,45 @@ export default async function RootPage() {
           <h2 className="text-center text-2xl font-bold text-espresso sm:text-3xl">{t('comoFunciona.titulo')}</h2>
           <div className="mt-10 grid gap-8 sm:grid-cols-3">
             {[
-              { paso: '1', texto: t('comoFunciona.paso1') },
-              { paso: '2', texto: t('comoFunciona.paso2') },
-              { paso: '3', texto: t('comoFunciona.paso3') },
-            ].map(({ paso, texto }) => (
+              {
+                paso: 1,
+                texto: t('comoFunciona.paso1'),
+                icono: (
+                  <>
+                    <path d="M3 11 12 3l9 8" />
+                    <path d="M5 10v10a1 1 0 0 0 1 1h4v-6h4v6h4a1 1 0 0 0 1-1V10" />
+                  </>
+                ),
+              },
+              {
+                paso: 2,
+                texto: t('comoFunciona.paso2'),
+                icono: (
+                  <>
+                    <rect x="4" y="4" width="16" height="16" rx="2" />
+                    <polyline points="8 12 11 15 16 9" />
+                  </>
+                ),
+              },
+              {
+                paso: 3,
+                texto: t('comoFunciona.paso3'),
+                icono: (
+                  <>
+                    <path d="M21 12a9 9 0 1 1-3-6.7" />
+                    <polyline points="21 3 21 9 15 9" />
+                  </>
+                ),
+              },
+            ].map(({ paso, texto, icono }) => (
               <div key={paso} className="text-center">
-                <div className="mx-auto flex h-10 w-10 items-center justify-center rounded-full bg-espresso text-sm font-bold text-linen">
-                  {paso}
+                <p className="text-xs font-bold uppercase tracking-wide text-camel">
+                  {t('comoFunciona.paso', { n: paso })}
+                </p>
+                <div className="mx-auto mt-2 flex h-12 w-12 items-center justify-center rounded-full bg-espresso text-linen">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-6 w-6">
+                    {icono}
+                  </svg>
                 </div>
                 <p className="mt-3 text-sm text-cocoa">{texto}</p>
               </div>
@@ -483,7 +517,7 @@ export default async function RootPage() {
       </section>
 
       {/* Comparación / objeción típica */}
-      <section className="border-t border-camel/40 bg-khaki/30 px-4 py-14 sm:px-8">
+      <section className="border-t border-camel/40 bg-khaki/30 textura-puntos px-4 py-14 sm:px-8">
         <div className="mx-auto w-full max-w-4xl">
           <div className="text-center">
             <p className="text-xs font-bold uppercase tracking-[0.2em] text-camel">{t('comparacion.eyebrow')}</p>

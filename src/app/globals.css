@@ -165,3 +165,11 @@ body {
   .demo-compras-checkbox { background-color: var(--cocoa); border-color: var(--cocoa); }
   .demo-compras-check { opacity: 1; }
 }
+
+/* Textura sutil para las bandas khaki de la landing — puntos chiquitos
+   del mismo tono camel, casi imperceptibles, para que no se sientan
+   bloques planos de color pero sin ensuciar la lectura. */
+.textura-puntos {
+  background-image: radial-gradient(circle, rgba(178, 150, 125, 0.35) 1px, transparent 1px);
+  background-size: 18px 18px;
+}
