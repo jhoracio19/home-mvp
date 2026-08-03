@@ -23,26 +23,26 @@ export async function actualizarIdioma(idioma: Locale) {
 }
 
 export async function actualizarPerfil(formData: FormData) {
-  const tAuth = await getTranslations('Auth');
   const tPerfil = await getTranslations('Perfil');
   const locale = (await getLocale()) as Locale;
   const nombre = String(formData.get('nombre') ?? '').trim();
-  const apellido = String(formData.get('apellido') ?? '').trim();
 
-  if (!nombre || !apellido) {
-    redirect({ href: `/perfil?error=${encodeURIComponent(tAuth('nombreApellidoObligatorios'))}`, locale });
+  if (!nombre) {
+    redirect({ href: `/perfil?error=${encodeURIComponent(tPerfil('nicknameObligatorio'))}`, locale });
   }
-  if (nombre.length > 60 || apellido.length > 60) {
-    redirect({ href: `/perfil?error=${encodeURIComponent(tAuth('nombreApellidoLargos'))}`, locale });
+  if (nombre.length > 60) {
+    redirect({ href: `/perfil?error=${encodeURIComponent(tPerfil('nicknameLargo'))}`, locale });
   }
 
   const { supabase, user } = await getSesion();
 
   // upsert (no update): así también funciona para cuentas viejas que se
   // crearon antes de que existiera el trigger que llena `perfiles` solo.
+  // No se toca `apellido` — así quien ya lo tenía guardado (de antes de
+  // este cambio) no lo pierde, aunque ya no se pida ni se pueda editar.
   const { error } = await supabase
     .from('perfiles')
-    .upsert({ id: user.id, nombre, apellido }, { onConflict: 'id' });
+    .upsert({ id: user.id, nombre }, { onConflict: 'id' });
 
   if (error) {
     redirect({ href: `/perfil?error=${encodeURIComponent(error.message)}`, locale });

@@ -69,18 +69,17 @@ export async function signup(formData: FormData) {
   const t = await getTranslations('Auth');
   const locale = (await getLocale()) as Locale;
   const nombre = String(formData.get('nombre') ?? '').trim();
-  const apellido = String(formData.get('apellido') ?? '').trim();
   const email = String(formData.get('email') ?? '').trim();
   const password = String(formData.get('password') ?? '');
   const confirmPassword = String(formData.get('confirmPassword') ?? '');
   const next = destinoSeguro(String(formData.get('next') ?? ''));
   const nextParam = next !== '/casas' ? `&next=${encodeURIComponent(next)}` : '';
 
-  if (!nombre || !apellido) {
-    redirect({ href: `/signup?error=${encodeURIComponent(t('nombreApellidoObligatorios'))}${nextParam}`, locale });
+  if (!nombre) {
+    redirect({ href: `/signup?error=${encodeURIComponent(t('nicknameObligatorio'))}${nextParam}`, locale });
   }
-  if (nombre.length > 60 || apellido.length > 60) {
-    redirect({ href: `/signup?error=${encodeURIComponent(t('nombreApellidoLargos'))}${nextParam}`, locale });
+  if (nombre.length > 60) {
+    redirect({ href: `/signup?error=${encodeURIComponent(t('nicknameLargo'))}${nextParam}`, locale });
   }
   if (password !== confirmPassword) {
     redirect({ href: `/signup?error=${encodeURIComponent(t('passwordsNoCoinciden'))}${nextParam}`, locale });
@@ -97,10 +96,12 @@ export async function signup(formData: FormData) {
     options: {
       // Llega a raw_user_meta_data; el trigger trg_nuevo_usuario
       // (schema.sql) los copia a la tabla `perfiles` automáticamente.
+      // `apellido` ya no se pide aquí a propósito (ver nombreMiembro());
+      // solo llega para altas por Google, que sí manda family_name solo.
       // idioma = el locale desde el que se registró, para que las
       // notificaciones push le lleguen en su idioma desde el día uno
       // sin que tenga que tocar el switch de idioma primero.
-      data: { nombre, apellido, idioma: locale },
+      data: { nombre, idioma: locale },
       emailRedirectTo: `${origin}/auth/callback?next=${encodeURIComponent(next)}`,
     },
   });

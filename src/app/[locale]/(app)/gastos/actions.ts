@@ -4,7 +4,6 @@ import { getLocale, getTranslations } from 'next-intl/server';
 import { redirect } from '@/i18n/navigation';
 import type { Locale } from '@/i18n/routing';
 import { getCasaActivaOrRedirect, getMiembrosCasaActiva, getSesion } from '@/lib/casas/data';
-import { nombreMiembro } from '@/lib/casas/nombre-miembro';
 import { enviarNotificacionAUsuario } from '@/lib/notificaciones/enviar';
 import { intlLocale } from '@/lib/intl-locale';
 
@@ -39,19 +38,16 @@ async function notificarNuevoGasto(creadoPor: string, descripcion: string, monto
   }
 }
 
-async function notificarPagoRecibido(aUsuarioId: string, deUsuarioId: string, monto: number) {
-  if (aUsuarioId === deUsuarioId) return;
+// Le avisa al DEUDOR que quien recibió el dinero ya confirmó el pago
+// — ya no hace falta buscar su nombre: el push es para él, no habla de
+// un tercero.
+async function notificarPagoConfirmado(deUsuarioId: string, monto: number) {
   try {
-    const miembros = await getMiembrosCasaActiva();
-    const de = miembros.find((m) => m.usuario_id === deUsuarioId);
-    await enviarNotificacionAUsuario(aUsuarioId, async (locale) => {
+    await enviarNotificacionAUsuario(deUsuarioId, async (locale) => {
       const t = await getTranslations({ locale, namespace: 'Push' });
       return {
-        title: t('pagoRecibidoTitulo'),
-        body: t('pagoRecibidoCuerpo', {
-          nombre: de ? nombreMiembro(de) : t('alguien'),
-          monto: formatoMonedaPara(locale).format(monto),
-        }),
+        title: t('pagoConfirmadoTitulo'),
+        body: t('pagoConfirmadoCuerpo', { monto: formatoMonedaPara(locale).format(monto) }),
         url: '/gastos',
       };
     });
@@ -125,14 +121,21 @@ export async function eliminarGasto(gastoId: string) {
   redirect({ href: '/gastos', locale });
 }
 
+// Quien confirma un pago es siempre quien está haciendo la acción — no
+// se puede registrar "a nombre de" otro miembro. Antes cualquiera podía
+// elegir tanto "quién pagó" como "a quién" libremente, así que el
+// propio deudor podía autodeclararse "ya pagué" sin que la otra
+// persona confirmara nada. Ahora el balance solo se mueve cuando
+// quien de verdad recibió el dinero lo confirma — sigue sin haber
+// comprobante de por medio, pero ya no es un solo lado el que decide.
 export async function registrarPago(formData: FormData) {
   const t = await getTranslations('Gastos');
   const locale = (await getLocale()) as Locale;
   const casa = await getCasaActivaOrRedirect();
   const { supabase, user } = await getSesion();
 
-  const deUsuarioId = String(formData.get('de_usuario_id') ?? '').trim() || user.id;
-  const aUsuarioId = String(formData.get('a_usuario_id') ?? '').trim();
+  const deUsuarioId = String(formData.get('de_usuario_id') ?? '').trim();
+  const aUsuarioId = user.id;
   const montoRaw = String(formData.get('monto') ?? '').trim();
   const fecha = String(formData.get('fecha') ?? '').trim();
 
@@ -143,12 +146,12 @@ export async function registrarPago(formData: FormData) {
   if (monto > MONTO_MAXIMO) {
     redirect({ href: `/gastos?error=${encodeURIComponent(t('errorMontoGrande'))}`, locale });
   }
-  if (deUsuarioId === aUsuarioId) {
+  if (!deUsuarioId || deUsuarioId === aUsuarioId) {
     redirect({ href: `/gastos?error=${encodeURIComponent(t('errorMismaPersona'))}`, locale });
   }
 
   const miembros = await getMiembrosCasaActiva();
-  if (!miembros.some((m) => m.usuario_id === deUsuarioId) || !miembros.some((m) => m.usuario_id === aUsuarioId)) {
+  if (!miembros.some((m) => m.usuario_id === deUsuarioId)) {
     redirect({ href: `/gastos?error=${encodeURIComponent(t('errorPagoInvalido'))}`, locale });
   }
 
@@ -165,7 +168,7 @@ export async function registrarPago(formData: FormData) {
     redirect({ href: `/gastos?error=${encodeURIComponent(error.message)}`, locale });
   }
 
-  await notificarPagoRecibido(aUsuarioId, deUsuarioId, monto);
+  await notificarPagoConfirmado(deUsuarioId, monto);
 
   redirect({ href: '/gastos', locale });
 }

@@ -47,8 +47,15 @@ export default async function PerfilPage({
           )}
 
           <form action={actualizarPerfil} className="space-y-4">
-            <Input label={t('nombre')} name="nombre" defaultValue={perfil?.nombre ?? ''} required maxLength={60} />
-            <Input label={t('apellido')} name="apellido" defaultValue={perfil?.apellido ?? ''} required maxLength={60} />
+            <Input
+              label={t('nickname')}
+              name="nombre"
+              placeholder={t('nicknamePlaceholder')}
+              defaultValue={perfil?.nombre ?? ''}
+              required
+              maxLength={60}
+              autoComplete="nickname"
+            />
             <SubmitButton className="w-full">{t('guardarCambios')}</SubmitButton>
           </form>
         </div>

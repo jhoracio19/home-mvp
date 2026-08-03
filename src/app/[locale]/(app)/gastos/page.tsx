@@ -130,29 +130,22 @@ export default async function GastosPage({
           </SubmitButton>
         </form>
 
-        {/* Registrar pago */}
+        {/* Confirmar pago recibido */}
         <form action={registrarPago} className="space-y-3 rounded-lg border border-camel bg-linen p-4">
           <h2 className="text-sm font-bold text-cocoa">{t('registrarUnPago')}</h2>
           <p className="text-xs text-cocoa/70">{t('descripcionPago')}</p>
-          <div className="grid grid-cols-2 gap-3">
-            <Select label={t('quienPago')} name="de_usuario_id" defaultValue={usuario.id}>
-              {miembros.map((m) => (
+          <Select label={t('quienTePago')} name="de_usuario_id" defaultValue="" required>
+            <option value="" disabled>
+              {t('elígeAlguien')}
+            </option>
+            {miembros
+              .filter((m) => m.usuario_id !== usuario.id)
+              .map((m) => (
                 <option key={m.usuario_id} value={m.usuario_id}>
                   {nombreMiembro(m)}
                 </option>
               ))}
-            </Select>
-            <Select label={t('aQuien')} name="a_usuario_id" defaultValue="" required>
-              <option value="" disabled>
-                {t('elígeAlguien')}
-              </option>
-              {miembros.map((m) => (
-                <option key={m.usuario_id} value={m.usuario_id}>
-                  {nombreMiembro(m)}
-                </option>
-              ))}
-            </Select>
-          </div>
+          </Select>
           <div className="grid grid-cols-2 gap-3">
             <Input label={t('monto')} name="monto" type="number" min="0.01" step="0.01" placeholder="0.00" required />
             <Input label={t('fecha')} name="fecha" type="date" defaultValue={hoyISO} />
