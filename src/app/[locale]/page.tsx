@@ -6,6 +6,7 @@ import { buttonClasses } from '@/components/ui/Button';
 import { Logomark } from '@/components/landing/Logomark';
 import { SiteHeader } from '@/components/landing/SiteHeader';
 import { SiteFooter } from '@/components/landing/SiteFooter';
+import { DemoTiempoReal } from '@/components/landing/DemoTiempoReal';
 
 // Mismas clases que dashboard/page.tsx y tareas/page.tsx — los mockups
 // de abajo son una reproducción fiel del look real, no una versión
@@ -32,9 +33,10 @@ type Traductores = {
   tTareas: Traductor;
   tNav: Traductor;
   tNotas: Traductor;
+  tRefri: Traductor;
 };
 
-function TelefonoRefri({ t, tUrgencia, tCategorias, tNav }: Traductores) {
+function TelefonoRefri({ t, tUrgencia, tCategorias, tNav, tRefri }: Traductores) {
   const m = t.raw('mockup') as Record<string, string>;
   return (
     <div className="mx-auto w-full max-w-[260px] rounded-[2.25rem] border-[6px] border-espresso bg-espresso p-1.5 shadow-2xl">
@@ -48,7 +50,7 @@ function TelefonoRefri({ t, tUrgencia, tCategorias, tNav }: Traductores) {
             <p className="text-[0.55rem] font-bold uppercase tracking-[0.14em] text-camel">
               {t('refri.eyebrow')}
             </p>
-            <span className="rounded-md bg-cocoa px-2 py-1 text-[0.55rem] font-bold text-linen">+ {tNav('agregar')}</span>
+            <span className="rounded-md bg-cocoa px-2 py-1 text-[0.55rem] font-bold text-linen">{tRefri('agregar')}</span>
           </div>
 
           {[
@@ -91,7 +93,7 @@ function MockupTareas({ t, tUrgencia, tTareas }: Traductores) {
   ];
   return (
     <div className="w-full max-w-sm space-y-3">
-      {tareas.map((tarea) => (
+      {tareas.map((tarea, i) => (
         <div key={tarea.nombre} className={`rounded-lg border-2 p-3 shadow-sm ${tarea.estilo}`}>
           <div className="flex items-start justify-between gap-3">
             <div>
@@ -103,7 +105,11 @@ function MockupTareas({ t, tUrgencia, tTareas }: Traductores) {
             </span>
           </div>
           <div className="mt-2 flex items-center gap-3 text-xs font-semibold">
-            <span className="rounded-lg bg-cocoa px-3 py-1.5 text-linen">{tTareas('marcarHecho')}</span>
+            <span
+              className={`rounded-lg bg-cocoa px-3 py-1.5 text-linen ${i === 0 ? 'demo-boton-pulso' : ''}`}
+            >
+              {tTareas('marcarHecho')}
+            </span>
             <span className="text-camel">{tTareas('editar')}</span>
           </div>
         </div>
@@ -121,29 +127,41 @@ function MockupCompras({ t }: Traductores) {
   ];
   return (
     <div className="w-full max-w-sm space-y-2">
-      {items.map((item) => (
-        <div
-          key={item.nombre}
-          className={`flex items-center gap-3 rounded-lg border px-4 py-3 shadow-sm ${
-            item.comprado ? 'border-camel/50 bg-khaki/40' : 'border-camel bg-khaki'
-          }`}
-        >
-          <span
-            className={`flex h-5 w-5 shrink-0 items-center justify-center rounded-full border-2 ${
-              item.comprado ? 'border-cocoa bg-cocoa text-linen' : 'border-camel'
+      {items.map((item, i) => {
+        const animado = i === 0 && !item.comprado;
+        return (
+          <div
+            key={item.nombre}
+            className={`flex items-center gap-3 rounded-lg border px-4 py-3 shadow-sm ${
+              item.comprado ? 'border-camel/50 bg-khaki/40' : 'border-camel bg-khaki'
             }`}
           >
-            {item.comprado && (
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" className="h-3 w-3">
-                <polyline points="20 6 9 17 4 12" />
-              </svg>
-            )}
-          </span>
-          <span className={`text-sm font-medium ${item.comprado ? 'text-cocoa/50 line-through' : 'text-cocoa'}`}>
-            {item.nombre}
-          </span>
-        </div>
-      ))}
+            <span
+              className={`flex h-5 w-5 shrink-0 items-center justify-center rounded-full text-linen ${
+                animado
+                  ? 'demo-compras-checkbox border-2'
+                  : item.comprado
+                    ? 'border-2 border-cocoa bg-cocoa'
+                    : 'border-2 border-camel'
+              }`}
+            >
+              {item.comprado && (
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" className="h-3 w-3">
+                  <polyline points="20 6 9 17 4 12" />
+                </svg>
+              )}
+              {animado && (
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" className="demo-compras-check h-3 w-3">
+                  <polyline points="20 6 9 17 4 12" />
+                </svg>
+              )}
+            </span>
+            <span className={`text-sm font-medium ${item.comprado ? 'text-cocoa/50 line-through' : 'text-cocoa'}`}>
+              {item.nombre}
+            </span>
+          </div>
+        );
+      })}
     </div>
   );
 }
@@ -189,7 +207,7 @@ function MockupLogros({ tTareas }: Traductores) {
         </div>
         <div>
           <p className="flex items-center gap-1 text-lg font-bold text-cocoa">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-4 w-4 text-[#c9702f]">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="demo-flama h-4 w-4 text-[#c9702f]">
               <path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5Z" />
             </svg>
             5
@@ -238,7 +256,7 @@ export default async function RootPage() {
     data: { user },
   } = await supabase.auth.getUser();
 
-  const [t, tUrgencia, tCategorias, tGastos, tTareas, tNav, tNotas, locale] = await Promise.all([
+  const [t, tUrgencia, tCategorias, tGastos, tTareas, tNav, tNotas, tRefri, locale] = await Promise.all([
     getTranslations('Landing'),
     getTranslations('Urgencia'),
     getTranslations('Categorias'),
@@ -246,12 +264,13 @@ export default async function RootPage() {
     getTranslations('Tareas'),
     getTranslations('Nav'),
     getTranslations('Notas'),
+    getTranslations('Refri'),
     getLocale() as Promise<Locale>,
   ]);
 
   if (user) redirect({ href: '/casas', locale });
 
-  const traductores: Traductores = { t, tUrgencia, tCategorias, tGastos, tTareas, tNav, tNotas };
+  const traductores: Traductores = { t, tUrgencia, tCategorias, tGastos, tTareas, tNav, tNotas, tRefri };
 
   return (
     <div className="flex min-h-dvh flex-col bg-linen">
@@ -285,9 +304,32 @@ export default async function RootPage() {
             </svg>
             {t('hero.google')}
           </p>
+          <p className="inline-flex items-center gap-1.5 text-xs font-semibold text-cocoa">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-3.5 w-3.5 shrink-0">
+              <path d="M12 22s8-4.5 8-11V5l-8-3-8 3v6c0 6.5 8 11 8 11Z" />
+            </svg>
+            {t('hero.sinAnuncios')}
+          </p>
         </div>
 
         <TelefonoRefri {...traductores} />
+      </section>
+
+      {/* Demo de tiempo real */}
+      <section className="border-t border-camel/40 px-4 py-14 sm:px-8">
+        <div className="mx-auto w-full max-w-3xl text-center">
+          <h2 className="text-2xl font-bold text-espresso sm:text-3xl">{t('tiempoReal.titulo')}</h2>
+          <p className="mx-auto mt-3 max-w-md text-cocoa">{t('tiempoReal.descripcion')}</p>
+          <div className="mt-8">
+            <DemoTiempoReal
+              nombreYo={t('tiempoReal.nombreYo')}
+              nombreOtro={t('tiempoReal.nombreOtro')}
+              tarea={t('tiempoReal.tarea')}
+              badgePendiente={t('tiempoReal.badgePendiente')}
+              badgeHecho={t('tiempoReal.badgeHecho')}
+            />
+          </div>
+        </div>
       </section>
 
       {/* Refri */}
@@ -437,6 +479,31 @@ export default async function RootPage() {
               </div>
             ))}
           </div>
+        </div>
+      </section>
+
+      {/* Comparación / objeción típica */}
+      <section className="border-t border-camel/40 bg-khaki/30 px-4 py-14 sm:px-8">
+        <div className="mx-auto w-full max-w-4xl">
+          <div className="text-center">
+            <p className="text-xs font-bold uppercase tracking-[0.2em] text-camel">{t('comparacion.eyebrow')}</p>
+            <h2 className="mt-1 text-2xl font-bold text-espresso sm:text-3xl">{t('comparacion.titulo')}</h2>
+          </div>
+          <div className="mt-10 grid gap-4 sm:grid-cols-3">
+            {[
+              { titulo: t('comparacion.splitwiseTitulo'), descripcion: t('comparacion.splitwiseDescripcion') },
+              { titulo: t('comparacion.notionTitulo'), descripcion: t('comparacion.notionDescripcion') },
+              { titulo: t('comparacion.whatsappTitulo'), descripcion: t('comparacion.whatsappDescripcion') },
+            ].map((item) => (
+              <div key={item.titulo} className="rounded-lg border border-camel bg-linen p-5 shadow-sm">
+                <h3 className="font-bold text-cocoa">{item.titulo}</h3>
+                <p className="mt-2 text-sm text-cocoa/80">{item.descripcion}</p>
+              </div>
+            ))}
+          </div>
+          <p className="mx-auto mt-8 max-w-2xl text-center text-sm font-semibold text-cocoa">
+            {t('comparacion.cierre')}
+          </p>
         </div>
       </section>
 

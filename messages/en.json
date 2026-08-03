@@ -347,7 +347,8 @@
       "yaTengoCuenta": "I already have an account",
       "esGratis": "Free. Installs as an app on your phone, no app store needed.",
       "tiempoReal": "Updates live for everyone in the house, no page refresh needed.",
-      "google": "Sign in directly with your Google account, no new password to create."
+      "google": "Sign in directly with your Google account, no new password to create.",
+      "sinAnuncios": "No ads, and we never sell your data."
     },
     "refri": {
       "eyebrow": "Fridge",
@@ -389,6 +390,26 @@
       "paso1": "Create your house, or join with a code someone shares with you.",
       "paso2": "Add what's in the fridge, the shopping list, tasks, expenses, and house notes.",
       "paso3": "Split it up, check things off, pay each other back — and let the app notify and update everyone live."
+    },
+    "tiempoReal": {
+      "titulo": "Here's how fast it is",
+      "descripcion": "No one has to refresh the page — when someone checks something off, it updates on its own on every phone in the house.",
+      "nombreYo": "You",
+      "nombreOtro": "Luis",
+      "tarea": "Take out the trash",
+      "badgePendiente": "Due today",
+      "badgeHecho": "Done ✓"
+    },
+    "comparacion": {
+      "eyebrow": "The obvious question",
+      "titulo": "Why not just use something I already have?",
+      "splitwiseTitulo": "Splitwise",
+      "splitwiseDescripcion": "Great at splitting expenses — but that's all it does. The fridge, tasks, and notes stay somewhere else, or nowhere.",
+      "notionTitulo": "Notion or Trello",
+      "notionDescripcion": "You can build anything there, but someone has to set up the system and keep it maintained — and in practice, your roommates aren't going to fill out a database every week.",
+      "whatsappTitulo": "The group chat",
+      "whatsappDescripcion": "It's where household organizing actually lives today — which is why the wifi password is buried under memes from 3 months ago, and nobody knows if the electric bill got paid.",
+      "cierre": "RemindHome doesn't replace any of the three — it does all 4 things together, built specifically for living with roommates, and updates itself for everyone."
     },
     "proximamente": {
       "eyebrow": "Coming soon",

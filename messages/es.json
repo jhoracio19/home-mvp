@@ -347,7 +347,8 @@
       "yaTengoCuenta": "Ya tengo cuenta",
       "esGratis": "Gratis. Se instala como app en tu celular, sin tienda de por medio.",
       "tiempoReal": "Se actualiza en vivo entre todos los de la casa, sin recargar la página.",
-      "google": "Entra directo con tu cuenta de Google, sin crear otra contraseña."
+      "google": "Entra directo con tu cuenta de Google, sin crear otra contraseña.",
+      "sinAnuncios": "Sin anuncios, y no vendemos tus datos a nadie."
     },
     "refri": {
       "eyebrow": "Refri",
@@ -389,6 +390,26 @@
       "paso1": "Crea tu casa, o únete con el código que te compartan.",
       "paso2": "Agreguen lo del refri, la lista de compras, las tareas, los gastos y las notas de la casa.",
       "paso3": "Repártanse, marquen, tachen, paguen — y dejen que la app avise y actualice a todos en vivo."
+    },
+    "tiempoReal": {
+      "titulo": "Se ve así de rápido",
+      "descripcion": "Nadie tiene que recargar la página — cuando alguien marca algo, se actualiza solo en todos los celulares de la casa.",
+      "nombreYo": "Tú",
+      "nombreOtro": "Luis",
+      "tarea": "Sacar la basura",
+      "badgePendiente": "Vence hoy",
+      "badgeHecho": "Hecho ✓"
+    },
+    "comparacion": {
+      "eyebrow": "La pregunta obligada",
+      "titulo": "¿Y por qué no uso algo que ya tengo?",
+      "splitwiseTitulo": "Splitwise",
+      "splitwiseDescripcion": "Es buenísimo repartiendo gastos — pero solo hace eso. El refri, las tareas y las notas se quedan en otro lado, o en ningún lado.",
+      "notionTitulo": "Notion o Trello",
+      "notionDescripcion": "Puedes construir ahí cualquier cosa, pero alguien tiene que armar el sistema y mantenerlo — y en la práctica tus compañeros de casa no van a llenar una base de datos cada semana.",
+      "whatsappTitulo": "El chat de WhatsApp",
+      "whatsappDescripcion": "Es donde de verdad vive la organización de la casa hoy — por eso la contraseña del wifi está enterrada entre memes de hace 3 meses, y nadie sabe si ya se pagó la luz.",
+      "cierre": "RemindHome no reemplaza ninguno de los tres — hace las 4 cosas juntas, pensado específicamente para vivir con roomies, y se actualiza solo para todos."
     },
     "proximamente": {
       "eyebrow": "Próximamente",
