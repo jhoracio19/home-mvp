@@ -16,6 +16,7 @@ type TareaInicial = {
   tipo_frecuencia: TipoFrecuencia;
   frecuencia_dias: number | null;
   dias_semana: number[] | null;
+  fecha_evento: string | null;
   asignado_a: string | null;
 };
 
@@ -39,6 +40,7 @@ export function TareaForm({
     tareaInicial?.frecuencia_dias != null ? String(tareaInicial.frecuencia_dias) : ''
   );
   const [diasSeleccionados, setDiasSeleccionados] = useState<number[]>(tareaInicial?.dias_semana ?? []);
+  const [fechaEvento, setFechaEvento] = useState(tareaInicial?.fecha_evento ?? '');
 
   function alternarDia(valor: number) {
     setDiasSeleccionados((actual) =>
@@ -82,6 +84,17 @@ export function TareaForm({
           >
             {t('diasDeLaSemana')}
           </button>
+          <button
+            type="button"
+            onClick={() => setTipoFrecuencia('unica')}
+            className={`flex-1 rounded-lg border-2 px-3 py-2 text-sm font-semibold transition-colors ${
+              tipoFrecuencia === 'unica'
+                ? 'border-espresso bg-espresso text-linen'
+                : 'border-camel bg-linen text-cocoa dark:border-cocoa dark:bg-[#3a2820] dark:text-linen'
+            }`}
+          >
+            {t('eventoUnico')}
+          </button>
         </div>
         <input type="hidden" name="tipo_frecuencia" value={tipoFrecuencia} />
       </div>
@@ -96,7 +109,7 @@ export function TareaForm({
           onChange={(e) => setFrecuenciaDias(e.target.value)}
           required
         />
-      ) : (
+      ) : tipoFrecuencia === 'dias_semana' ? (
         <div className="space-y-2">
           <span className="block text-sm font-semibold text-cocoa dark:text-linen">{t('queDiasToca')}</span>
           <div className="grid grid-cols-7 gap-1.5">
@@ -124,6 +137,14 @@ export function TareaForm({
             <input key={d} type="hidden" name="dias_semana" value={d} />
           ))}
         </div>
+      ) : (
+        <Input
+          label={t('fechaEvento')}
+          name="fecha_evento"
+          type="date"
+          value={fechaEvento}
+          onChange={(e) => setFechaEvento(e.target.value)}
+        />
       )}
 
       <Select label={t('asignarA')} name="asignado_a" defaultValue={tareaInicial?.asignado_a ?? ''}>

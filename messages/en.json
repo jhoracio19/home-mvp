@@ -143,7 +143,10 @@
     "errorNombreLargo": "The name can't be longer than {max} characters.",
     "errorAsignadoInvalido": "You can only assign the task to someone in this house.",
     "errorEligeDia": "Choose at least one day of the week.",
-    "errorFrecuenciaInvalida": "Set how often it repeats."
+    "errorFrecuenciaInvalida": "Set how often it repeats.",
+    "eventoUnico": "One-time event",
+    "fechaEvento": "Date (optional)",
+    "fechaLimite": "Due {fecha}"
   },
   "Compras": {
     "eyebrow": "Shopping list",
@@ -256,7 +259,12 @@
     "errorCamposObligatorios": "Fill in name, category, and tracking type.",
     "errorNombreLargo": "The name can't be longer than {max} characters.",
     "errorDiasInvalidos": "Enter how many days it lasts.",
-    "errorFechaCaducidadObligatoria": "Enter the expiration date."
+    "errorFechaCaducidadObligatoria": "Enter the expiration date.",
+    "deQuien": "Whose is it?",
+    "compartido": "Shared",
+    "todosLosDuenos": "Everyone",
+    "miembro": "Member",
+    "errorDuenoInvalido": "You can only assign it to someone in this house."
   },
   "Categorias": {
     "fruta": "Fruit",

@@ -1,4 +1,4 @@
-import { getTranslations } from 'next-intl/server';
+import { getLocale, getTranslations } from 'next-intl/server';
 import { Link } from '@/i18n/navigation';
 import { getCasaActivaOrRedirect, getMiembrosCasaActiva, getUsuarioActual } from '@/lib/casas/data';
 import { nombreMiembro } from '@/lib/casas/nombre-miembro';
@@ -7,7 +7,9 @@ import { completarTarea, eliminarTarea } from './actions';
 import { calcularProximaFecha } from '@/lib/tareas/urgencia';
 import { calcularLogros } from '@/lib/tareas/logros';
 import { etiquetaDiasSemana } from '@/lib/tareas/dias-semana';
-import { calcularDiasRestantes, clasificarUrgencia, etiquetaUrgencia, type Urgencia } from '@/lib/urgencia';
+import { calcularDiasRestantes, clasificarUrgencia, etiquetaUrgencia, parseFechaLocal, type Urgencia } from '@/lib/urgencia';
+import { intlLocale } from '@/lib/intl-locale';
+import type { Locale } from '@/i18n/routing';
 import { buttonClasses } from '@/components/ui/Button';
 import { SubmitButton } from '@/components/ui/SubmitButton';
 import { Input } from '@/components/ui/Input';
@@ -26,7 +28,7 @@ export default async function TareasPage({
 }: {
   searchParams: Promise<{ completada?: string; proxima?: string; completadaId?: string; q?: string }>;
 }) {
-  const [casa, tareas, miembros, usuario, historial, { completada, proxima, completadaId, q }, t, tUrgencia, tDias] =
+  const [casa, tareas, miembros, usuario, historial, { completada, proxima, completadaId, q }, t, tUrgencia, tDias, locale] =
     await Promise.all([
       getCasaActivaOrRedirect(),
       getTareas(),
@@ -37,9 +39,11 @@ export default async function TareasPage({
       getTranslations('Tareas'),
       getTranslations('Urgencia'),
       getTranslations('Dias'),
+      getLocale() as Promise<Locale>,
     ]);
   const nombrePorId = new Map(miembros.map((m) => [m.usuario_id, nombreMiembro(m)]));
   const logros = calcularLogros(historial, usuario.id);
+  const formatoFechaEvento = new Intl.DateTimeFormat(intlLocale(locale), { dateStyle: 'medium' });
 
   const busqueda = (q ?? '').trim().toLowerCase();
   const hayFiltros = Boolean(busqueda);
@@ -136,9 +140,13 @@ export default async function TareasPage({
                   <div className="min-w-0">
                     <p className="truncate font-semibold text-cocoa dark:text-linen">{tarea.nombre}</p>
                     <p className="text-xs font-medium opacity-70">
-                      {tarea.tipo_frecuencia === 'dias_semana'
-                        ? etiquetaDiasSemana(tarea.dias_semana ?? [], tDias)
-                        : t('cadaDias', { dias: tarea.frecuencia_dias ?? 0 })}
+                      {tarea.tipo_frecuencia === 'unica'
+                        ? tarea.fecha_evento
+                          ? t('fechaLimite', { fecha: formatoFechaEvento.format(parseFechaLocal(tarea.fecha_evento)) })
+                          : t('eventoUnico')
+                        : tarea.tipo_frecuencia === 'dias_semana'
+                          ? etiquetaDiasSemana(tarea.dias_semana ?? [], tDias)
+                          : t('cadaDias', { dias: tarea.frecuencia_dias ?? 0 })}
                       {' · '}
                       {tarea.asignado_a ? (nombrePorId.get(tarea.asignado_a) ?? t('miembro')) : t('sinAsignar')}
                     </p>

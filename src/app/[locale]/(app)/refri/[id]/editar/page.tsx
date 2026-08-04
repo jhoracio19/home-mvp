@@ -1,5 +1,6 @@
 import { notFound } from 'next/navigation';
 import { getTranslations } from 'next-intl/server';
+import { getMiembrosCasaActiva } from '@/lib/casas/data';
 import { getItemRefri, getReferenciaCaducidad } from '@/lib/refri/data';
 import { actualizarItem } from '../../actions';
 import { ItemForm } from '@/components/refri/ItemForm';
@@ -12,9 +13,10 @@ export default async function EditarItemPage({
   searchParams: Promise<{ error?: string }>;
 }) {
   const { id } = await params;
-  const [item, referencia, { error }, t] = await Promise.all([
+  const [item, referencia, miembros, { error }, t] = await Promise.all([
     getItemRefri(id),
     getReferenciaCaducidad(),
+    getMiembrosCasaActiva(),
     searchParams,
     getTranslations('Refri'),
   ]);
@@ -37,6 +39,7 @@ export default async function EditarItemPage({
 
         <ItemForm
           referencia={referencia}
+          miembros={miembros}
           itemInicial={item}
           action={actualizarItem.bind(null, item.id)}
           textoBoton={t('guardarCambios')}

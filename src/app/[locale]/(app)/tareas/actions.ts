@@ -44,7 +44,8 @@ async function asignadoEsMiembro(asignadoA: string | null): Promise<boolean> {
 
 function leerCamposFormulario(formData: FormData) {
   const tipoFrecuenciaRaw = String(formData.get('tipo_frecuencia') ?? '').trim();
-  const tipoFrecuencia: TipoFrecuencia = tipoFrecuenciaRaw === 'dias_semana' ? 'dias_semana' : 'intervalo';
+  const tipoFrecuencia: TipoFrecuencia =
+    tipoFrecuenciaRaw === 'dias_semana' ? 'dias_semana' : tipoFrecuenciaRaw === 'unica' ? 'unica' : 'intervalo';
 
   return {
     nombre: String(formData.get('nombre') ?? '').trim(),
@@ -54,6 +55,7 @@ function leerCamposFormulario(formData: FormData) {
       .getAll('dias_semana')
       .map((v) => Number(v))
       .filter((v) => Number.isInteger(v) && v >= 0 && v <= 6),
+    fechaEventoRaw: String(formData.get('fecha_evento') ?? '').trim(),
     asignadoA: String(formData.get('asignado_a') ?? '').trim() || null,
   };
 }
@@ -62,6 +64,7 @@ type ValoresFrecuencia = {
   tipo_frecuencia: TipoFrecuencia;
   frecuencia_dias: number | null;
   dias_semana: number[] | null;
+  fecha_evento: string | null;
 };
 
 // Valida y arma el objeto a guardar según el modo. Devuelve un mensaje
@@ -70,6 +73,20 @@ function validarFrecuencia(
   campos: ReturnType<typeof leerCamposFormulario>,
   t: Awaited<ReturnType<typeof getTranslations>>
 ): { error: string } | { valores: ValoresFrecuencia } {
+  if (campos.tipoFrecuencia === 'unica') {
+    // Sin validación de "obligatorio" a propósito: la fecha es
+    // opcional (feedback de usuarios — algunos la quieren, otros solo
+    // el recordatorio sin fecha).
+    return {
+      valores: {
+        tipo_frecuencia: 'unica',
+        frecuencia_dias: null,
+        dias_semana: null,
+        fecha_evento: campos.fechaEventoRaw || null,
+      },
+    };
+  }
+
   if (campos.tipoFrecuencia === 'dias_semana') {
     if (campos.diasSemana.length === 0) {
       return { error: t('errorEligeDia') };
@@ -79,6 +96,7 @@ function validarFrecuencia(
         tipo_frecuencia: 'dias_semana',
         frecuencia_dias: null,
         dias_semana: campos.diasSemana,
+        fecha_evento: null,
       },
     };
   }
@@ -92,6 +110,7 @@ function validarFrecuencia(
       tipo_frecuencia: 'intervalo',
       frecuencia_dias: frecuenciaDias,
       dias_semana: null,
+      fecha_evento: null,
     },
   };
 }
@@ -217,7 +236,7 @@ export async function completarTarea(tareaId: string) {
   // fecha ya avanzó a la siguiente y no se puede recuperar.
   const { data: antes } = await supabase
     .from('tareas')
-    .select('nombre, tipo_frecuencia, frecuencia_dias, dias_semana, ultima_ejecucion, created_at')
+    .select('nombre, tipo_frecuencia, frecuencia_dias, dias_semana, fecha_evento, ultima_ejecucion, created_at')
     .eq('id', tareaId)
     .eq('casa_id', casa.id)
     .maybeSingle();
@@ -225,6 +244,30 @@ export async function completarTarea(tareaId: string) {
   if (!antes) redirect({ href: '/tareas', locale });
 
   const aTiempo = calcularDiasRestantes(calcularProximaFecha(antes)) >= 0;
+
+  // Snapshot del nombre de la tarea y de quién la hizo — el historial no
+  // debe cambiar si después renombran la tarea, la borran, o esa persona
+  // sale de la casa.
+  const perfil = await getPerfilPropio();
+  await supabase.from('historial_tareas').insert({
+    casa_id: casa.id,
+    tarea_id: tareaId,
+    nombre_tarea: antes.nombre,
+    usuario_id: user.id,
+    nombre_usuario: nombreMiembro({ email: user.email ?? '', nombre: perfil?.nombre ?? null, apellido: perfil?.apellido ?? null }),
+    a_tiempo: aTiempo,
+  });
+
+  // Evento único: no hay "siguiente ocurrencia" — se completó y ya, se
+  // borra de la lista de tareas activas (el historial de arriba es lo
+  // que queda para siempre).
+  if (antes.tipo_frecuencia === 'unica') {
+    await supabase.from('tareas').delete().eq('id', tareaId).eq('casa_id', casa.id);
+    redirect({
+      href: `/tareas?completada=${encodeURIComponent(antes.nombre)}&completadaId=${tareaId}`,
+      locale,
+    });
+  }
 
   const hoy = new Date();
   const hoyISO = `${hoy.getFullYear()}-${String(hoy.getMonth() + 1).padStart(2, '0')}-${String(
@@ -236,23 +279,10 @@ export async function completarTarea(tareaId: string) {
     .update({ ultima_ejecucion: hoyISO })
     .eq('id', tareaId)
     .eq('casa_id', casa.id)
-    .select('nombre, tipo_frecuencia, frecuencia_dias, dias_semana, ultima_ejecucion, created_at')
+    .select('nombre, tipo_frecuencia, frecuencia_dias, dias_semana, fecha_evento, ultima_ejecucion, created_at')
     .single();
 
   if (!data) redirect({ href: '/tareas', locale });
-
-  // Snapshot del nombre de la tarea y de quién la hizo — el historial no
-  // debe cambiar si después renombran la tarea, la borran, o esa persona
-  // sale de la casa.
-  const perfil = await getPerfilPropio();
-  await supabase.from('historial_tareas').insert({
-    casa_id: casa.id,
-    tarea_id: tareaId,
-    nombre_tarea: data.nombre,
-    usuario_id: user.id,
-    nombre_usuario: nombreMiembro({ email: user.email ?? '', nombre: perfil?.nombre ?? null, apellido: perfil?.apellido ?? null }),
-    a_tiempo: aTiempo,
-  });
 
   const diasRestantes = calcularDiasRestantes(calcularProximaFecha(data));
   const proxima =

@@ -143,7 +143,10 @@
     "errorNombreLargo": "El nombre no puede pasar de {max} caracteres.",
     "errorAsignadoInvalido": "Solo puedes asignar la tarea a alguien de esta casa.",
     "errorEligeDia": "Elige al menos un día de la semana.",
-    "errorFrecuenciaInvalida": "Indica cada cuántos días se repite."
+    "errorFrecuenciaInvalida": "Indica cada cuántos días se repite.",
+    "eventoUnico": "Evento único",
+    "fechaEvento": "Fecha (opcional)",
+    "fechaLimite": "Vence el {fecha}"
   },
   "Compras": {
     "eyebrow": "Lista de compras",
@@ -256,7 +259,12 @@
     "errorCamposObligatorios": "Completa nombre, categoría y tipo de seguimiento.",
     "errorNombreLargo": "El nombre no puede pasar de {max} caracteres.",
     "errorDiasInvalidos": "Indica cuántos días dura.",
-    "errorFechaCaducidadObligatoria": "Indica la fecha de caducidad."
+    "errorFechaCaducidadObligatoria": "Indica la fecha de caducidad.",
+    "deQuien": "¿De quién es?",
+    "compartido": "Compartido",
+    "todosLosDuenos": "Todos",
+    "miembro": "Miembro",
+    "errorDuenoInvalido": "Solo puedes asignarlo a alguien de esta casa."
   },
   "Categorias": {
     "fruta": "Fruta",

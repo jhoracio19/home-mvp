@@ -25,7 +25,9 @@ export async function GET(request: NextRequest) {
       .select('casa_id, nombre, tipo_tracking, fecha_entrada, fecha_caducidad, dias_estimados'),
     supabase
       .from('tareas')
-      .select('casa_id, nombre, asignado_a, tipo_frecuencia, frecuencia_dias, dias_semana, ultima_ejecucion, created_at'),
+      .select(
+        'casa_id, nombre, asignado_a, tipo_frecuencia, frecuencia_dias, dias_semana, fecha_evento, ultima_ejecucion, created_at'
+      ),
     supabase.from('miembros_casa').select('usuario_id, casa_id'),
   ]);
 

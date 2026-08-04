@@ -729,3 +729,41 @@ begin
   return new;
 end;
 $$;
+
+-- ------------------------------------------------------------
+-- Feedback de usuarios: etiqueta por persona en el refri +
+-- tareas de evento único
+-- ------------------------------------------------------------
+
+-- Refri: de quién es cada item (opcional — null significa
+-- "compartido"). Mismo patrón que tareas.asignado_a: FK nullable,
+-- on delete set null (si esa persona sale de la casa, el item no se
+-- borra, solo se vuelve "compartido" de nuevo).
+alter table items_refri add column if not exists pertenece_a uuid references auth.users(id) on delete set null;
+
+-- Tareas: además de "cada N días" y "días de la semana", ahora puede
+-- ser un evento único (ej. "Cambiar cerradura") — se completa una vez
+-- y desaparece para siempre (ver completarTarea en tareas/actions.ts).
+-- fecha_evento es opcional a propósito: hay quien quiere ponerle fecha
+-- ("antes del 20") y quien solo quiere el recordatorio sin fecha (en
+-- ese caso siempre "vence hoy" hasta que se marca como hecha — ver
+-- calcularProximaFecha en lib/tareas/urgencia.ts).
+alter table tareas add column if not exists fecha_evento date;
+
+alter table tareas drop constraint if exists tareas_tipo_frecuencia_check;
+alter table tareas add constraint tareas_tipo_frecuencia_check
+  check (tipo_frecuencia in ('intervalo', 'dias_semana', 'unica'));
+
+alter table tareas drop constraint if exists tareas_frecuencia_coherente;
+alter table tareas add constraint tareas_frecuencia_coherente check (
+  (tipo_frecuencia = 'intervalo' and frecuencia_dias is not null and frecuencia_dias > 0)
+  or
+  (
+    tipo_frecuencia = 'dias_semana'
+    and dias_semana is not null
+    and array_length(dias_semana, 1) > 0
+    and dias_semana <@ array[0, 1, 2, 3, 4, 5, 6]
+  )
+  or
+  (tipo_frecuencia = 'unica' and frecuencia_dias is null and dias_semana is null)
+);

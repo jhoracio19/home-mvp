@@ -5,10 +5,12 @@ import { useTranslations } from 'next-intl';
 import { Input } from '@/components/ui/Input';
 import { Select } from '@/components/ui/Select';
 import { SubmitButton } from '@/components/ui/SubmitButton';
+import { nombreMiembro } from '@/lib/casas/nombre-miembro';
 import { categorias, HEX_CATEGORIA } from '@/lib/refri/categorias';
 import type { CategoriaItem, TipoTracking } from '@/lib/types/database';
 
 type ReferenciaItem = { nombre: string; categoria: 'fruta' | 'verdura'; dias_estimados: number };
+type Miembro = { usuario_id: string; email: string; rol: string; nombre: string | null; apellido: string | null };
 
 type ItemInicial = {
   id: string;
@@ -18,6 +20,7 @@ type ItemInicial = {
   fecha_entrada: string;
   fecha_caducidad: string | null;
   dias_estimados: number | null;
+  pertenece_a: string | null;
 };
 
 function normalizar(texto: string) {
@@ -37,11 +40,13 @@ function hoyISO() {
 
 export function ItemForm({
   referencia,
+  miembros,
   itemInicial,
   action,
   textoBoton,
 }: {
   referencia: ReferenciaItem[];
+  miembros: Miembro[];
   itemInicial?: ItemInicial;
   action: (formData: FormData) => void;
   textoBoton?: string;
@@ -176,6 +181,15 @@ export function ItemForm({
         type="date"
         defaultValue={itemInicial?.fecha_entrada ?? hoyISO()}
       />
+
+      <Select label={t('deQuien')} name="pertenece_a" defaultValue={itemInicial?.pertenece_a ?? ''}>
+        <option value="">{t('compartido')}</option>
+        {miembros.map((m) => (
+          <option key={m.usuario_id} value={m.usuario_id}>
+            {nombreMiembro(m)}
+          </option>
+        ))}
+      </Select>
 
       <SubmitButton className="w-full">{textoBoton ?? t('guardar')}</SubmitButton>
     </form>

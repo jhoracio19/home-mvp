@@ -3,7 +3,7 @@
 import { getLocale, getTranslations } from 'next-intl/server';
 import { redirect } from '@/i18n/navigation';
 import type { Locale } from '@/i18n/routing';
-import { getCasaActivaOrRedirect, getSesion } from '@/lib/casas/data';
+import { getCasaActivaOrRedirect, getMiembrosCasaActiva, getSesion } from '@/lib/casas/data';
 import { esCategoriaValida } from '@/lib/refri/categorias';
 import type { TipoTracking } from '@/lib/types/database';
 
@@ -13,6 +13,16 @@ function esTrackingValido(valor: string): valor is TipoTracking {
 
 const MAX_NOMBRE = 100;
 
+// El <select> del formulario solo lista miembros de la casa, pero eso
+// no evita que alguien mande un usuario_id distinto a mano (form
+// tamperado) — mismo riesgo y mismo arreglo que asignadoEsMiembro en
+// tareas/actions.ts.
+async function perteneceEsMiembro(perteneceA: string | null): Promise<boolean> {
+  if (!perteneceA) return true;
+  const miembros = await getMiembrosCasaActiva();
+  return miembros.some((m) => m.usuario_id === perteneceA);
+}
+
 function leerCamposFormulario(formData: FormData) {
   return {
     nombre: String(formData.get('nombre') ?? '').trim(),
@@ -21,6 +31,7 @@ function leerCamposFormulario(formData: FormData) {
     fechaEntrada: String(formData.get('fecha_entrada') ?? '').trim(),
     fechaCaducidad: String(formData.get('fecha_caducidad') ?? '').trim(),
     diasEstimadosRaw: String(formData.get('dias_estimados') ?? '').trim(),
+    perteneceA: String(formData.get('pertenece_a') ?? '').trim() || null,
   };
 }
 
@@ -45,6 +56,9 @@ export async function crearItem(formData: FormData) {
   if (campos.tipoTracking === 'fecha' && !campos.fechaCaducidad) {
     redirect({ href: `/refri/nuevo?error=${encodeURIComponent(t('errorFechaCaducidadObligatoria'))}`, locale });
   }
+  if (!(await perteneceEsMiembro(campos.perteneceA))) {
+    redirect({ href: `/refri/nuevo?error=${encodeURIComponent(t('errorDuenoInvalido'))}`, locale });
+  }
 
   const { error } = await supabase.from('items_refri').insert({
     casa_id: casa.id,
@@ -54,6 +68,7 @@ export async function crearItem(formData: FormData) {
     fecha_entrada: campos.fechaEntrada || undefined,
     fecha_caducidad: campos.tipoTracking === 'fecha' ? campos.fechaCaducidad : null,
     dias_estimados: campos.tipoTracking === 'dias' ? diasEstimados : null,
+    pertenece_a: campos.perteneceA,
     creado_por: user.id,
   });
 
@@ -94,6 +109,9 @@ export async function actualizarItem(itemId: string, formData: FormData) {
       locale,
     });
   }
+  if (!(await perteneceEsMiembro(campos.perteneceA))) {
+    redirect({ href: `/refri/${itemId}/editar?error=${encodeURIComponent(t('errorDuenoInvalido'))}`, locale });
+  }
 
   const { error } = await supabase
     .from('items_refri')
@@ -104,6 +122,7 @@ export async function actualizarItem(itemId: string, formData: FormData) {
       fecha_entrada: campos.fechaEntrada || undefined,
       fecha_caducidad: campos.tipoTracking === 'fecha' ? campos.fechaCaducidad : null,
       dias_estimados: campos.tipoTracking === 'dias' ? diasEstimados : null,
+      pertenece_a: campos.perteneceA,
     })
     .eq('id', itemId)
     .eq('casa_id', casa.id);

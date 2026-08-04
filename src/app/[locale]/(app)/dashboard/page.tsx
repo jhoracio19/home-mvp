@@ -1,6 +1,7 @@
 import { getTranslations } from 'next-intl/server';
 import { Link } from '@/i18n/navigation';
-import { getCasaActivaOrRedirect } from '@/lib/casas/data';
+import { getCasaActivaOrRedirect, getMiembrosCasaActiva } from '@/lib/casas/data';
+import { nombreMiembro } from '@/lib/casas/nombre-miembro';
 import { getItemsRefri } from '@/lib/refri/data';
 import { eliminarItem } from '@/app/[locale]/(app)/refri/actions';
 import { agregarALista } from '@/app/[locale]/(app)/compras/actions';
@@ -29,23 +30,27 @@ const ESTILOS_URGENCIA: Record<Urgencia, string> = {
 export default async function DashboardPage({
   searchParams,
 }: {
-  searchParams: Promise<{ q?: string; categoria?: string; agregado?: string; yaExistia?: string }>;
+  searchParams: Promise<{ q?: string; categoria?: string; dueno?: string; agregado?: string; yaExistia?: string }>;
 }) {
-  const [casaActiva, items, { q, categoria, agregado, yaExistia }, tUrgencia, t, tCategorias] = await Promise.all([
-    getCasaActivaOrRedirect(),
-    getItemsRefri(),
-    searchParams,
-    getTranslations('Urgencia'),
-    getTranslations('Refri'),
-    getTranslations('Categorias'),
-  ]);
+  const [casaActiva, items, miembros, { q, categoria, dueno, agregado, yaExistia }, tUrgencia, t, tCategorias] =
+    await Promise.all([
+      getCasaActivaOrRedirect(),
+      getItemsRefri(),
+      getMiembrosCasaActiva(),
+      searchParams,
+      getTranslations('Urgencia'),
+      getTranslations('Refri'),
+      getTranslations('Categorias'),
+    ]);
 
+  const nombrePorId = new Map(miembros.map((m) => [m.usuario_id, nombreMiembro(m)]));
   const busqueda = (q ?? '').trim().toLowerCase();
 
   const itemsConUrgencia = items
     .filter((item) => {
       if (busqueda && !item.nombre.toLowerCase().includes(busqueda)) return false;
       if (categoria && item.categoria !== categoria) return false;
+      if (dueno && item.pertenece_a !== dueno) return false;
       return true;
     })
     .map((item) => {
@@ -55,7 +60,7 @@ export default async function DashboardPage({
     })
     .sort((a, b) => a.diasRestantes - b.diasRestantes);
 
-  const hayFiltros = Boolean(busqueda || categoria);
+  const hayFiltros = Boolean(busqueda || categoria || dueno);
 
   return (
     <main className="flex flex-1 bg-[radial-gradient(circle_at_top_left,_rgba(178,150,125,0.3),_transparent_34%)] bg-linen px-4 py-8 dark:bg-none dark:bg-espresso">
@@ -92,6 +97,16 @@ export default async function DashboardPage({
                 ))}
               </Select>
             </div>
+            <div className="w-36 shrink-0">
+              <Select label={t('deQuien')} name="dueno" defaultValue={dueno ?? ''}>
+                <option value="">{t('todosLosDuenos')}</option>
+                {miembros.map((m) => (
+                  <option key={m.usuario_id} value={m.usuario_id}>
+                    {nombreMiembro(m)}
+                  </option>
+                ))}
+              </Select>
+            </div>
           </FormBusqueda>
         )}
 
@@ -116,6 +131,11 @@ export default async function DashboardPage({
                     >
                       {etiquetaCategoria(item.categoria, tCategorias)}
                     </span>
+                    {item.pertenece_a && (
+                      <span className="ml-1.5 mt-1 inline-block rounded-full border border-cocoa/40 bg-white/50 px-2 py-0.5 text-[0.65rem] font-bold text-cocoa dark:border-khaki/30 dark:bg-black/20 dark:text-khaki">
+                        {nombrePorId.get(item.pertenece_a) ?? t('miembro')}
+                      </span>
+                    )}
                   </div>
                   <span className="shrink-0 rounded-full bg-white/60 px-2 py-1 text-xs font-bold dark:bg-black/20">
                     {etiquetaUrgencia(diasRestantes, tUrgencia)}

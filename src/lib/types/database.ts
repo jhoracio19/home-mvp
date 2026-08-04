@@ -9,7 +9,7 @@
 export type Rol = 'admin' | 'miembro';
 export type CategoriaItem = 'fruta' | 'verdura' | 'lacteo' | 'carne' | 'preparado' | 'otro';
 export type TipoTracking = 'dias' | 'fecha';
-export type TipoFrecuencia = 'intervalo' | 'dias_semana';
+export type TipoFrecuencia = 'intervalo' | 'dias_semana' | 'unica';
 
 export interface Database {
   public: {
@@ -90,6 +90,7 @@ export interface Database {
           fecha_entrada: string;
           fecha_caducidad: string | null;
           dias_estimados: number | null;
+          pertenece_a: string | null;
           creado_por: string;
           created_at: string;
         };
@@ -102,6 +103,7 @@ export interface Database {
           fecha_entrada?: string;
           fecha_caducidad?: string | null;
           dias_estimados?: number | null;
+          pertenece_a?: string | null;
           creado_por: string;
           created_at?: string;
         };
@@ -114,6 +116,7 @@ export interface Database {
           fecha_entrada?: string;
           fecha_caducidad?: string | null;
           dias_estimados?: number | null;
+          pertenece_a?: string | null;
           creado_por?: string;
           created_at?: string;
         };
@@ -151,6 +154,7 @@ export interface Database {
           tipo_frecuencia: TipoFrecuencia;
           frecuencia_dias: number | null;
           dias_semana: number[] | null;
+          fecha_evento: string | null;
           asignado_a: string | null;
           ultima_ejecucion: string | null;
           creado_por: string;
@@ -163,6 +167,7 @@ export interface Database {
           tipo_frecuencia?: TipoFrecuencia;
           frecuencia_dias?: number | null;
           dias_semana?: number[] | null;
+          fecha_evento?: string | null;
           asignado_a?: string | null;
           ultima_ejecucion?: string | null;
           creado_por: string;
@@ -175,6 +180,7 @@ export interface Database {
           tipo_frecuencia?: TipoFrecuencia;
           frecuencia_dias?: number | null;
           dias_semana?: number[] | null;
+          fecha_evento?: string | null;
           asignado_a?: string | null;
           ultima_ejecucion?: string | null;
           creado_por?: string;

@@ -6,6 +6,7 @@ type TareaParaVencimiento = {
   ultima_ejecucion: string | null;
   frecuencia_dias: number | null;
   dias_semana: number[] | null;
+  fecha_evento: string | null;
   created_at: string;
 };
 
@@ -18,6 +19,15 @@ function hoyLocal(): Date {
 // la primera fecha "objetivo" es creación + frecuencia, no hoy mismo
 // (si no, toda tarea nueva nacería ya vencida).
 export function calcularProximaFecha(tarea: TareaParaVencimiento): Date {
+  // Evento único: se borra al completarse (ver completarTarea), así que
+  // esta función nunca necesita calcular "la siguiente" — solo si está
+  // pendiente. Con fecha, se comporta como cualquier otra fecha límite
+  // (puede salir "vencido" si ya pasó); sin fecha, "vence hoy" siempre,
+  // para que se vea pendiente/urgente hasta que alguien la marque hecha.
+  if (tarea.tipo_frecuencia === 'unica') {
+    return tarea.fecha_evento ? parseFechaLocal(tarea.fecha_evento) : hoyLocal();
+  }
+
   if (tarea.tipo_frecuencia === 'dias_semana' && tarea.dias_semana && tarea.dias_semana.length > 0) {
     const diasValidos = new Set(tarea.dias_semana);
 

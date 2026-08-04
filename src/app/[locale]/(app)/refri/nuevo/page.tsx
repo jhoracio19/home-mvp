@@ -1,4 +1,5 @@
 import { getTranslations } from 'next-intl/server';
+import { getMiembrosCasaActiva } from '@/lib/casas/data';
 import { getReferenciaCaducidad } from '@/lib/refri/data';
 import { crearItem } from '../actions';
 import { ItemForm } from '@/components/refri/ItemForm';
@@ -8,8 +9,9 @@ export default async function NuevoItemPage({
 }: {
   searchParams: Promise<{ error?: string }>;
 }) {
-  const [referencia, { error }, t] = await Promise.all([
+  const [referencia, miembros, { error }, t] = await Promise.all([
     getReferenciaCaducidad(),
+    getMiembrosCasaActiva(),
     searchParams,
     getTranslations('Refri'),
   ]);
@@ -28,7 +30,7 @@ export default async function NuevoItemPage({
           </p>
         )}
 
-        <ItemForm referencia={referencia} action={crearItem} textoBoton={t('agregarAlRefri')} />
+        <ItemForm referencia={referencia} miembros={miembros} action={crearItem} textoBoton={t('agregarAlRefri')} />
       </div>
     </main>
   );
