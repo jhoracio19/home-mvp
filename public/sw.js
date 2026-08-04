@@ -3,7 +3,7 @@
 // un dispositivo compartido, o quedarían obsoletos) — solo la página
 // de respaldo /offline y los assets estáticos ya visitados.
 
-const CACHE = 'gestion-domestica-v1';
+const CACHE = 'gestion-domestica-v2';
 const RUTAS_PRECACHE = ['/es/offline', '/en/offline', '/icons/icon-192.png', '/icons/icon-512.png'];
 
 self.addEventListener('install', (event) => {
@@ -42,9 +42,17 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
+  // En local (npm run dev), los nombres de archivo de _next/static NO
+  // llevan hash de contenido estable entre reinicios como en producción
+  // — cachearlos cache-first hace que el service worker siga sirviendo
+  // JS viejo después de cada cambio, aunque el servidor ya tenga el
+  // código nuevo (así se coló el mismatch de hidratación con
+  // MenuLanding). En dev, ese pedazo simplemente no entra al cache.
+  const esDev = self.location.hostname === 'localhost' || self.location.hostname === '127.0.0.1';
+
   // Assets estáticos con hash en el nombre (JS/CSS de Next, íconos):
   // cache-first, ya que su contenido nunca cambia bajo la misma URL.
-  if (url.pathname.startsWith('/_next/static/') || url.pathname.startsWith('/icons/')) {
+  if (!esDev && (url.pathname.startsWith('/_next/static/') || url.pathname.startsWith('/icons/'))) {
     event.respondWith(
       caches.match(request).then(
         (cacheada) =>

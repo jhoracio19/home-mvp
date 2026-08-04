@@ -96,6 +96,17 @@ export async function SiteFooter() {
                   {t('avisos.eyebrow')}
                 </Link>
               </li>
+              <li>
+                <Link href="/#instalar" className={enlaceClase}>
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={iconoClase}>
+                    <rect x="3" y="4" width="18" height="14" rx="2" />
+                    <path d="M8 21h8" />
+                    <path d="M12 11v5" />
+                    <path d="m9.5 13.5 2.5 2.5 2.5-2.5" />
+                  </svg>
+                  {t('instalar.eyebrow')}
+                </Link>
+              </li>
             </ul>
           </div>
 

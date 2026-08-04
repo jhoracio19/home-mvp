@@ -400,6 +400,28 @@
       "descripcion": "En cuanto alguien te asigna una tarea, te llega la notificación al momento. Cada mañana, un resumen de lo que vence en el refri y lo que te toca ese día — directo a tu celular, como cualquier otra app. Si te deben dinero, hasta puedes marcarlo como pagado con un botón, sin abrir la app.",
       "boton": "Marcar como pagado"
     },
+    "instalar": {
+      "eyebrow": "Instálala",
+      "titulo": "Agrégala a tu pantalla de inicio",
+      "descripcion": "En iPhone es la única forma de que te lleguen los avisos — Apple lo exige así. En Android y computadora ya te llegan sin instalar nada, pero instalarla la deja a la mano como cualquier otra app.",
+      "tabIphone": "iPhone / iPad",
+      "tabAndroid": "Android",
+      "tabComputadora": "Computadora",
+      "yaInstalada": "Ya la tienes instalada en este dispositivo.",
+      "botonInstalar": "Instalar ahora",
+      "instalando": "Instalando…",
+      "oSiNoAparece": "¿No ves el botón? Hazlo manualmente:",
+      "avisoAbrirEnSafari": "Estás en un navegador que no permite instalar en iPhone (Chrome, o dentro de otra app como Instagram/WhatsApp). Abre este link directo en Safari para poder instalarla.",
+      "iosPaso1": "Toca el ícono de Compartir (el cuadrado con la flecha hacia arriba), en la barra de abajo.",
+      "iosPaso2": "Baja el menú y toca \"Agregar a inicio\".",
+      "iosPaso3": "Toca \"Agregar\" arriba a la derecha — listo, ya tienes el ícono en tu pantalla.",
+      "androidPaso1": "Toca los tres puntos (⋮) arriba a la derecha del navegador.",
+      "androidPaso2": "Toca \"Instalar app\" (o \"Agregar a pantalla de inicio\").",
+      "androidPaso3": "Confirma tocando \"Instalar\" — listo.",
+      "desktopPaso1": "Busca el ícono de instalar (una pantalla con una flecha) en la barra de direcciones, a la derecha.",
+      "desktopPaso2": "Haz clic ahí y luego en \"Instalar\".",
+      "desktopPaso3": "Se abre como una app aparte, con su propio ícono — listo."
+    },
     "comoFunciona": {
       "titulo": "Cómo funciona",
       "paso": "Paso {n}",

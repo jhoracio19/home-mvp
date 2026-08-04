@@ -84,9 +84,6 @@ export default async function DashboardPage({
 
         {(items.length > 0 || hayFiltros) && (
           <FormBusqueda>
-            <div className="min-w-0 flex-1">
-              <Input label={t('buscar')} name="q" defaultValue={q ?? ''} placeholder={t('nombreDelProducto')} />
-            </div>
             <div className="w-36 shrink-0">
               <Select label={t('categoria')} name="categoria" defaultValue={categoria ?? ''}>
                 <option value="">{t('todas')}</option>
@@ -106,6 +103,9 @@ export default async function DashboardPage({
                   </option>
                 ))}
               </Select>
+            </div>
+            <div className="w-full">
+              <Input label={t('buscar')} name="q" defaultValue={q ?? ''} placeholder={t('nombreDelProducto')} />
             </div>
           </FormBusqueda>
         )}

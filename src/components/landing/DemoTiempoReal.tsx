@@ -20,16 +20,16 @@ function Telefono({
   badgeHecho: string;
 }) {
   return (
-    <div className="w-full max-w-[190px] rounded-[1.75rem] border-[5px] border-espresso bg-espresso p-1 shadow-xl">
+    <div className="w-full min-w-0 max-w-[130px] rounded-[1.75rem] border-[5px] border-espresso bg-espresso p-1 shadow-xl sm:max-w-[190px]">
       <div className="overflow-hidden rounded-[1.35rem] bg-linen">
-        <div className="bg-espresso px-3 py-2.5">
-          <p className="text-[0.6rem] text-khaki">{nombre}</p>
+        <div className="bg-espresso px-2 py-2 sm:px-3 sm:py-2.5">
+          <p className="truncate text-[0.55rem] text-khaki sm:text-[0.6rem]">{nombre}</p>
         </div>
-        <div className="p-2.5">
-          <div className={`rounded-lg border-2 border-camel bg-khaki p-2.5 ${esOtro ? 'demo-tarjeta-otro' : ''}`}>
-            <div className="flex items-center gap-2">
+        <div className="p-2 sm:p-2.5">
+          <div className={`rounded-lg border-2 border-camel bg-khaki p-2 sm:p-2.5 ${esOtro ? 'demo-tarjeta-otro' : ''}`}>
+            <div className="flex items-center gap-1.5 sm:gap-2">
               <span className="demo-checkbox h-4 w-4 shrink-0 rounded-full border-2" />
-              <span className="min-w-0 flex-1 truncate text-[0.65rem] font-semibold text-cocoa">{tarea}</span>
+              <span className="min-w-0 flex-1 truncate text-[0.6rem] font-semibold text-cocoa sm:text-[0.65rem]">{tarea}</span>
               {/* Las dos etiquetas ocupan la misma celda de grid — así el
                   ancho reservado siempre es el de la más grande, y el
                   texto de la tarea (flex-1) sabe hasta dónde truncar sin

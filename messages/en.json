@@ -400,6 +400,28 @@
       "descripcion": "The moment someone assigns you a task, you get notified instantly. Every morning, a summary of what's expiring in the fridge and what's on your plate that day — straight to your phone, like any other app. If someone owes you money, you can even mark it as paid with a button, without opening the app.",
       "boton": "Mark as paid"
     },
+    "instalar": {
+      "eyebrow": "Install it",
+      "titulo": "Add it to your home screen",
+      "descripcion": "On iPhone it's the only way notifications reach you — that's Apple's rule. On Android and computer they already work without installing anything, but installing keeps it handy like any other app.",
+      "tabIphone": "iPhone / iPad",
+      "tabAndroid": "Android",
+      "tabComputadora": "Computer",
+      "yaInstalada": "You already have it installed on this device.",
+      "botonInstalar": "Install now",
+      "instalando": "Installing…",
+      "oSiNoAparece": "Don't see the button? Do it manually:",
+      "avisoAbrirEnSafari": "You're in a browser that can't install on iPhone (Chrome, or inside another app like Instagram/WhatsApp). Open this link directly in Safari to install it.",
+      "iosPaso1": "Tap the Share icon (the square with the arrow pointing up), in the bottom bar.",
+      "iosPaso2": "Scroll down and tap \"Add to Home Screen\".",
+      "iosPaso3": "Tap \"Add\" in the top right — done, the icon is now on your home screen.",
+      "androidPaso1": "Tap the three dots (⋮) in the top right of the browser.",
+      "androidPaso2": "Tap \"Install app\" (or \"Add to Home screen\").",
+      "androidPaso3": "Confirm by tapping \"Install\" — done.",
+      "desktopPaso1": "Look for the install icon (a screen with an arrow) in the address bar, on the right.",
+      "desktopPaso2": "Click it, then click \"Install\".",
+      "desktopPaso3": "It opens as its own app, with its own icon — done."
+    },
     "comoFunciona": {
       "titulo": "How it works",
       "paso": "Step {n}",

@@ -8,6 +8,7 @@ import { SiteHeader } from '@/components/landing/SiteHeader';
 import { SiteFooter } from '@/components/landing/SiteFooter';
 import { DemoTiempoReal } from '@/components/landing/DemoTiempoReal';
 import { StickyCTA } from '@/components/landing/StickyCTA';
+import { InstalarApp } from '@/components/landing/InstalarApp';
 
 // Mismas clases que dashboard/page.tsx y tareas/page.tsx — los mockups
 // de abajo son una reproducción fiel del look real, no una versión
@@ -485,6 +486,18 @@ export default async function RootPage() {
             <p className="text-xs font-bold uppercase tracking-[0.2em] text-camel">{t('avisos.eyebrow')}</p>
             <h2 className="text-2xl font-bold text-espresso sm:text-3xl">{t('avisos.titulo')}</h2>
             <p className="text-cocoa">{t('avisos.descripcion')}</p>
+          </div>
+        </div>
+      </section>
+
+      {/* Instalar */}
+      <section id="instalar" className="scroll-mt-20 border-t border-camel/40 px-4 py-14 sm:px-8">
+        <div className="mx-auto w-full max-w-3xl text-center">
+          <p className="text-xs font-bold uppercase tracking-[0.2em] text-camel">{t('instalar.eyebrow')}</p>
+          <h2 className="text-2xl font-bold text-espresso sm:text-3xl">{t('instalar.titulo')}</h2>
+          <p className="mx-auto mt-3 max-w-md text-cocoa">{t('instalar.descripcion')}</p>
+          <div className="mt-8 flex justify-center">
+            <InstalarApp />
           </div>
         </div>
       </section>
