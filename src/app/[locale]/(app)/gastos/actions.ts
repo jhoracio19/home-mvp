@@ -4,7 +4,9 @@ import { getLocale, getTranslations } from 'next-intl/server';
 import { redirect } from '@/i18n/navigation';
 import type { Locale } from '@/i18n/routing';
 import { getCasaActivaOrRedirect, getMiembrosCasaActiva, getSesion } from '@/lib/casas/data';
+import { nombreMiembro } from '@/lib/casas/nombre-miembro';
 import { enviarNotificacionAUsuario } from '@/lib/notificaciones/enviar';
+import { notificarPagoConfirmado } from '@/lib/notificaciones/gastos';
 import { intlLocale } from '@/lib/intl-locale';
 
 const MAX_DESCRIPCION = 100;
@@ -38,19 +40,47 @@ async function notificarNuevoGasto(creadoPor: string, descripcion: string, monto
   }
 }
 
-// Le avisa al DEUDOR que quien recibió el dinero ya confirmó el pago
-// — ya no hace falta buscar su nombre: el push es para él, no habla de
-// un tercero.
-async function notificarPagoConfirmado(deUsuarioId: string, monto: number) {
+// Le avisa a QUIEN PAGÓ que cada uno de los demás le debe su parte, con
+// un botón de acción para confirmar el pago sin abrir la app (llama a
+// /api/gastos/marcar-pagado desde el service worker). Va dirigido al
+// pagador y no a los deudores porque es quien puede confirmar el pago
+// — misma regla que registrarPago: solo quien recibe el dinero decide
+// cuándo se saldó.
+async function notificarDeudaAlPagador(pagadoPor: string, descripcion: string, monto: number, casaId: string) {
   try {
-    await enviarNotificacionAUsuario(deUsuarioId, async (locale) => {
-      const t = await getTranslations({ locale, namespace: 'Push' });
-      return {
-        title: t('pagoConfirmadoTitulo'),
-        body: t('pagoConfirmadoCuerpo', { monto: formatoMonedaPara(locale).format(monto) }),
-        url: '/gastos',
-      };
-    });
+    const miembros = await getMiembrosCasaActiva();
+    const numMiembros = miembros.length || 1;
+    const partePorPersona = monto / numMiembros;
+    const deudores = miembros.filter((m) => m.usuario_id !== pagadoPor);
+
+    await Promise.all(
+      deudores.map((deudor) =>
+        enviarNotificacionAUsuario(pagadoPor, async (locale) => {
+          const t = await getTranslations({ locale, namespace: 'Push' });
+          const nombreDeudor = nombreMiembro(deudor);
+          return {
+            title: t('teDebenTitulo'),
+            body: t('teDebenCuerpo', {
+              nombre: nombreDeudor,
+              monto: formatoMonedaPara(locale).format(partePorPersona),
+              descripcion,
+            }),
+            url: '/gastos',
+            accion: {
+              tipo: 'confirmar_pago' as const,
+              deUsuarioId: deudor.usuario_id,
+              monto: partePorPersona,
+              casaId,
+              etiquetaBoton: t('marcarPagadoBoton'),
+              tituloExito: t('pagoRegistradoTitulo'),
+              cuerpoExito: t('pagoRegistradoCuerpo', { nombre: nombreDeudor }),
+              tituloError: t('errorConfirmarTitulo'),
+              cuerpoError: t('errorConfirmarCuerpo'),
+            },
+          };
+        })
+      )
+    );
   } catch {
     // Silencioso a propósito.
   }
@@ -107,6 +137,7 @@ export async function agregarGasto(formData: FormData) {
   }
 
   await notificarNuevoGasto(user.id, descripcion, monto);
+  await notificarDeudaAlPagador(pagadoPor, descripcion, monto, casa.id);
 
   redirect({ href: '/gastos', locale });
 }

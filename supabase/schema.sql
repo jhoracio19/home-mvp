@@ -767,3 +767,50 @@ alter table tareas add constraint tareas_frecuencia_coherente check (
   or
   (tipo_frecuencia = 'unica' and frecuencia_dias is null and dias_semana is null)
 );
+
+-- ------------------------------------------------------------
+-- Vista de invitación sin cuenta: resumen genérico de la casa
+-- ------------------------------------------------------------
+
+-- previsualizar_invitacion ahora también regresa un resumen genérico
+-- de la casa (no personalizado a quien invitan — todavía no es
+-- miembro, así que no tiene tareas asignadas ni deudas propias). El
+-- objetivo es que alguien sin cuenta vea que hay actividad real
+-- esperándolo antes de pedirle que se registre. Hay que hacer drop
+-- primero porque CREATE OR REPLACE no permite cambiar las columnas de
+-- salida de una función existente.
+drop function if exists previsualizar_invitacion(text);
+
+create function previsualizar_invitacion(p_codigo text)
+returns table (
+  casa_id uuid,
+  nombre text,
+  total_miembros bigint,
+  tareas_activas bigint,
+  items_refri bigint,
+  gastos_mes numeric
+)
+language sql
+security definer
+set search_path = public
+stable
+as $$
+  select
+    c.id,
+    c.nombre,
+    (select count(*) from miembros_casa m where m.casa_id = c.id),
+    (select count(*) from tareas t where t.casa_id = c.id),
+    (select count(*) from items_refri r where r.casa_id = c.id),
+    coalesce(
+      (select sum(g.monto) from gastos g
+        where g.casa_id = c.id and g.fecha >= date_trunc('month', current_date)),
+      0
+    )
+  from casas c
+  where c.codigo_invitacion = p_codigo
+    and c.codigo_invitacion_expira > now();
+$$;
+
+-- A diferencia de antes, quien la llama puede no tener sesión todavía
+-- (está viendo el link de invitación sin haberse registrado).
+grant execute on function previsualizar_invitacion(text) to anon, authenticated;

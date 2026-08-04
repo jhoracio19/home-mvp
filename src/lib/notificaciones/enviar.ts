@@ -13,7 +13,23 @@ function asegurarVapid() {
   vapidConfigurado = true;
 }
 
-type Notificacion = { title: string; body: string; url?: string };
+// Botón de acción del push (ej. "Marcar como pagado"): el service
+// worker no tiene acceso a next-intl, así que todos los textos ya
+// vienen traducidos al idioma del destinatario desde el servidor —
+// sw.js solo arma el botón y hace el fetch, nunca decide el copy.
+type AccionNotificacion = {
+  tipo: 'confirmar_pago';
+  deUsuarioId: string;
+  monto: number;
+  casaId: string;
+  etiquetaBoton: string;
+  tituloExito: string;
+  cuerpoExito: string;
+  tituloError: string;
+  cuerpoError: string;
+};
+
+type Notificacion = { title: string; body: string; url?: string; accion?: AccionNotificacion };
 type ConstructorNotificacion = (locale: Locale) => Notificacion | Promise<Notificacion>;
 
 // Le manda un push a TODOS los dispositivos suscritos de un usuario

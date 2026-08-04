@@ -72,13 +72,58 @@ self.addEventListener('push', (event) => {
     body: datos.body || '',
     icon: '/icons/icon-192.png',
     badge: '/icons/icon-192.png',
-    data: { url: datos.url || '/dashboard' },
+    data: { url: datos.url || '/dashboard', accion: datos.accion || null },
   };
+
+  // Botones de acción (ej. "Marcar como pagado"): no los soporta
+  // Safari/iOS, así que ahí simplemente no aparece el botón y la
+  // notificación se comporta como cualquier otra (toca y abre la app)
+  // — degrada bien sin código extra.
+  if (datos.accion && datos.accion.tipo === 'confirmar_pago' && datos.accion.etiquetaBoton) {
+    opciones.actions = [{ action: 'confirmar_pago', title: datos.accion.etiquetaBoton }];
+  }
 
   event.waitUntil(self.registration.showNotification(titulo, opciones));
 });
 
+// Confirma el pago sin abrir la app: hace el POST directo desde el
+// service worker (comparte cookies de sesión del mismo origen) y
+// muestra una segunda notificación local con el resultado. Si algo
+// falla, no reintenta — le pide a la persona que abra la app.
+function confirmarPagoDesdeAccion(accion) {
+  return fetch('/api/gastos/marcar-pagado', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    credentials: 'same-origin',
+    body: JSON.stringify({ deUsuarioId: accion.deUsuarioId, monto: accion.monto, casaId: accion.casaId }),
+  })
+    .then((respuesta) =>
+      self.registration.showNotification(respuesta.ok ? accion.tituloExito : accion.tituloError, {
+        body: respuesta.ok ? accion.cuerpoExito : accion.cuerpoError,
+        icon: '/icons/icon-192.png',
+        badge: '/icons/icon-192.png',
+        data: { url: '/gastos' },
+      })
+    )
+    .catch(() =>
+      self.registration.showNotification(accion.tituloError, {
+        body: accion.cuerpoError,
+        icon: '/icons/icon-192.png',
+        badge: '/icons/icon-192.png',
+        data: { url: '/gastos' },
+      })
+    );
+}
+
 self.addEventListener('notificationclick', (event) => {
+  const accion = event.notification.data && event.notification.data.accion;
+
+  if (event.action === 'confirmar_pago' && accion) {
+    event.notification.close();
+    event.waitUntil(confirmarPagoDesdeAccion(accion));
+    return;
+  }
+
   event.notification.close();
   const url = event.notification.data && event.notification.data.url ? event.notification.data.url : '/dashboard';
 

@@ -110,7 +110,7 @@
     "buscar": "Buscar",
     "nombreDeLaTareaPlaceholder": "Nombre de la tarea",
     "nadaCoincide": "Nada coincide con esa búsqueda.",
-    "sinTareas": "Aún no hay tareas recurrentes. Crea la primera.",
+    "sinTareas": "Aún no hay tareas recurrentes registradas.",
     "cadaDias": "Cada {dias, plural, one {# día} other {# días}}",
     "miembro": "Miembro",
     "sinAsignar": "Sin asignar",
@@ -156,7 +156,7 @@
     "ejemploCantidad": "Ej. 2 litros",
     "agregar": "+ Agregar",
     "agregando": "Agregando…",
-    "listaVacia": "La lista está vacía. Agrega lo primero que necesiten.",
+    "listaVacia": "La lista de compras está vacía.",
     "quitar": "Quitar",
     "confirmarQuitar": "¿Quitar “{nombre}” de la lista?",
     "comprado": "Comprado ({n})",
@@ -235,7 +235,7 @@
     "categoria": "Categoría",
     "todas": "Todas",
     "nadaCoincide": "Nada coincide con esa búsqueda.",
-    "refriVacio": "Tu refri está vacío. Agrega el primer producto.",
+    "refriVacio": "Aún no hay nada registrado en el refri.",
     "masLista": "+ Lista",
     "agregandoLista": "Agregando…",
     "editar": "Editar",
@@ -333,7 +333,12 @@
     "ejemploCodigo": "Ej. AB12CD34",
     "buscar": "Buscar",
     "volver": "Volver",
-    "errorNoSePudoUnir": "No se pudo unir a la casa."
+    "errorNoSePudoUnir": "No se pudo unir a la casa.",
+    "resumenTitulo": "Así está la casa ahorita",
+    "resumenMiembros": "{n, plural, one {# persona ya vive aquí} other {# personas ya viven aquí}}",
+    "resumenTareas": "{n, plural, one {# tarea activa} other {# tareas activas}}",
+    "resumenRefri": "{n, plural, one {# producto en el refri} other {# productos en el refri}}",
+    "resumenGastos": "{monto} en gastos registrados este mes"
   },
   "Perfil": {
     "volver": "Volver",
@@ -392,12 +397,13 @@
     "avisos": {
       "eyebrow": "Avisos",
       "titulo": "Te avisamos nosotros, tú no tienes que acordarte",
-      "descripcion": "En cuanto alguien te asigna una tarea, te llega la notificación al momento. Cada mañana, un resumen de lo que vence en el refri y lo que te toca ese día — directo a tu celular, como cualquier otra app."
+      "descripcion": "En cuanto alguien te asigna una tarea, te llega la notificación al momento. Cada mañana, un resumen de lo que vence en el refri y lo que te toca ese día — directo a tu celular, como cualquier otra app. Si te deben dinero, hasta puedes marcarlo como pagado con un botón, sin abrir la app.",
+      "boton": "Marcar como pagado"
     },
     "comoFunciona": {
       "titulo": "Cómo funciona",
       "paso": "Paso {n}",
-      "paso1": "Crea tu casa, o únete con el código que te compartan.",
+      "paso1": "Crea tu casa, o únete con el código que te compartan — puedes ver un vistazo de la casa antes de registrarte.",
       "paso2": "Agreguen lo del refri, la lista de compras, las tareas, los gastos y las notas de la casa.",
       "paso3": "Repártanse, marquen, tachen, paguen — y dejen que la app avise y actualice a todos en vivo."
     },
@@ -450,6 +456,7 @@
       "notasContenido": "Wifi: MiCasa2024\nClave: ****\n\nNo fiestas después de las 11pm\n\nEmergencias: portero 555-123-4567",
       "avisoTareaTitulo": "Nueva tarea asignada",
       "avisoTareaCuerpo": "Te asignaron: Sacar la basura",
+      "avisoGastoCuerpo": "Luis te debe $150 por \"Súper\"",
       "avisoRefriCuerpo": "Plátano vence hoy"
     }
   },
@@ -511,6 +518,13 @@
     "nuevoGastoCuerpo": "{descripcion}: {monto}",
     "pagoConfirmadoTitulo": "Pago confirmado",
     "pagoConfirmadoCuerpo": "Tu pago de {monto} quedó confirmado.",
+    "teDebenTitulo": "Te deben dinero",
+    "teDebenCuerpo": "{nombre} te debe {monto} por \"{descripcion}\"",
+    "marcarPagadoBoton": "Marcar como pagado",
+    "pagoRegistradoTitulo": "Listo",
+    "pagoRegistradoCuerpo": "Se marcó como pagado lo que te debía {nombre}.",
+    "errorConfirmarTitulo": "No se pudo confirmar",
+    "errorConfirmarCuerpo": "Abre la app para marcarlo como pagado.",
     "alguien": "Alguien",
     "digestVenceHoy": "{nombre} vence hoy",
     "digestVenceManana": "{nombre} vence mañana",

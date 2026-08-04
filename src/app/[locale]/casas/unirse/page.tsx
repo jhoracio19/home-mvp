@@ -1,14 +1,24 @@
 import { getLocale, getTranslations } from 'next-intl/server';
-import { Link, redirect } from '@/i18n/navigation';
+import { Link } from '@/i18n/navigation';
 import type { Locale } from '@/i18n/routing';
 import { createClient } from '@/lib/supabase/server';
+import { intlLocale } from '@/lib/intl-locale';
 import { unirseConCodigo } from './actions';
 import { Input } from '@/components/ui/Input';
 import { SubmitButton } from '@/components/ui/SubmitButton';
 import { buttonClasses } from '@/components/ui/Button';
 
-function rutaActual(codigo?: string) {
-  return codigo ? `/casas/unirse?codigo=${encodeURIComponent(codigo)}` : '/casas/unirse';
+type Invitacion = {
+  casa_id: string;
+  nombre: string;
+  total_miembros: number;
+  tareas_activas: number;
+  items_refri: number;
+  gastos_mes: number;
+};
+
+function formatoMonedaPara(locale: Locale) {
+  return new Intl.NumberFormat(intlLocale(locale), { style: 'currency', currency: 'MXN' });
 }
 
 export default async function UnirseCasaPage({
@@ -21,19 +31,17 @@ export default async function UnirseCasaPage({
   const t = await getTranslations('UnirseCasa');
   const locale = (await getLocale()) as Locale;
 
-  // No usamos getSesion() (que redirige a /login sin recordar a dónde
-  // ibas): aquí necesitamos volver exactamente a esta invitación
-  // después de iniciar sesión.
+  // No exigimos sesión para ver esta página: previsualizar_invitacion
+  // está otorgada a `anon` a propósito, así quien recibe el link ve un
+  // resumen real de la casa antes de que le pidamos crear cuenta. El
+  // login solo se exige al dar clic en "unirme" (unirseConCodigo ya
+  // redirige a /login con next de vuelta a esta misma invitación).
   const supabase = await createClient();
   const {
     data: { user },
   } = await supabase.auth.getUser();
 
-  if (!user) {
-    redirect({ href: `/login?next=${encodeURIComponent(rutaActual(codigo))}`, locale });
-  }
-
-  let invitacion: { casa_id: string; nombre: string } | null = null;
+  let invitacion: Invitacion | null = null;
   if (codigo) {
     const { data } = await supabase.rpc('previsualizar_invitacion', { p_codigo: codigo });
     invitacion = data?.[0] ?? null;
@@ -62,6 +70,19 @@ export default async function UnirseCasaPage({
           <div className="space-y-4 text-center">
             <p className="text-sm text-cocoa dark:text-khaki">{t('teInvitaron')}</p>
             <p className="text-xl font-bold text-espresso dark:text-linen">{invitacion.nombre}</p>
+
+            <div className="space-y-2 rounded-lg border border-camel/60 bg-linen px-4 py-3 text-left dark:border-cocoa dark:bg-espresso">
+              <p className="text-xs font-bold uppercase tracking-wide text-camel">{t('resumenTitulo')}</p>
+              <ul className="space-y-1 text-sm text-cocoa dark:text-khaki">
+                <li>{t('resumenMiembros', { n: invitacion.total_miembros })}</li>
+                <li>{t('resumenTareas', { n: invitacion.tareas_activas })}</li>
+                <li>{t('resumenRefri', { n: invitacion.items_refri })}</li>
+                <li>
+                  {t('resumenGastos', { monto: formatoMonedaPara(locale).format(invitacion.gastos_mes) })}
+                </li>
+              </ul>
+            </div>
+
             <form action={unirseConCodigo.bind(null, codigo!)}>
               <SubmitButton className="w-full" pendingText={t('uniendome')}>
                 {t('unirmeAEstaCasa')}
@@ -85,7 +106,7 @@ export default async function UnirseCasaPage({
         )}
 
         <p className="text-center text-sm text-cocoa dark:text-khaki">
-          <Link href="/dashboard" className="font-bold text-camel hover:underline">
+          <Link href={user ? '/dashboard' : '/'} className="font-bold text-camel hover:underline">
             {t('volver')}
           </Link>
         </p>

@@ -110,7 +110,7 @@
     "buscar": "Search",
     "nombreDeLaTareaPlaceholder": "Task name",
     "nadaCoincide": "Nothing matches that search.",
-    "sinTareas": "No recurring tasks yet. Create the first one.",
+    "sinTareas": "No recurring tasks yet.",
     "cadaDias": "Every {dias, plural, one {# day} other {# days}}",
     "miembro": "Member",
     "sinAsignar": "Unassigned",
@@ -156,7 +156,7 @@
     "ejemploCantidad": "E.g. 2 liters",
     "agregar": "+ Add",
     "agregando": "Adding…",
-    "listaVacia": "The list is empty. Add the first thing you need.",
+    "listaVacia": "The shopping list is empty.",
     "quitar": "Remove",
     "confirmarQuitar": "Remove “{nombre}” from the list?",
     "comprado": "Bought ({n})",
@@ -235,7 +235,7 @@
     "categoria": "Category",
     "todas": "All",
     "nadaCoincide": "Nothing matches that search.",
-    "refriVacio": "Your fridge is empty. Add the first product.",
+    "refriVacio": "Nothing in the fridge yet.",
     "masLista": "+ List",
     "agregandoLista": "Adding…",
     "editar": "Edit",
@@ -333,7 +333,12 @@
     "ejemploCodigo": "E.g. AB12CD34",
     "buscar": "Search",
     "volver": "Back",
-    "errorNoSePudoUnir": "Couldn't join the house."
+    "errorNoSePudoUnir": "Couldn't join the house.",
+    "resumenTitulo": "Here's what's going on in the house",
+    "resumenMiembros": "{n, plural, one {# person already living here} other {# people already living here}}",
+    "resumenTareas": "{n, plural, one {# active task} other {# active tasks}}",
+    "resumenRefri": "{n, plural, one {# item in the fridge} other {# items in the fridge}}",
+    "resumenGastos": "{monto} in expenses logged this month"
   },
   "Perfil": {
     "volver": "Back",
@@ -392,12 +397,13 @@
     "avisos": {
       "eyebrow": "Notifications",
       "titulo": "We'll remind you — you don't have to remember",
-      "descripcion": "The moment someone assigns you a task, you get notified instantly. Every morning, a summary of what's expiring in the fridge and what's on your plate that day — straight to your phone, like any other app."
+      "descripcion": "The moment someone assigns you a task, you get notified instantly. Every morning, a summary of what's expiring in the fridge and what's on your plate that day — straight to your phone, like any other app. If someone owes you money, you can even mark it as paid with a button, without opening the app.",
+      "boton": "Mark as paid"
     },
     "comoFunciona": {
       "titulo": "How it works",
       "paso": "Step {n}",
-      "paso1": "Create your house, or join with a code someone shares with you.",
+      "paso1": "Create your house, or join with a code someone shares with you — you can preview the house before you sign up.",
       "paso2": "Add what's in the fridge, the shopping list, tasks, expenses, and house notes.",
       "paso3": "Split it up, check things off, pay each other back — and let the app notify and update everyone live."
     },
@@ -450,6 +456,7 @@
       "notasContenido": "Wifi: MyHouse2024\nPassword: ****\n\nNo parties after 11pm\n\nEmergencies: front desk 555-123-4567",
       "avisoTareaTitulo": "New task assigned",
       "avisoTareaCuerpo": "You were assigned: Take out the trash",
+      "avisoGastoCuerpo": "Luis owes you $150 for \"Groceries\"",
       "avisoRefriCuerpo": "Banana expires today"
     }
   },
@@ -511,6 +518,13 @@
     "nuevoGastoCuerpo": "{descripcion}: {monto}",
     "pagoConfirmadoTitulo": "Payment confirmed",
     "pagoConfirmadoCuerpo": "Your payment of {monto} was confirmed.",
+    "teDebenTitulo": "You're owed money",
+    "teDebenCuerpo": "{nombre} owes you {monto} for \"{descripcion}\"",
+    "marcarPagadoBoton": "Mark as paid",
+    "pagoRegistradoTitulo": "Done",
+    "pagoRegistradoCuerpo": "Marked what {nombre} owed you as paid.",
+    "errorConfirmarTitulo": "Couldn't confirm",
+    "errorConfirmarCuerpo": "Open the app to mark it as paid.",
     "alguien": "Someone",
     "digestVenceHoy": "{nombre} expires today",
     "digestVenceManana": "{nombre} expires tomorrow",

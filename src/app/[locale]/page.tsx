@@ -245,17 +245,25 @@ function MockupAvisos({ t }: Traductores) {
   const m = t.raw('mockup') as Record<string, string>;
   const avisos = [
     { titulo: m.avisoTareaTitulo, cuerpo: m.avisoTareaCuerpo },
+    { titulo: 'RemindHome', cuerpo: m.avisoGastoCuerpo, boton: t('avisos.boton') },
     { titulo: 'RemindHome', cuerpo: m.avisoRefriCuerpo },
   ];
   return (
     <div className="w-full max-w-sm space-y-3">
-      {avisos.map((a) => (
-        <div key={a.titulo} className="flex items-start gap-3 rounded-xl border border-camel bg-khaki p-3 shadow-md">
-          <Logomark className="h-8 w-8 shrink-0 rounded-lg" />
-          <div className="min-w-0">
-            <p className="text-sm font-bold text-espresso">{a.titulo}</p>
-            <p className="truncate text-xs text-cocoa">{a.cuerpo}</p>
+      {avisos.map((a, i) => (
+        <div key={i} className="rounded-xl border border-camel bg-khaki shadow-md">
+          <div className="flex items-start gap-3 p-3">
+            <Logomark className="h-8 w-8 shrink-0 rounded-lg" />
+            <div className="min-w-0">
+              <p className="text-sm font-bold text-espresso">{a.titulo}</p>
+              <p className="truncate text-xs text-cocoa">{a.cuerpo}</p>
+            </div>
           </div>
+          {a.boton && (
+            <div className="border-t border-camel/50 px-3 py-2">
+              <span className="text-xs font-bold text-camel">{a.boton}</span>
+            </div>
+          )}
         </div>
       ))}
     </div>

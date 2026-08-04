@@ -386,7 +386,14 @@ export interface Database {
       };
       previsualizar_invitacion: {
         Args: { p_codigo: string };
-        Returns: { casa_id: string; nombre: string }[];
+        Returns: {
+          casa_id: string;
+          nombre: string;
+          total_miembros: number;
+          tareas_activas: number;
+          items_refri: number;
+          gastos_mes: number;
+        }[];
       };
       unirse_a_casa: {
         Args: { p_codigo: string };
