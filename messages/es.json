@@ -361,7 +361,7 @@
     "refri": {
       "eyebrow": "Refri",
       "titulo": "Sabe qué va a caducar antes de abrir el refri",
-      "descripcion": "Agrega lo que compran — frutas y verduras se autocompletan con cuánto suelen durar. Cada producto se acomoda solo según qué tan urgente esté: vencido, vence hoy, o todavía hay tiempo."
+      "descripcion": "Agrega lo que compran — frutas y verduras se autocompletan con cuánto suelen durar. Cada producto se acomoda solo según qué tan urgente esté: vencido, vence hoy, o todavía hay tiempo. Marca de quién es cada cosa, o déjalo compartido para toda la casa."
     },
     "compras": {
       "eyebrow": "Compras",
@@ -376,7 +376,7 @@
     "tareas": {
       "eyebrow": "Tareas",
       "titulo": "Repártanse lo de la casa sin repetir la misma discusión cada semana",
-      "descripcion": "Crea tareas que se repiten cada tantos días, o en días fijos de la semana — lavar trastes lunes, miércoles y viernes, por ejemplo. Asígnalas a quien le toque; al marcarlas como hechas, la app calcula sola cuándo vuelven a tocar, y todos lo ven reflejado al momento, sin recargar nada."
+      "descripcion": "Crea tareas que se repiten cada tantos días, o en días fijos de la semana — lavar trastes lunes, miércoles y viernes, por ejemplo. Asígnalas a quien le toque; al marcarlas como hechas, la app calcula sola cuándo vuelven a tocar, y todos lo ven reflejado al momento, sin recargar nada. ¿Algo que pasa una sola vez, como recoger un paquete el sábado? Créala como evento único, con fecha opcional, y se borra sola en cuanto la marcas hecha."
     },
     "logros": {
       "eyebrow": "Logros",
@@ -441,6 +441,10 @@
       "lavarTrastes": "Lavar trastes",
       "detalleSacarBasura": "Sáb · Ana",
       "detalleLavarTrastes": "Lun, Mié, Vie · Luis",
+      "duenoAna": "Ana",
+      "duenoLuis": "Luis",
+      "tareaUnicaNombre": "Comprar el pastel",
+      "fechaEventoEjemplo": "15 ago",
       "mesEjemplo": "Agosto 2026",
       "notasContenido": "Wifi: MiCasa2024\nClave: ****\n\nNo fiestas después de las 11pm\n\nEmergencias: portero 555-123-4567",
       "avisoTareaTitulo": "Nueva tarea asignada",

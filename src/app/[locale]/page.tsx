@@ -55,9 +55,9 @@ function TelefonoRefri({ t, tUrgencia, tCategorias, tNav, tRefri }: Traductores)
           </div>
 
           {[
-            { nombre: m.leche, cat: 'lacteo', badge: tUrgencia('vencioHace', { dias: 1 }), estilo: URGENCIA.vencido },
-            { nombre: m.platano, cat: 'fruta', badge: tUrgencia('venceHoy'), estilo: URGENCIA.hoy },
-            { nombre: m.pechugaDePollo, cat: 'carne', badge: tUrgencia('venceEn', { dias: 4 }), estilo: URGENCIA.normal },
+            { nombre: m.leche, cat: 'lacteo', dueno: m.duenoAna, badge: tUrgencia('vencioHace', { dias: 1 }), estilo: URGENCIA.vencido },
+            { nombre: m.platano, cat: 'fruta', dueno: null, badge: tUrgencia('venceHoy'), estilo: URGENCIA.hoy },
+            { nombre: m.pechugaDePollo, cat: 'carne', dueno: m.duenoLuis, badge: tUrgencia('venceEn', { dias: 4 }), estilo: URGENCIA.normal },
           ].map((item) => (
             <div key={item.nombre} className={`rounded-lg border-2 p-2.5 ${item.estilo}`}>
               <div className="flex items-start justify-between gap-2">
@@ -68,6 +68,11 @@ function TelefonoRefri({ t, tUrgencia, tCategorias, tNav, tRefri }: Traductores)
                   >
                     {tCategorias(item.cat)}
                   </span>
+                  {item.dueno && (
+                    <span className="ml-1 mt-1 inline-block rounded-full border border-cocoa/40 bg-white/50 px-1.5 py-0.5 text-[0.5rem] font-bold text-cocoa">
+                      {item.dueno}
+                    </span>
+                  )}
                 </div>
                 <span className="shrink-0 rounded-full bg-white/70 px-1.5 py-0.5 text-[0.55rem] font-bold text-cocoa">
                   {item.badge}
@@ -89,6 +94,12 @@ function MockupTareas({ t, tUrgencia, tTareas }: Traductores) {
       nombre: m.lavarTrastes,
       detalle: m.detalleLavarTrastes,
       badge: tUrgencia('venceEn', { dias: 2 }),
+      estilo: URGENCIA.normal,
+    },
+    {
+      nombre: m.tareaUnicaNombre,
+      detalle: `${tTareas('fechaLimite', { fecha: m.fechaEventoEjemplo })} · ${m.duenoAna}`,
+      badge: tUrgencia('venceEn', { dias: 6 }),
       estilo: URGENCIA.normal,
     },
   ];
@@ -343,12 +354,14 @@ export default async function RootPage() {
                 {
                   nombre: t.raw('mockup').leche,
                   cat: 'lacteo',
+                  dueno: t.raw('mockup').duenoAna,
                   badge: tUrgencia('vencioHace', { dias: 1 }),
                   estilo: URGENCIA.vencido,
                 },
                 {
                   nombre: t.raw('mockup').platano,
                   cat: 'fruta',
+                  dueno: null,
                   badge: tUrgencia('venceHoy'),
                   estilo: URGENCIA.hoy,
                 },
@@ -362,6 +375,11 @@ export default async function RootPage() {
                       >
                         {tCategorias(item.cat)}
                       </span>
+                      {item.dueno && (
+                        <span className="ml-1.5 mt-1 inline-block rounded-full border border-cocoa/40 bg-white/50 px-2 py-0.5 text-[0.65rem] font-bold text-cocoa">
+                          {item.dueno}
+                        </span>
+                      )}
                     </div>
                     <span className="shrink-0 rounded-full bg-white/70 px-2 py-1 text-xs font-bold text-cocoa">
                       {item.badge}

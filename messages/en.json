@@ -361,7 +361,7 @@
     "refri": {
       "eyebrow": "Fridge",
       "titulo": "Know what's about to expire before you open the fridge",
-      "descripcion": "Add what you buy — fruits and vegetables auto-fill how long they usually last. Every item sorts itself by urgency: expired, expiring today, or still good."
+      "descripcion": "Add what you buy — fruits and vegetables auto-fill how long they usually last. Every item sorts itself by urgency: expired, expiring today, or still good. Mark who each item belongs to, or leave it shared for the whole house."
     },
     "compras": {
       "eyebrow": "Shopping",
@@ -376,7 +376,7 @@
     "tareas": {
       "eyebrow": "Tasks",
       "titulo": "Split up the chores without having the same argument every week",
-      "descripcion": "Create tasks that repeat every few days, or on fixed days of the week — dishes on Monday, Wednesday, and Friday, for example. Assign them to whoever's turn it is; once marked done, the app figures out on its own when they're due again, and everyone sees it update instantly."
+      "descripcion": "Create tasks that repeat every few days, or on fixed days of the week — dishes on Monday, Wednesday, and Friday, for example. Assign them to whoever's turn it is; once marked done, the app figures out on its own when they're due again, and everyone sees it update instantly. Got something that only happens once, like picking up a package on Saturday? Add it as a one-time event, with an optional date, and it deletes itself the moment you mark it done."
     },
     "logros": {
       "eyebrow": "Achievements",
@@ -441,6 +441,10 @@
       "lavarTrastes": "Wash the dishes",
       "detalleSacarBasura": "Sat · Ana",
       "detalleLavarTrastes": "Mon, Wed, Fri · Luis",
+      "duenoAna": "Ana",
+      "duenoLuis": "Luis",
+      "tareaUnicaNombre": "Buy the cake",
+      "fechaEventoEjemplo": "Aug 15",
       "mesEjemplo": "August 2026",
       "notasContenido": "Wifi: MyHouse2024\nPassword: ****\n\nNo parties after 11pm\n\nEmergencies: front desk 555-123-4567",
       "avisoTareaTitulo": "New task assigned",
