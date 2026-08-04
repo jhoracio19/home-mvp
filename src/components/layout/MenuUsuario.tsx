@@ -50,7 +50,7 @@ export function MenuUsuario({ dentroDeCasa, esAdmin }: { dentroDeCasa: boolean; 
 
       <div
         onClick={cerrar}
-        className="absolute right-0 z-20 mt-2 w-56 overflow-hidden rounded-lg border-2 border-camel bg-white text-left shadow-lg"
+        className="absolute right-0 z-20 mt-2 max-h-[calc(100vh-6rem)] w-56 overflow-x-hidden overflow-y-auto overscroll-contain rounded-lg border-2 border-camel bg-white text-left shadow-lg"
       >
         {dentroDeCasa && (
           <>
