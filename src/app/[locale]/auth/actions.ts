@@ -7,6 +7,7 @@ import type { EmailOtpType } from '@supabase/supabase-js';
 import { createClient } from '@/lib/supabase/server';
 import { mensajeErrorAuth } from '@/lib/auth/errors';
 import { destinoSeguro } from '@/lib/auth/destino-seguro';
+import { esAdmin } from '@/lib/admin/auth';
 import { redirect } from '@/i18n/navigation';
 import type { Locale } from '@/i18n/routing';
 
@@ -53,7 +54,7 @@ export async function login(formData: FormData) {
   const next = destinoSeguro(String(formData.get('next') ?? ''));
 
   const supabase = await createClient();
-  const { error } = await supabase.auth.signInWithPassword({ email, password });
+  const { data, error } = await supabase.auth.signInWithPassword({ email, password });
 
   if (error) {
     redirect({
@@ -62,7 +63,10 @@ export async function login(formData: FormData) {
     });
   }
 
-  redirect({ href: next, locale });
+  // La cuenta de superusuario siempre entra directo al panel de
+  // actividad (/admin), sin importar a dónde apuntara `next` — ese
+  // correo es solo para ver esos datos, no para usar la app normal.
+  redirect({ href: esAdmin(data.user?.email) ? '/admin' : next, locale });
 }
 
 export async function signup(formData: FormData) {

@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
 import { destinoSeguro } from '@/lib/auth/destino-seguro';
+import { esAdmin } from '@/lib/admin/auth';
 import { routing } from '@/i18n/routing';
 
 // Recibe el `code` que Supabase agrega al redirigir de vuelta desde
@@ -23,9 +24,13 @@ export async function GET(request: Request) {
 
   if (code) {
     const supabase = await createClient();
-    const { error } = await supabase.auth.exchangeCodeForSession(code);
+    const { data, error } = await supabase.auth.exchangeCodeForSession(code);
     if (!error) {
-      return NextResponse.redirect(`${origin}/${locale}${next}`);
+      // La cuenta de superusuario (entra por Google) siempre cae en el
+      // panel de actividad, sin importar `next` — ese correo es solo
+      // para ver esos datos, no para usar la app normal.
+      const destino = esAdmin(data.user?.email) ? '/admin' : next;
+      return NextResponse.redirect(`${origin}/${locale}${destino}`);
     }
   }
 
