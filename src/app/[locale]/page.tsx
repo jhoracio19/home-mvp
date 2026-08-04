@@ -302,7 +302,7 @@ export default async function RootPage() {
               {t('hero.yaTengoCuenta')}
             </Link>
           </div>
-          <StickyCTA texto={t('crearCuentaGratis')} />
+          <StickyCTA texto={t('entraConGoogle')} />
           <p className="text-xs text-cocoa/70">{t('hero.esGratis')}</p>
           <p className="inline-flex items-center gap-1.5 text-xs font-semibold text-cocoa">
             <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-[#6B8F5A]" />
