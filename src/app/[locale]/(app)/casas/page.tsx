@@ -18,7 +18,7 @@ export default async function CasasPage({
   const totalCasas = casas.length;
 
   return (
-    <main className="flex flex-1 bg-[radial-gradient(circle_at_top_left,_rgba(178,150,125,0.3),_transparent_34%)] bg-linen px-4 py-8 dark:bg-none dark:bg-espresso">
+    <main className="flex flex-1 fondo-pagina px-4 py-8 dark:bg-none dark:bg-espresso">
       <section className="mx-auto grid w-full max-w-5xl gap-6 lg:grid-cols-[1fr_360px]">
         <div className="space-y-6">
           <div className="space-y-3">
@@ -28,7 +28,7 @@ export default async function CasasPage({
                 <h1 className="text-3xl font-bold text-cocoa dark:text-linen">{t('titulo')}</h1>
                 <p className="max-w-xl text-sm leading-6 text-cocoa dark:text-khaki">{t('descripcion')}</p>
               </div>
-              <div className="w-fit rounded-lg border border-camel bg-khaki px-3 py-2 text-sm font-semibold text-cocoa shadow-sm dark:border-cocoa dark:bg-[#3a2820] dark:text-linen">
+              <div className="w-fit rounded-lg border border-camel bg-khaki px-3 py-2 text-sm font-semibold text-cocoa shadow-sm dark:border-cocoa dark:bg-espresso-deep dark:text-linen">
                 {totalCasas} {t('totalCasas', { n: totalCasas })}
               </div>
             </div>
@@ -41,7 +41,7 @@ export default async function CasasPage({
           )}
 
           {error && (
-            <p className="rounded-lg border border-[#fecdca] bg-[#fef3f2] px-4 py-3 text-sm font-semibold text-[#b42318] dark:border-[#7a271a] dark:bg-[#451a14] dark:text-[#fecdca]">
+            <p className="rounded-lg border border-danger bg-danger/10 px-4 py-3 text-sm font-semibold text-danger dark:border-danger-soft dark:bg-danger/20 dark:text-danger-soft">
               {error}
             </p>
           )}
@@ -53,7 +53,7 @@ export default async function CasasPage({
                   <form action={seleccionarCasa.bind(null, casa.id)}>
                     <button
                       type="submit"
-                      className="group flex min-h-28 w-full flex-col justify-between rounded-lg border border-camel bg-khaki p-4 text-left shadow-sm transition hover:-translate-y-0.5 hover:border-espresso hover:shadow-md focus:outline-none focus:ring-2 focus:ring-camel/40 dark:border-cocoa dark:bg-[#3a2820] dark:hover:border-camel dark:hover:bg-cocoa"
+                      className="group flex min-h-28 w-full flex-col justify-between rounded-lg border border-camel bg-khaki p-4 text-left shadow-sm transition hover:-translate-y-0.5 hover:border-espresso hover:shadow-md focus:outline-none focus:ring-2 focus:ring-camel/40 dark:border-cocoa dark:bg-espresso-deep dark:hover:border-camel dark:hover:bg-cocoa"
                     >
                       <span className="flex items-start justify-between gap-3">
                         <span className="text-lg font-bold text-cocoa dark:text-linen">
@@ -75,14 +75,14 @@ export default async function CasasPage({
               ))}
             </ul>
           ) : (
-            <div className="rounded-lg border border-dashed border-camel bg-khaki/60 p-6 shadow-sm dark:border-khaki/40 dark:bg-[#3a2820]/80">
+            <div className="rounded-lg border border-dashed border-camel bg-khaki/60 p-6 shadow-sm dark:border-khaki/40 dark:bg-espresso-deep/80">
               <h2 className="text-lg font-bold text-cocoa dark:text-linen">{t('sinCasasTitulo')}</h2>
               <p className="mt-2 text-sm leading-6 text-cocoa dark:text-khaki">{t('sinCasasDescripcion')}</p>
             </div>
           )}
         </div>
 
-        <aside className="h-fit rounded-lg border border-camel bg-khaki p-5 shadow-sm dark:border-cocoa dark:bg-[#3a2820]">
+        <aside className="h-fit rounded-lg border border-camel bg-khaki p-5 shadow-sm dark:border-cocoa dark:bg-espresso-deep">
           <div className="mb-5 space-y-1">
             <h2 className="text-lg font-bold text-cocoa dark:text-linen">{t('nuevaCasa')}</h2>
             <p className="text-sm leading-6 text-cocoa dark:text-khaki">{t('nuevaCasaDescripcion')}</p>

@@ -52,6 +52,8 @@
     "refri": "Fridge",
     "compras": "Shopping",
     "tareas": "Tasks",
+    "gastos": "Expenses",
+    "notas": "Notes",
     "invitarMiembros": "Invite members",
     "notasDeLaCasa": "House notes",
     "gastosCompartidos": "Shared expenses",
@@ -531,7 +533,9 @@
     "copiado": "Copied ✓",
     "ocultarContrasena": "Hide password",
     "mostrarContrasena": "Show password",
-    "cargando": "Loading…"
+    "cargando": "Loading…",
+    "confirmar": "Yes, continue",
+    "cancelar": "Cancel"
   },
   "Push": {
     "tareaAsignadaTitulo": "New task assigned",

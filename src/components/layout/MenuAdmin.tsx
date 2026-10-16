@@ -38,7 +38,7 @@ export function MenuAdmin() {
 
       <div
         onClick={cerrar}
-        className="absolute right-0 z-20 mt-2 w-52 overflow-hidden rounded-lg border-2 border-camel bg-white text-left shadow-lg"
+        className="absolute right-0 z-20 mt-2 w-52 overflow-hidden rounded-lg border-2 border-camel bg-overlay text-left shadow-lg"
       >
         <Link href="/casas" className={itemClase}>
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={iconoClase}>
@@ -53,7 +53,7 @@ export function MenuAdmin() {
         <form action={logout}>
           <button
             type="submit"
-            className="flex w-full items-center gap-3 px-4 py-3 text-left text-sm font-semibold text-[#a8422e] hover:bg-khaki/30"
+            className="flex w-full items-center gap-3 px-4 py-3 text-left text-sm font-semibold text-danger hover:bg-khaki/30"
           >
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={iconoClase}>
               <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />

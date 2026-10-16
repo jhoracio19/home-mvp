@@ -29,7 +29,7 @@ export default async function ConfirmarPage({
           </div>
 
           {error && (
-            <p className="rounded-lg border border-[#a8422e] bg-[#a8422e]/10 px-3 py-2 text-sm font-medium text-[#a8422e]">
+            <p className="rounded-lg border border-danger bg-danger/10 px-3 py-2 text-sm font-medium text-danger">
               {error}
             </p>
           )}

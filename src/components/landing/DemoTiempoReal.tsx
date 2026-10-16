@@ -35,10 +35,10 @@ function Telefono({
                   texto de la tarea (flex-1) sabe hasta dónde truncar sin
                   encimarse, en vez de adivinar con posición absoluta. */}
               <span className="grid shrink-0 justify-items-end">
-                <span className="demo-badge-pendiente col-start-1 row-start-1 whitespace-nowrap rounded-full bg-white/70 px-1.5 py-0.5 text-[0.5rem] font-bold text-cocoa">
+                <span className="demo-badge-pendiente col-start-1 row-start-1 whitespace-nowrap rounded-full bg-overlay/70 px-1.5 py-0.5 text-[0.5rem] font-bold text-cocoa">
                   {badgePendiente}
                 </span>
-                <span className="demo-badge-hecho col-start-1 row-start-1 whitespace-nowrap rounded-full bg-[#6B8F5A]/20 px-1.5 py-0.5 text-[0.5rem] font-bold text-[#6B8F5A]">
+                <span className="demo-badge-hecho col-start-1 row-start-1 whitespace-nowrap rounded-full bg-success/20 px-1.5 py-0.5 text-[0.5rem] font-bold text-success">
                   {badgeHecho}
                 </span>
               </span>

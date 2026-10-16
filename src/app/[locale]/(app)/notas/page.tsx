@@ -1,11 +1,12 @@
 import { getLocale, getTranslations } from 'next-intl/server';
-import { Link } from '@/i18n/navigation';
 import type { Locale } from '@/i18n/routing';
 import { getCasaActivaOrRedirect } from '@/lib/casas/data';
 import { getNotaCasa } from '@/lib/notas/data';
 import { intlLocale } from '@/lib/intl-locale';
 import { actualizarNotaCasa } from './actions';
 import { SubmitButton } from '@/components/ui/SubmitButton';
+import { Alerta } from '@/components/ui/Alerta';
+import { BotonVolver } from '@/components/layout/BotonVolver';
 import { EscuchaRealtime } from '@/components/realtime/EscuchaRealtime';
 
 export default async function NotasPage({
@@ -28,15 +29,10 @@ export default async function NotasPage({
   });
 
   return (
-    <main className="flex flex-1 justify-center bg-[radial-gradient(circle_at_top_left,_rgba(178,150,125,0.3),_transparent_34%)] bg-linen px-4 py-8">
+    <main className="flex flex-1 justify-center fondo-pagina px-4 py-8">
       <EscuchaRealtime tabla="notas_casa" casaId={casa.id} />
       <section className="w-full max-w-2xl space-y-6">
-        <Link href="/dashboard" className="inline-flex items-center gap-1 text-sm font-semibold text-cocoa hover:underline">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="h-4 w-4">
-            <polyline points="15 18 9 12 15 6" />
-          </svg>
-          {t('volver')}
-        </Link>
+        <BotonVolver href="/dashboard">{t('volver')}</BotonVolver>
 
         <div>
           <p className="text-xs font-bold uppercase tracking-[0.18em] text-camel">{casa.nombre}</p>
@@ -44,16 +40,8 @@ export default async function NotasPage({
           <p className="mt-1 text-sm text-cocoa/70">{t('descripcion')}</p>
         </div>
 
-        {message && (
-          <p className="rounded-lg border-2 border-camel bg-linen px-3 py-2 text-sm font-semibold text-cocoa">
-            {message}
-          </p>
-        )}
-        {error && (
-          <p className="rounded-lg border border-[#a8422e] bg-[#a8422e]/10 px-3 py-2 text-sm font-medium text-[#a8422e]">
-            {error}
-          </p>
-        )}
+        {message && <Alerta variante="info">{message}</Alerta>}
+        {error && <Alerta variante="error">{error}</Alerta>}
 
         <form action={actualizarNotaCasa} className="space-y-3">
           <label htmlFor="contenido" className="sr-only">
@@ -66,7 +54,7 @@ export default async function NotasPage({
             maxLength={5000}
             rows={14}
             placeholder={t('placeholder')}
-            className="w-full rounded-lg border-2 border-camel bg-khaki px-4 py-3 text-sm leading-relaxed text-cocoa shadow-sm placeholder:text-cocoa/50 focus:border-espresso focus:outline-none focus:ring-2 focus:ring-camel/35"
+            className="w-full rounded-lg border border-camel bg-linen px-4 py-3 text-sm leading-relaxed text-cocoa shadow-sm placeholder:text-cocoa/50 focus:border-espresso focus:outline-none focus:ring-2 focus:ring-camel/35"
           />
           <div className="flex items-center justify-between gap-3">
             {nota?.actualizado_en ? (

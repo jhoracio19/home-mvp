@@ -7,21 +7,15 @@ import { completarTarea, eliminarTarea } from './actions';
 import { calcularProximaFecha } from '@/lib/tareas/urgencia';
 import { calcularLogros } from '@/lib/tareas/logros';
 import { etiquetaDiasSemana } from '@/lib/tareas/dias-semana';
-import { calcularDiasRestantes, clasificarUrgencia, etiquetaUrgencia, parseFechaLocal, type Urgencia } from '@/lib/urgencia';
+import { calcularDiasRestantes, clasificarUrgencia, etiquetaUrgencia, parseFechaLocal, ESTILOS_URGENCIA } from '@/lib/urgencia';
 import { intlLocale } from '@/lib/intl-locale';
 import type { Locale } from '@/i18n/routing';
 import { buttonClasses } from '@/components/ui/Button';
 import { SubmitButton } from '@/components/ui/SubmitButton';
 import { Input } from '@/components/ui/Input';
 import { FormBusqueda } from '@/components/ui/FormBusqueda';
+import { EmptyState } from '@/components/ui/EmptyState';
 import { EscuchaRealtime } from '@/components/realtime/EscuchaRealtime';
-
-const ESTILOS_URGENCIA: Record<Urgencia, string> = {
-  vencido: 'border-[#a8422e] bg-[#a8422e]/10 text-[#a8422e] dark:bg-[#a8422e]/15 dark:text-[#e3a999]',
-  hoy: 'border-[#c9702f] bg-[#c9702f]/10 text-[#c9702f] dark:bg-[#c9702f]/15 dark:text-[#f0b988]',
-  pronto: 'border-camel bg-camel/15 text-cocoa dark:bg-camel/10 dark:text-camel',
-  normal: 'border-camel bg-khaki text-cocoa dark:border-cocoa dark:bg-[#3a2820] dark:text-khaki',
-};
 
 export default async function TareasPage({
   searchParams,
@@ -58,7 +52,7 @@ export default async function TareasPage({
     .sort((a, b) => a.diasRestantes - b.diasRestantes);
 
   return (
-    <main className="flex flex-1 bg-[radial-gradient(circle_at_top_left,_rgba(178,150,125,0.3),_transparent_34%)] bg-linen px-4 py-8 dark:bg-none dark:bg-espresso">
+    <main className="flex flex-1 fondo-pagina px-4 py-8 dark:bg-none dark:bg-espresso">
       <EscuchaRealtime tabla="tareas" casaId={casa.id} />
       <section className="mx-auto w-full max-w-2xl space-y-6">
         <div className="flex items-center justify-between gap-3">
@@ -76,7 +70,7 @@ export default async function TareasPage({
         </Link>
 
         {logros.puntos > 0 && (
-          <div className="flex items-center gap-4 rounded-lg border border-camel bg-khaki/60 px-4 py-3 dark:border-cocoa dark:bg-[#3a2820]/60">
+          <div className="flex items-center gap-4 rounded-lg border border-camel bg-khaki/60 px-4 py-3 dark:border-cocoa dark:bg-espresso-deep/60">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-6 w-6 shrink-0 text-camel">
               <circle cx="12" cy="8" r="6" />
               <path d="M8.21 13.89 7 23l5-3 5 3-1.21-9.12" />
@@ -89,7 +83,7 @@ export default async function TareasPage({
               {logros.racha >= 2 && (
                 <div>
                   <p className="flex items-center gap-1 font-bold text-cocoa dark:text-linen">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-4 w-4 shrink-0 text-[#c9702f]">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-4 w-4 shrink-0 text-warning">
                       <path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5Z" />
                     </svg>
                     {logros.racha}
@@ -122,11 +116,16 @@ export default async function TareasPage({
         )}
 
         {tareasConUrgencia.length === 0 ? (
-          <div className="rounded-lg border border-dashed border-camel bg-khaki/50 p-6 text-center shadow-sm dark:border-khaki/30 dark:bg-[#3a2820]/70">
-            <p className="text-sm font-medium text-cocoa dark:text-khaki">
-              {hayFiltros ? t('nadaCoincide') : t('sinTareas')}
-            </p>
-          </div>
+          <EmptyState
+            titulo={hayFiltros ? t('nadaCoincide') : t('sinTareas')}
+            accion={
+              !hayFiltros && (
+                <Link href="/tareas/nueva" className={buttonClasses('secondary', '', 'sm')}>
+                  {t('nueva')}
+                </Link>
+              )
+            }
+          />
         ) : (
           <ul className="space-y-3">
             {tareasConUrgencia.map(({ tarea, diasRestantes, urgencia }) => (
@@ -151,13 +150,13 @@ export default async function TareasPage({
                       {tarea.asignado_a ? (nombrePorId.get(tarea.asignado_a) ?? t('miembro')) : t('sinAsignar')}
                     </p>
                   </div>
-                  <span className="shrink-0 rounded-full bg-white/60 px-2 py-1 text-xs font-bold dark:bg-black/20">
+                  <span className="shrink-0 rounded-full bg-overlay/60 px-2 py-1 text-xs font-bold dark:bg-black/20">
                     {etiquetaUrgencia(diasRestantes, tUrgencia)}
                   </span>
                 </div>
                 <div className="mt-3 flex flex-wrap items-center gap-3">
                   <form action={completarTarea.bind(null, tarea.id)}>
-                    <SubmitButton className="min-h-0 px-3 py-1.5 text-xs" pendingText={t('marcando')}>
+                    <SubmitButton size="sm" pendingText={t('marcando')}>
                       {t('marcarHecho')}
                     </SubmitButton>
                   </form>
@@ -170,7 +169,7 @@ export default async function TareasPage({
                   <form action={eliminarTarea.bind(null, tarea.id)}>
                     <SubmitButton
                       variant="secondary"
-                      className="min-h-0 px-2 py-1 text-xs"
+                      size="sm"
                       pendingText={t('eliminando')}
                       confirmMessage={t('confirmarEliminar', { nombre: tarea.nombre })}
                     >

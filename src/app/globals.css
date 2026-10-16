@@ -12,6 +12,24 @@
   --camel: #B2967D;
   --cocoa: #7D5A44;
   --espresso: #4A342A;
+  /* Tono más oscuro que espresso: estados active y fondos de alto
+     contraste. Antes vivía suelto como #3a2820 por todo el código. */
+  --espresso-deep: #3A2820;
+
+  /* Semánticos: error/peligro, advertencia (vence hoy) y éxito.
+     Los "-soft" son las variantes claras para usarse sobre fondos
+     oscuros (espresso/espresso-deep). */
+  --danger: #A8422E;
+  --danger-hover: #8F3626;
+  --danger-active: #7A2D20;
+  --danger-soft: #E3A999;
+  --warning: #C9702F;
+  --warning-soft: #F0B988;
+  --success: #6B8F5A;
+
+  /* Superficie elevada (paneles de menú, badges sobre cards teñidas).
+     Único blanco permitido en la paleta; antes era bg-white suelto. */
+  --overlay: #FFFFFF;
 
   --background: var(--linen);
   --foreground: var(--espresso);
@@ -25,6 +43,15 @@
   --color-camel: var(--camel);
   --color-cocoa: var(--cocoa);
   --color-espresso: var(--espresso);
+  --color-espresso-deep: var(--espresso-deep);
+  --color-danger: var(--danger);
+  --color-danger-hover: var(--danger-hover);
+  --color-danger-active: var(--danger-active);
+  --color-danger-soft: var(--danger-soft);
+  --color-warning: var(--warning);
+  --color-warning-soft: var(--warning-soft);
+  --color-success: var(--success);
+  --color-overlay: var(--overlay);
   --font-sans: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
 }
@@ -59,7 +86,7 @@ body {
    costo de hidratación en una página que por lo demás es estática. */
 @keyframes demo-checkbox {
   0%, 45% { background-color: transparent; border-color: var(--camel); }
-  58%, 92% { background-color: #6B8F5A; border-color: #6B8F5A; }
+  58%, 92% { background-color: var(--success); border-color: var(--success); }
   100% { background-color: transparent; border-color: var(--camel); }
 }
 
@@ -110,7 +137,7 @@ body {
   .demo-tarjeta-otro {
     animation: none;
   }
-  .demo-checkbox { background-color: #6B8F5A; border-color: #6B8F5A; }
+  .demo-checkbox { background-color: var(--success); border-color: var(--success); }
   .demo-badge-pendiente { display: none; }
   .demo-badge-hecho { opacity: 1; }
 }
@@ -172,4 +199,17 @@ body {
 .textura-puntos {
   background-image: radial-gradient(circle, rgba(178, 150, 125, 0.35) 1px, transparent 1px);
   background-size: 18px 18px;
+}
+
+/* Fondo estándar de página: halo camel desde la esquina superior
+   izquierda sobre linen. La variante -auth lo centra arriba (login,
+   signup, recuperar). Antes este gradiente estaba copy-pasteado como
+   clase arbitraria en 10 archivos. */
+.fondo-pagina {
+  background-color: var(--linen);
+  background-image: radial-gradient(circle at top left, rgba(178, 150, 125, 0.3), transparent 34%);
+}
+.fondo-auth {
+  background-color: var(--linen);
+  background-image: radial-gradient(circle at top, rgba(178, 150, 125, 0.32), transparent 36%);
 }

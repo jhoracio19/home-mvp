@@ -166,7 +166,7 @@ export function InstalarApp() {
         ) : (
           <>
             {plataforma === 'ios' && avisoSafari && (
-              <p className="mb-4 rounded-lg border border-[#c9702f] bg-[#c9702f]/10 px-3 py-2 text-sm font-medium text-[#c9702f]">
+              <p className="mb-4 rounded-lg border border-warning bg-warning/10 px-3 py-2 text-sm font-medium text-warning">
                 {t('instalar.avisoAbrirEnSafari')}
               </p>
             )}

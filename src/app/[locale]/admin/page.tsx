@@ -11,7 +11,7 @@ function formatearFecha(iso: string) {
 // solo bloque de texto continuo en vez de módulos separados.
 function Seccion({ titulo, children }: { titulo: string; children: React.ReactNode }) {
   return (
-    <section className="rounded-xl border border-camel/50 bg-khaki/30 p-5 shadow-sm dark:border-khaki/15 dark:bg-[#3a2820]/40">
+    <section className="rounded-xl border border-camel/50 bg-khaki/30 p-5 shadow-sm dark:border-khaki/15 dark:bg-espresso-deep/40">
       <h2 className="text-sm font-bold uppercase tracking-[0.1em] text-cocoa/80 dark:text-khaki/80">{titulo}</h2>
       <div className="mt-4">{children}</div>
     </section>

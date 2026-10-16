@@ -52,6 +52,8 @@
     "refri": "Refri",
     "compras": "Compras",
     "tareas": "Tareas",
+    "gastos": "Gastos",
+    "notas": "Notas",
     "invitarMiembros": "Invitar miembros",
     "notasDeLaCasa": "Notas de la casa",
     "gastosCompartidos": "Gastos compartidos",
@@ -531,7 +533,9 @@
     "copiado": "Copiado ✓",
     "ocultarContrasena": "Ocultar contraseña",
     "mostrarContrasena": "Mostrar contraseña",
-    "cargando": "Cargando…"
+    "cargando": "Cargando…",
+    "confirmar": "Sí, continuar",
+    "cancelar": "Cancelar"
   },
   "Push": {
     "tareaAsignadaTitulo": "Nueva tarea asignada",

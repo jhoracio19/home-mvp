@@ -23,7 +23,7 @@ export function PasswordInput({ label, id, name, className = '', ...props }: Pas
           id={inputId}
           name={name}
           type={visible ? 'text' : 'password'}
-          className={`min-h-11 w-full rounded-lg border border-camel bg-linen px-3 pr-11 text-base text-cocoa shadow-sm focus:border-espresso focus:outline-none focus:ring-2 focus:ring-camel/35 dark:border-cocoa dark:bg-[#3a2820] dark:text-linen dark:focus:border-camel ${className}`}
+          className={`min-h-11 w-full rounded-lg border border-camel bg-linen px-3 pr-11 text-base text-cocoa shadow-sm focus:border-espresso focus:outline-none focus:ring-2 focus:ring-camel/35 dark:border-cocoa dark:bg-espresso-deep dark:text-linen dark:focus:border-camel ${className}`}
           {...props}
         />
         <button

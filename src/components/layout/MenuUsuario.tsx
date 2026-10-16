@@ -1,20 +1,29 @@
 'use client';
 
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import type { FormEvent } from 'react';
 import { useTranslations } from 'next-intl';
 import { Link } from '@/i18n/navigation';
 import { logout } from '@/app/[locale]/auth/actions';
 import { salirDeCasa } from '@/app/[locale]/(app)/casas/actions';
 import { NotificacionesToggle } from '@/components/notificaciones/NotificacionesToggle';
+import { ConfirmDialog } from '@/components/ui/ConfirmDialog';
 import { LocaleSwitcher } from './LocaleSwitcher';
 import { itemClase, iconoClase } from './menu-clases';
+
+// Contacto y donaciones salen de env vars para no dejar datos personales
+// en el código; si no están configuradas, los ítems no se muestran.
+const EMAIL_SOPORTE = process.env.NEXT_PUBLIC_EMAIL_SOPORTE;
+const LINK_DONACIONES = process.env.NEXT_PUBLIC_LINK_DONACIONES;
 
 // <details>/<summary> nativo para el desplegable en sí (accesible,
 // sin estado de React); el único JS real aquí es cerrarlo al hacer
 // clic afuera o al elegir una opción, que <details> no trae de fábrica.
 export function MenuUsuario({ dentroDeCasa, esAdmin }: { dentroDeCasa: boolean; esAdmin: boolean }) {
   const detailsRef = useRef<HTMLDetailsElement>(null);
+  const formSalidaRef = useRef<HTMLFormElement>(null);
+  const salidaConfirmada = useRef(false);
+  const [confirmandoSalida, setConfirmandoSalida] = useState(false);
   const t = useTranslations('Nav');
 
   useEffect(() => {
@@ -32,10 +41,19 @@ export function MenuUsuario({ dentroDeCasa, esAdmin }: { dentroDeCasa: boolean; 
     if (detailsRef.current) detailsRef.current.open = false;
   }
 
-  function confirmarSalida(evento: FormEvent<HTMLFormElement>) {
-    if (!window.confirm(t('confirmarSalida'))) {
+  // Primer submit: se intercepta y se abre el diálogo; al confirmar se
+  // vuelve a enviar con la bandera puesta para dejarlo pasar.
+  function interceptarSalida(evento: FormEvent<HTMLFormElement>) {
+    if (!salidaConfirmada.current) {
       evento.preventDefault();
+      setConfirmandoSalida(true);
     }
+  }
+
+  function confirmarSalida() {
+    salidaConfirmada.current = true;
+    setConfirmandoSalida(false);
+    formSalidaRef.current?.requestSubmit();
   }
 
   return (
@@ -50,7 +68,7 @@ export function MenuUsuario({ dentroDeCasa, esAdmin }: { dentroDeCasa: boolean; 
 
       <div
         onClick={cerrar}
-        className="absolute right-0 z-20 mt-2 max-h-[calc(100vh-6rem)] w-56 overflow-x-hidden overflow-y-auto overscroll-contain rounded-lg border-2 border-camel bg-white text-left shadow-lg"
+        className="absolute right-0 z-20 mt-2 max-h-[calc(100vh-6rem)] w-56 overflow-x-hidden overflow-y-auto overscroll-contain rounded-lg border-2 border-camel bg-overlay text-left shadow-lg"
       >
         {dentroDeCasa && (
           <>
@@ -112,40 +130,44 @@ export function MenuUsuario({ dentroDeCasa, esAdmin }: { dentroDeCasa: boolean; 
         <NotificacionesToggle />
         <LocaleSwitcher variant="menuItem" />
 
-        <div className="border-t border-khaki" />
+        {(EMAIL_SOPORTE || LINK_DONACIONES) && <div className="border-t border-khaki" />}
 
-        <a
-          href={`mailto:jhoracio19@hotmail.com?subject=${encodeURIComponent(t('asuntoReporte'))}`}
-          className={itemClase}
-        >
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={iconoClase}>
-            <path d="M12 9v4" />
-            <path d="M12 17h.01" />
-            <path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0Z" />
-          </svg>
-          {t('reportarProblema')}
-        </a>
+        {EMAIL_SOPORTE && (
+          <a
+            href={`mailto:${EMAIL_SOPORTE}?subject=${encodeURIComponent(t('asuntoReporte'))}`}
+            className={itemClase}
+          >
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" className={iconoClase}>
+              <path d="M12 9v4" />
+              <path d="M12 17h.01" />
+              <path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0Z" />
+            </svg>
+            {t('reportarProblema')}
+          </a>
+        )}
 
-        <a
-          href="https://paypal.me/jhoracio19"
-          target="_blank"
-          rel="noopener noreferrer"
-          className={itemClase}
-        >
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={iconoClase}>
-            <path d="M18 8h1a4 4 0 0 1 0 8h-1" />
-            <path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4Z" />
-            <line x1="6" y1="1" x2="6" y2="4" />
-            <line x1="10" y1="1" x2="10" y2="4" />
-            <line x1="14" y1="1" x2="14" y2="4" />
-          </svg>
-          {t('buyMeACoffee')}
-        </a>
+        {LINK_DONACIONES && (
+          <a
+            href={LINK_DONACIONES}
+            target="_blank"
+            rel="noopener noreferrer"
+            className={itemClase}
+          >
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" className={iconoClase}>
+              <path d="M18 8h1a4 4 0 0 1 0 8h-1" />
+              <path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4Z" />
+              <line x1="6" y1="1" x2="6" y2="4" />
+              <line x1="10" y1="1" x2="10" y2="4" />
+              <line x1="14" y1="1" x2="14" y2="4" />
+            </svg>
+            {t('buyMeACoffee')}
+          </a>
+        )}
 
         <div className="border-t border-khaki" />
 
         {dentroDeCasa && (
-          <form action={salirDeCasa} onSubmit={confirmarSalida}>
+          <form ref={formSalidaRef} action={salirDeCasa} onSubmit={interceptarSalida}>
             <button type="submit" className={`w-full text-left ${itemClase}`}>
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={iconoClase}>
                 <path d="M13 4h5a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2h-5" />
@@ -160,7 +182,7 @@ export function MenuUsuario({ dentroDeCasa, esAdmin }: { dentroDeCasa: boolean; 
         <form action={logout}>
           <button
             type="submit"
-            className="flex w-full items-center gap-3 px-4 py-3 text-left text-sm font-semibold text-[#a8422e] hover:bg-khaki/30"
+            className="flex w-full items-center gap-3 px-4 py-3 text-left text-sm font-semibold text-danger hover:bg-khaki/30"
           >
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={iconoClase}>
               <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
@@ -171,6 +193,13 @@ export function MenuUsuario({ dentroDeCasa, esAdmin }: { dentroDeCasa: boolean; 
           </button>
         </form>
       </div>
+
+      <ConfirmDialog
+        abierto={confirmandoSalida}
+        mensaje={t('confirmarSalida')}
+        onConfirmar={confirmarSalida}
+        onCancelar={() => setConfirmandoSalida(false)}
+      />
     </details>
   );
 }

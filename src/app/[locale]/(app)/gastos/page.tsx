@@ -10,6 +10,9 @@ import { agregarGasto, eliminarGasto, registrarPago, eliminarPago } from './acti
 import { Input } from '@/components/ui/Input';
 import { Select } from '@/components/ui/Select';
 import { SubmitButton } from '@/components/ui/SubmitButton';
+import { Alerta } from '@/components/ui/Alerta';
+import { EmptyState } from '@/components/ui/EmptyState';
+import { BotonVolver } from '@/components/layout/BotonVolver';
 import { EscuchaRealtime } from '@/components/realtime/EscuchaRealtime';
 
 type Miembro = { usuario_id: string; email: string; rol: string; nombre: string | null; apellido: string | null };
@@ -58,16 +61,11 @@ export default async function GastosPage({
   ].sort((a, b) => (a.fecha === b.fecha ? b.createdAt.localeCompare(a.createdAt) : b.fecha.localeCompare(a.fecha)));
 
   return (
-    <main className="flex flex-1 justify-center bg-[radial-gradient(circle_at_top_left,_rgba(178,150,125,0.3),_transparent_34%)] bg-linen px-4 py-8">
+    <main className="flex flex-1 justify-center fondo-pagina px-4 py-8">
       <EscuchaRealtime tabla="gastos" casaId={casa.id} />
       <EscuchaRealtime tabla="pagos" casaId={casa.id} />
       <section className="w-full max-w-2xl space-y-6">
-        <Link href="/dashboard" className="inline-flex items-center gap-1 text-sm font-semibold text-cocoa hover:underline">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="h-4 w-4">
-            <polyline points="15 18 9 12 15 6" />
-          </svg>
-          {t('volver')}
-        </Link>
+        <BotonVolver href="/dashboard">{t('volver')}</BotonVolver>
 
         <div>
           <p className="text-xs font-bold uppercase tracking-[0.18em] text-camel">{casa.nombre}</p>
@@ -79,14 +77,10 @@ export default async function GastosPage({
           {t('verResumen')}
         </Link>
 
-        {error && (
-          <p className="rounded-lg border border-[#a8422e] bg-[#a8422e]/10 px-3 py-2 text-sm font-medium text-[#a8422e]">
-            {error}
-          </p>
-        )}
+        {error && <Alerta variante="error">{error}</Alerta>}
 
-        {/* Balances */}
-        <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
+        {/* Balances: auto-fill para que con 5+ miembros no se aprieten. */}
+        <div className="grid grid-cols-[repeat(auto-fill,minmax(8.5rem,1fr))] gap-3">
           {miembros.map((m) => {
             const balance = balances.get(m.usuario_id) ?? 0;
             const redondeado = Math.round(balance * 100) / 100;
@@ -95,7 +89,7 @@ export default async function GastosPage({
                 <p className="truncate text-xs font-semibold text-cocoa">{nombreMiembro(m)}</p>
                 <p
                   className={`mt-1 text-lg font-bold ${
-                    redondeado > 0 ? 'text-[#6B8F5A]' : redondeado < 0 ? 'text-[#a8422e]' : 'text-cocoa/50'
+                    redondeado > 0 ? 'text-success' : redondeado < 0 ? 'text-danger' : 'text-cocoa/50'
                   }`}
                 >
                   {redondeado === 0 ? t('alDia') : formatoMoneda.format(Math.abs(redondeado))}
@@ -156,9 +150,7 @@ export default async function GastosPage({
         </form>
 
         {actividad.length === 0 ? (
-          <div className="rounded-lg border border-dashed border-camel bg-khaki/50 p-6 text-center shadow-sm">
-            <p className="text-sm font-medium text-cocoa">{t('sinActividad')}</p>
-          </div>
+          <EmptyState titulo={t('sinActividad')} />
         ) : (
           <ul className="space-y-2">
             {actividad.map((item) =>
@@ -181,7 +173,7 @@ export default async function GastosPage({
                     <form action={eliminarGasto.bind(null, item.gasto.id)}>
                       <SubmitButton
                         variant="secondary"
-                        className="min-h-0 px-2 py-1 text-xs"
+                        size="sm"
                         pendingText="…"
                         confirmMessage={t('confirmarEliminarGasto', { descripcion: item.gasto.descripcion })}
                       >
@@ -193,7 +185,7 @@ export default async function GastosPage({
               ) : (
                 <li
                   key={`pago-${item.id}`}
-                  className="flex items-center justify-between gap-3 rounded-lg border border-[#6B8F5A]/40 bg-[#6B8F5A]/10 px-4 py-3 shadow-sm"
+                  className="flex items-center justify-between gap-3 rounded-lg border border-success/40 bg-success/10 px-4 py-3 shadow-sm"
                 >
                   <div className="min-w-0">
                     <p className="truncate text-sm font-semibold text-cocoa">
@@ -205,11 +197,11 @@ export default async function GastosPage({
                     <p className="text-xs text-cocoa/70">{t('pagoEtiqueta', { fecha: formatearFecha(item.pago.fecha) })}</p>
                   </div>
                   <div className="flex shrink-0 items-center gap-3">
-                    <span className="text-sm font-bold text-[#6B8F5A]">{formatoMoneda.format(item.pago.monto)}</span>
+                    <span className="text-sm font-bold text-success">{formatoMoneda.format(item.pago.monto)}</span>
                     <form action={eliminarPago.bind(null, item.pago.id)}>
                       <SubmitButton
                         variant="secondary"
-                        className="min-h-0 px-2 py-1 text-xs"
+                        size="sm"
                         pendingText="…"
                         confirmMessage={t('confirmarEliminarPago')}
                       >

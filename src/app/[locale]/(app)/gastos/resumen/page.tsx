@@ -1,11 +1,12 @@
 import { getLocale, getTranslations } from 'next-intl/server';
-import { Link } from '@/i18n/navigation';
 import type { Locale } from '@/i18n/routing';
 import { getCasaActivaOrRedirect, getMiembrosCasaActiva } from '@/lib/casas/data';
 import { nombreMiembro } from '@/lib/casas/nombre-miembro';
 import { getGastos } from '@/lib/gastos/data';
 import { agruparPorMes } from '@/lib/gastos/resumen';
 import { intlLocale } from '@/lib/intl-locale';
+import { EmptyState } from '@/components/ui/EmptyState';
+import { BotonVolver } from '@/components/layout/BotonVolver';
 
 export default async function ResumenGastosPage() {
   const [casa, gastos, miembros, t, locale] = await Promise.all([
@@ -20,14 +21,9 @@ export default async function ResumenGastosPage() {
   const meses = agruparPorMes(gastos, locale);
 
   return (
-    <main className="flex flex-1 justify-center bg-[radial-gradient(circle_at_top_left,_rgba(178,150,125,0.3),_transparent_34%)] bg-linen px-4 py-8">
+    <main className="flex flex-1 justify-center fondo-pagina px-4 py-8">
       <section className="w-full max-w-2xl space-y-6">
-        <Link href="/gastos" className="inline-flex items-center gap-1 text-sm font-semibold text-cocoa hover:underline">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="h-4 w-4">
-            <polyline points="15 18 9 12 15 6" />
-          </svg>
-          {t('volver')}
-        </Link>
+        <BotonVolver href="/gastos">{t('volver')}</BotonVolver>
 
         <div>
           <p className="text-xs font-bold uppercase tracking-[0.18em] text-camel">{casa.nombre}</p>
@@ -36,9 +32,7 @@ export default async function ResumenGastosPage() {
         </div>
 
         {meses.length === 0 ? (
-          <div className="rounded-lg border border-dashed border-camel bg-khaki/50 p-6 text-center shadow-sm">
-            <p className="text-sm font-medium text-cocoa">{t('sinResumen')}</p>
-          </div>
+          <EmptyState titulo={t('sinResumen')} />
         ) : (
           <div className="space-y-4">
             {meses.map((mes) => (

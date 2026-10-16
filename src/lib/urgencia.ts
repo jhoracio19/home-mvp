@@ -1,5 +1,14 @@
 export type Urgencia = 'vencido' | 'hoy' | 'pronto' | 'normal';
 
+// Estilos de card según urgencia (antes duplicados en dashboard,
+// tareas y los mockups de la landing).
+export const ESTILOS_URGENCIA: Record<Urgencia, string> = {
+  vencido: 'border-danger bg-danger/10 text-danger dark:bg-danger/15 dark:text-danger-soft',
+  hoy: 'border-warning bg-warning/10 text-warning dark:bg-warning/15 dark:text-warning-soft',
+  pronto: 'border-camel bg-camel/15 text-cocoa dark:bg-camel/10 dark:text-camel',
+  normal: 'border-camel bg-khaki text-cocoa dark:border-cocoa dark:bg-espresso-deep dark:text-khaki',
+};
+
 // MVP de una sola zona horaria: el servidor corre en UTC (Vercel), así
 // que "hoy" ahí puede ya ser mañana para alguien en México cerca de
 // medianoche. Mientras no haya perfil de zona horaria por usuario,

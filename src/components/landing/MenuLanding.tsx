@@ -44,7 +44,7 @@ export function MenuLanding() {
 
       <div
         onClick={cerrar}
-        className="absolute right-0 z-20 mt-2 w-56 overflow-hidden rounded-lg border-2 border-camel bg-white text-left shadow-lg"
+        className="absolute right-0 z-20 mt-2 w-56 overflow-hidden rounded-lg border-2 border-camel bg-overlay text-left shadow-lg"
       >
         <Link href="/#instalar" className={itemClase}>
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={iconoClase}>

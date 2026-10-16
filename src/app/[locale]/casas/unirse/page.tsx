@@ -48,8 +48,8 @@ export default async function UnirseCasaPage({
   }
 
   return (
-    <main className="flex flex-1 items-center justify-center bg-[radial-gradient(circle_at_top,_rgba(178,150,125,0.32),_transparent_36%)] bg-linen px-4 py-12 dark:bg-none dark:bg-espresso">
-      <div className="w-full max-w-sm space-y-6 rounded-lg border border-camel bg-khaki p-6 shadow-lg dark:border-cocoa dark:bg-[#3a2820]">
+    <main className="flex flex-1 items-center justify-center fondo-auth px-4 py-12 dark:bg-none dark:bg-espresso">
+      <div className="w-full max-w-sm space-y-6 rounded-lg border border-camel bg-khaki p-6 shadow-lg dark:border-cocoa dark:bg-espresso-deep">
         <div className="space-y-1 text-center">
           <h1 className="text-2xl font-bold text-cocoa dark:text-linen">{t('titulo')}</h1>
         </div>
@@ -61,7 +61,7 @@ export default async function UnirseCasaPage({
         )}
 
         {codigo && !invitacion && (
-          <p className="rounded-lg border border-[#a8422e] bg-[#a8422e]/10 px-3 py-2 text-sm font-medium text-[#a8422e] dark:text-[#e3a999]">
+          <p className="rounded-lg border border-danger bg-danger/10 px-3 py-2 text-sm font-medium text-danger dark:text-danger-soft">
             {t('codigoInvalido')}
           </p>
         )}

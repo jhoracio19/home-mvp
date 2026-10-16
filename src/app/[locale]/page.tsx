@@ -14,8 +14,8 @@ import { InstalarApp } from '@/components/landing/InstalarApp';
 // de abajo son una reproducción fiel del look real, no una versión
 // "de mercadeo" con colores inventados.
 const URGENCIA = {
-  vencido: 'border-[#a8422e] bg-[#a8422e]/10 text-[#a8422e]',
-  hoy: 'border-[#c9702f] bg-[#c9702f]/10 text-[#c9702f]',
+  vencido: 'border-danger bg-danger/10 text-danger',
+  hoy: 'border-warning bg-warning/10 text-warning',
   normal: 'border-camel bg-khaki text-cocoa',
 };
 
@@ -70,12 +70,12 @@ function TelefonoRefri({ t, tUrgencia, tCategorias, tNav, tRefri }: Traductores)
                     {tCategorias(item.cat)}
                   </span>
                   {item.dueno && (
-                    <span className="ml-1 mt-1 inline-block rounded-full border border-cocoa/40 bg-white/50 px-1.5 py-0.5 text-[0.5rem] font-bold text-cocoa">
+                    <span className="ml-1 mt-1 inline-block rounded-full border border-cocoa/40 bg-overlay/50 px-1.5 py-0.5 text-[0.5rem] font-bold text-cocoa">
                       {item.dueno}
                     </span>
                   )}
                 </div>
-                <span className="shrink-0 rounded-full bg-white/70 px-1.5 py-0.5 text-[0.55rem] font-bold text-cocoa">
+                <span className="shrink-0 rounded-full bg-overlay/70 px-1.5 py-0.5 text-[0.55rem] font-bold text-cocoa">
                   {item.badge}
                 </span>
               </div>
@@ -113,7 +113,7 @@ function MockupTareas({ t, tUrgencia, tTareas }: Traductores) {
               <p className="text-sm font-semibold text-cocoa">{tarea.nombre}</p>
               <p className="text-xs font-medium text-cocoa/70">{tarea.detalle}</p>
             </div>
-            <span className="shrink-0 rounded-full bg-white/70 px-2 py-1 text-xs font-bold text-cocoa">
+            <span className="shrink-0 rounded-full bg-overlay/70 px-2 py-1 text-xs font-bold text-cocoa">
               {tarea.badge}
             </span>
           </div>
@@ -195,7 +195,7 @@ function MockupGastos({ t, tGastos }: Traductores) {
         {balances.map((b) => (
           <div key={b.nombre} className="rounded-lg border border-camel bg-khaki p-4 shadow-sm">
             <p className="truncate text-xs font-semibold text-cocoa">{b.nombre}</p>
-            <p className={`mt-1 text-lg font-bold ${b.positivo ? 'text-[#6B8F5A]' : 'text-[#a8422e]'}`}>{b.monto}</p>
+            <p className={`mt-1 text-lg font-bold ${b.positivo ? 'text-success' : 'text-danger'}`}>{b.monto}</p>
             <p className="text-[0.65rem] font-medium uppercase tracking-wide text-cocoa/60">
               {b.positivo ? tGastos('leDeben') : tGastos('debe')}
             </p>
@@ -220,7 +220,7 @@ function MockupLogros({ tTareas }: Traductores) {
         </div>
         <div>
           <p className="flex items-center gap-1 text-lg font-bold text-cocoa">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="demo-flama h-4 w-4 text-[#c9702f]">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="demo-flama h-4 w-4 text-warning">
               <path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5Z" />
             </svg>
             5
@@ -314,7 +314,7 @@ export default async function RootPage() {
           <StickyCTA texto={t('entraConGoogle')} />
           <p className="text-xs text-cocoa/70">{t('hero.esGratis')}</p>
           <p className="inline-flex items-center gap-1.5 text-xs font-semibold text-cocoa">
-            <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-[#6B8F5A]" />
+            <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-success" />
             {t('hero.tiempoReal')}
           </p>
           <p className="inline-flex items-center gap-1.5 text-xs font-semibold text-cocoa">
@@ -385,12 +385,12 @@ export default async function RootPage() {
                         {tCategorias(item.cat)}
                       </span>
                       {item.dueno && (
-                        <span className="ml-1.5 mt-1 inline-block rounded-full border border-cocoa/40 bg-white/50 px-2 py-0.5 text-[0.65rem] font-bold text-cocoa">
+                        <span className="ml-1.5 mt-1 inline-block rounded-full border border-cocoa/40 bg-overlay/50 px-2 py-0.5 text-[0.65rem] font-bold text-cocoa">
                           {item.dueno}
                         </span>
                       )}
                     </div>
-                    <span className="shrink-0 rounded-full bg-white/70 px-2 py-1 text-xs font-bold text-cocoa">
+                    <span className="shrink-0 rounded-full bg-overlay/70 px-2 py-1 text-xs font-bold text-cocoa">
                       {item.badge}
                     </span>
                   </div>

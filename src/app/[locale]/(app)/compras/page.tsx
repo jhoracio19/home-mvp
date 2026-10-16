@@ -4,6 +4,8 @@ import { getListaCompras } from '@/lib/compras/data';
 import { agregarItemCompra, alternarComprado, eliminarItemCompra, limpiarComprados } from './actions';
 import { Input } from '@/components/ui/Input';
 import { SubmitButton } from '@/components/ui/SubmitButton';
+import { Alerta } from '@/components/ui/Alerta';
+import { EmptyState } from '@/components/ui/EmptyState';
 import { EscuchaRealtime } from '@/components/realtime/EscuchaRealtime';
 
 export default async function ComprasPage({
@@ -22,7 +24,7 @@ export default async function ComprasPage({
   const comprados = items.filter((item) => item.comprado);
 
   return (
-    <main className="flex flex-1 bg-[radial-gradient(circle_at_top_left,_rgba(178,150,125,0.3),_transparent_34%)] bg-linen px-4 py-8">
+    <main className="flex flex-1 fondo-pagina px-4 py-8">
       <EscuchaRealtime tabla="lista_compras" casaId={casa.id} />
       <section className="mx-auto w-full max-w-2xl space-y-6">
         <div>
@@ -30,16 +32,8 @@ export default async function ComprasPage({
           <h1 className="mt-1 text-2xl font-bold text-cocoa">{casa.nombre}</h1>
         </div>
 
-        {message && (
-          <p className="rounded-lg border-2 border-camel bg-camel/25 px-3 py-2 text-sm font-semibold text-cocoa">
-            {message}
-          </p>
-        )}
-        {error && (
-          <p className="rounded-lg border border-[#a8422e] bg-[#a8422e]/10 px-3 py-2 text-sm font-medium text-[#a8422e]">
-            {error}
-          </p>
-        )}
+        {message && <Alerta variante="info">{message}</Alerta>}
+        {error && <Alerta variante="error">{error}</Alerta>}
 
         <form action={agregarItemCompra} className="flex flex-wrap items-end gap-3">
           <div className="min-w-0 flex-1">
@@ -52,9 +46,7 @@ export default async function ComprasPage({
         </form>
 
         {items.length === 0 ? (
-          <div className="rounded-lg border border-dashed border-camel bg-khaki/50 p-6 text-center shadow-sm">
-            <p className="text-sm font-medium text-cocoa">{t('listaVacia')}</p>
-          </div>
+          <EmptyState titulo={t('listaVacia')} />
         ) : (
           <>
             {pendientes.length > 0 && (
@@ -76,7 +68,7 @@ export default async function ComprasPage({
                     <form action={eliminarItemCompra.bind(null, item.id)}>
                       <SubmitButton
                         variant="secondary"
-                        className="min-h-0 px-2 py-1 text-xs"
+                        size="sm"
                         pendingText="…"
                         confirmMessage={t('confirmarQuitar', { nombre: item.nombre })}
                       >
@@ -93,7 +85,7 @@ export default async function ComprasPage({
                 <div className="flex items-center justify-between">
                   <h2 className="text-sm font-bold text-cocoa/70">{t('comprado', { n: comprados.length })}</h2>
                   <form action={limpiarComprados}>
-                    <SubmitButton variant="secondary" className="min-h-0 px-2 py-1 text-xs" pendingText={t('limpiando')}>
+                    <SubmitButton variant="secondary" size="sm" pendingText={t('limpiando')}>
                       {t('limpiar')}
                     </SubmitButton>
                   </form>

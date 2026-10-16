@@ -10,22 +10,16 @@ import {
   calcularFechaVencimiento,
   clasificarUrgencia,
   etiquetaUrgencia,
-  type Urgencia,
 } from '@/lib/refri/urgencia';
+import { ESTILOS_URGENCIA } from '@/lib/urgencia';
 import { categorias, COLOR_CATEGORIA, etiquetaCategoria } from '@/lib/refri/categorias';
 import { buttonClasses } from '@/components/ui/Button';
 import { SubmitButton } from '@/components/ui/SubmitButton';
 import { Input } from '@/components/ui/Input';
 import { Select } from '@/components/ui/Select';
 import { FormBusqueda } from '@/components/ui/FormBusqueda';
+import { EmptyState } from '@/components/ui/EmptyState';
 import { EscuchaRealtime } from '@/components/realtime/EscuchaRealtime';
-
-const ESTILOS_URGENCIA: Record<Urgencia, string> = {
-  vencido: 'border-[#a8422e] bg-[#a8422e]/10 text-[#a8422e] dark:bg-[#a8422e]/15 dark:text-[#e3a999]',
-  hoy: 'border-[#c9702f] bg-[#c9702f]/10 text-[#c9702f] dark:bg-[#c9702f]/15 dark:text-[#f0b988]',
-  pronto: 'border-camel bg-camel/15 text-cocoa dark:bg-camel/10 dark:text-camel',
-  normal: 'border-camel bg-khaki text-cocoa dark:border-cocoa dark:bg-[#3a2820] dark:text-khaki',
-};
 
 export default async function DashboardPage({
   searchParams,
@@ -63,7 +57,7 @@ export default async function DashboardPage({
   const hayFiltros = Boolean(busqueda || categoria || dueno);
 
   return (
-    <main className="flex flex-1 bg-[radial-gradient(circle_at_top_left,_rgba(178,150,125,0.3),_transparent_34%)] bg-linen px-4 py-8 dark:bg-none dark:bg-espresso">
+    <main className="flex flex-1 fondo-pagina px-4 py-8 dark:bg-none dark:bg-espresso">
       <EscuchaRealtime tabla="items_refri" casaId={casaActiva.id} />
       <section className="mx-auto w-full max-w-2xl space-y-6">
         <div className="flex items-center justify-between gap-3">
@@ -111,11 +105,16 @@ export default async function DashboardPage({
         )}
 
         {itemsConUrgencia.length === 0 ? (
-          <div className="rounded-lg border border-dashed border-camel bg-khaki/50 p-6 text-center shadow-sm dark:border-khaki/30 dark:bg-[#3a2820]/70">
-            <p className="text-sm font-medium text-cocoa dark:text-khaki">
-              {hayFiltros ? t('nadaCoincide') : t('refriVacio')}
-            </p>
-          </div>
+          <EmptyState
+            titulo={hayFiltros ? t('nadaCoincide') : t('refriVacio')}
+            accion={
+              !hayFiltros && (
+                <Link href="/refri/nuevo" className={buttonClasses('secondary', '', 'sm')}>
+                  {t('agregar')}
+                </Link>
+              )
+            }
+          />
         ) : (
           <ul className="space-y-3">
             {itemsConUrgencia.map(({ item, diasRestantes, urgencia }) => (
@@ -132,12 +131,12 @@ export default async function DashboardPage({
                       {etiquetaCategoria(item.categoria, tCategorias)}
                     </span>
                     {item.pertenece_a && (
-                      <span className="ml-1.5 mt-1 inline-block rounded-full border border-cocoa/40 bg-white/50 px-2 py-0.5 text-[0.65rem] font-bold text-cocoa dark:border-khaki/30 dark:bg-black/20 dark:text-khaki">
+                      <span className="ml-1.5 mt-1 inline-block rounded-full border border-cocoa/40 bg-overlay/50 px-2 py-0.5 text-[0.65rem] font-bold text-cocoa dark:border-khaki/30 dark:bg-black/20 dark:text-khaki">
                         {nombrePorId.get(item.pertenece_a) ?? t('miembro')}
                       </span>
                     )}
                   </div>
-                  <span className="shrink-0 rounded-full bg-white/60 px-2 py-1 text-xs font-bold dark:bg-black/20">
+                  <span className="shrink-0 rounded-full bg-overlay/60 px-2 py-1 text-xs font-bold dark:bg-black/20">
                     {etiquetaUrgencia(diasRestantes, tUrgencia)}
                   </span>
                 </div>
@@ -145,7 +144,7 @@ export default async function DashboardPage({
                   <form action={agregarALista.bind(null, item.nombre)}>
                     <SubmitButton
                       variant="secondary"
-                      className="min-h-0 px-2 py-1 text-xs"
+                      size="sm"
                       pendingText={t('agregandoLista')}
                     >
                       {t('masLista')}
@@ -160,7 +159,7 @@ export default async function DashboardPage({
                   <form action={eliminarItem.bind(null, item.id)}>
                     <SubmitButton
                       variant="secondary"
-                      className="min-h-0 px-2 py-1 text-xs"
+                      size="sm"
                       pendingText={t('eliminando')}
                       confirmMessage={t('confirmarEliminar', { nombre: item.nombre })}
                     >

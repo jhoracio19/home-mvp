@@ -1,14 +1,17 @@
 'use client';
 
+import { useRef, useState } from 'react';
 import { useFormStatus } from 'react-dom';
 import { useTranslations } from 'next-intl';
 import { Button } from './Button';
+import { ConfirmDialog } from './ConfirmDialog';
+import { Spinner } from './Spinner';
 import type { ComponentProps, MouseEvent } from 'react';
 
 // Botón de submit consciente de useFormStatus: deshabilita y muestra
 // estado de carga mientras la Server Action del <form> padre corre.
-// `confirmMessage` opcional agrega un confirm() nativo antes de dejar
-// pasar el submit (usado en acciones destructivas como eliminar).
+// `confirmMessage` opcional intercepta el submit y pide confirmación
+// en un <dialog> propio (antes era un window.confirm() nativo).
 export function SubmitButton({
   children,
   pendingText,
@@ -18,28 +21,47 @@ export function SubmitButton({
 }: ComponentProps<typeof Button> & { pendingText?: string; confirmMessage?: string }) {
   const { pending } = useFormStatus();
   const t = useTranslations('Common');
+  const [confirmando, setConfirmando] = useState(false);
+  const formRef = useRef<HTMLFormElement | null>(null);
+  const botonRef = useRef<HTMLButtonElement | null>(null);
 
   function manejarClick(evento: MouseEvent<HTMLButtonElement>) {
-    if (confirmMessage && !window.confirm(confirmMessage)) {
+    if (confirmMessage) {
       evento.preventDefault();
+      formRef.current = evento.currentTarget.form;
+      botonRef.current = evento.currentTarget;
+      setConfirmando(true);
       return;
     }
     onClick?.(evento);
   }
 
+  function confirmar() {
+    setConfirmando(false);
+    // requestSubmit (y no click()) para no volver a pasar por manejarClick.
+    formRef.current?.requestSubmit(botonRef.current ?? undefined);
+  }
+
   return (
-    <Button type="submit" disabled={pending} onClick={manejarClick} {...props}>
-      {pending ? (
-        <span className="inline-flex items-center gap-2">
-          <svg viewBox="0 0 24 24" fill="none" className="h-4 w-4 animate-spin">
-            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-            <path className="opacity-90" fill="currentColor" d="M12 2a10 10 0 0 1 10 10h-4a6 6 0 0 0-6-6V2Z" />
-          </svg>
-          {pendingText ?? t('cargando')}
-        </span>
-      ) : (
-        children
+    <>
+      <Button type="submit" disabled={pending} onClick={manejarClick} {...props}>
+        {pending ? (
+          <span className="inline-flex items-center gap-2">
+            <Spinner />
+            {pendingText ?? t('cargando')}
+          </span>
+        ) : (
+          children
+        )}
+      </Button>
+      {confirmMessage && (
+        <ConfirmDialog
+          abierto={confirmando}
+          mensaje={confirmMessage}
+          onConfirmar={confirmar}
+          onCancelar={() => setConfirmando(false)}
+        />
       )}
-    </Button>
+    </>
   );
 }

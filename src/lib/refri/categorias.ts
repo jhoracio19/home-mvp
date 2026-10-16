@@ -31,7 +31,7 @@ export const HEX_CATEGORIA: Record<CategoriaItem, string> = {
 
 export const COLOR_CATEGORIA: Record<CategoriaItem, string> = {
   fruta: 'border-[#E08E45]/50 bg-[#E08E45]/15 text-[#E08E45] dark:bg-[#E08E45]/20',
-  verdura: 'border-[#6B8F5A]/50 bg-[#6B8F5A]/15 text-[#6B8F5A] dark:bg-[#6B8F5A]/20',
+  verdura: 'border-success/50 bg-success/15 text-success dark:bg-success/20',
   lacteo: 'border-[#6E93A8]/50 bg-[#6E93A8]/15 text-[#6E93A8] dark:bg-[#6E93A8]/20',
   carne: 'border-[#B4573F]/50 bg-[#B4573F]/15 text-[#B4573F] dark:bg-[#B4573F]/20',
   preparado: 'border-[#8B6B9E]/50 bg-[#8B6B9E]/15 text-[#8B6B9E] dark:bg-[#8B6B9E]/20',

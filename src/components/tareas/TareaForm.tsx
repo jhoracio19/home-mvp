@@ -68,7 +68,7 @@ export function TareaForm({
             className={`flex-1 rounded-lg border-2 px-3 py-2 text-sm font-semibold transition-colors ${
               tipoFrecuencia === 'intervalo'
                 ? 'border-espresso bg-espresso text-linen'
-                : 'border-camel bg-linen text-cocoa dark:border-cocoa dark:bg-[#3a2820] dark:text-linen'
+                : 'border-camel bg-linen text-cocoa dark:border-cocoa dark:bg-espresso-deep dark:text-linen'
             }`}
           >
             {t('cadaNDias')}
@@ -79,7 +79,7 @@ export function TareaForm({
             className={`flex-1 rounded-lg border-2 px-3 py-2 text-sm font-semibold transition-colors ${
               tipoFrecuencia === 'dias_semana'
                 ? 'border-espresso bg-espresso text-linen'
-                : 'border-camel bg-linen text-cocoa dark:border-cocoa dark:bg-[#3a2820] dark:text-linen'
+                : 'border-camel bg-linen text-cocoa dark:border-cocoa dark:bg-espresso-deep dark:text-linen'
             }`}
           >
             {t('diasDeLaSemana')}
@@ -90,7 +90,7 @@ export function TareaForm({
             className={`flex-1 rounded-lg border-2 px-3 py-2 text-sm font-semibold transition-colors ${
               tipoFrecuencia === 'unica'
                 ? 'border-espresso bg-espresso text-linen'
-                : 'border-camel bg-linen text-cocoa dark:border-cocoa dark:bg-[#3a2820] dark:text-linen'
+                : 'border-camel bg-linen text-cocoa dark:border-cocoa dark:bg-espresso-deep dark:text-linen'
             }`}
           >
             {t('eventoUnico')}
@@ -125,7 +125,7 @@ export function TareaForm({
                   className={`aspect-square rounded-lg border-2 text-sm font-bold transition-colors ${
                     activo
                       ? 'border-espresso bg-espresso text-linen'
-                      : 'border-camel bg-linen text-cocoa dark:border-cocoa dark:bg-[#3a2820] dark:text-linen'
+                      : 'border-camel bg-linen text-cocoa dark:border-cocoa dark:bg-espresso-deep dark:text-linen'
                   }`}
                 >
                   {dia.corta}

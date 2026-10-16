@@ -12,7 +12,7 @@ export default async function RecuperarPage({
   const [{ error }, t] = await Promise.all([searchParams, getTranslations('Auth')]);
 
   return (
-    <main className="flex flex-1 items-center justify-center bg-[radial-gradient(circle_at_top,_rgba(178,150,125,0.32),_transparent_36%)] bg-linen px-4 py-12">
+    <main className="flex flex-1 items-center justify-center fondo-auth px-4 py-12">
       <div className="w-full max-w-sm space-y-6 rounded-lg border border-camel bg-khaki p-6 shadow-lg">
         <div className="space-y-1 text-center">
           <h1 className="text-2xl font-bold text-cocoa">{t('recuperarContrasena')}</h1>

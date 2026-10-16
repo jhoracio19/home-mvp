@@ -1,5 +1,4 @@
 import { getLocale, getTranslations } from 'next-intl/server';
-import { Link } from '@/i18n/navigation';
 import type { Locale } from '@/i18n/routing';
 import {
   getCasaActivaOrRedirect,
@@ -13,6 +12,8 @@ import { intlLocale } from '@/lib/intl-locale';
 import { generarCodigoInvitacion, quitarMiembro } from '../actions';
 import { SubmitButton } from '@/components/ui/SubmitButton';
 import { CopyButton } from '@/components/ui/CopyButton';
+import { Alerta } from '@/components/ui/Alerta';
+import { BotonVolver } from '@/components/layout/BotonVolver';
 
 export default async function InvitarPage({
   searchParams,
@@ -38,27 +39,18 @@ export default async function InvitarPage({
   const linkInvitacion = codigoVigente ? `${siteUrl}/${locale}/casas/unirse?codigo=${codigoVigente}` : '';
 
   return (
-    <main className="flex flex-1 justify-center bg-[radial-gradient(circle_at_top_left,_rgba(178,150,125,0.3),_transparent_34%)] bg-linen px-4 py-8 dark:bg-none dark:bg-espresso">
+    <main className="flex flex-1 justify-center fondo-pagina px-4 py-8 dark:bg-none dark:bg-espresso">
       <div className="h-fit w-full max-w-sm space-y-6">
-        <Link href="/dashboard" className="inline-flex items-center gap-1 text-sm font-semibold text-cocoa hover:underline">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="h-4 w-4">
-            <polyline points="15 18 9 12 15 6" />
-          </svg>
-          {t('volver')}
-        </Link>
+        <BotonVolver href="/dashboard">{t('volver')}</BotonVolver>
 
         <div>
           <p className="text-xs font-bold uppercase tracking-[0.18em] text-camel">{casa.nombre}</p>
           <h1 className="mt-1 text-xl font-bold text-cocoa dark:text-linen">{t('invitarMiembros')}</h1>
         </div>
 
-        {error && (
-          <p className="rounded-lg border border-[#a8422e] bg-[#a8422e]/10 px-3 py-2 text-sm font-medium text-[#a8422e] dark:text-[#e3a999]">
-            {error}
-          </p>
-        )}
+        {error && <Alerta variante="error">{error}</Alerta>}
 
-        <div className="space-y-4 rounded-lg border border-camel bg-khaki p-6 shadow-lg dark:border-cocoa dark:bg-[#3a2820]">
+        <div className="space-y-4 rounded-lg border border-camel bg-khaki p-6 shadow-lg dark:border-cocoa dark:bg-espresso-deep">
           {!esAdmin ? (
             <p className="text-sm font-medium text-cocoa dark:text-khaki">{t('soloAdminInvitar')}</p>
           ) : codigoVigente ? (
@@ -113,7 +105,7 @@ export default async function InvitarPage({
               return (
                 <li
                   key={m.usuario_id}
-                  className="flex items-center justify-between gap-3 rounded-lg border border-camel bg-khaki px-3 py-2 text-sm shadow-sm dark:border-cocoa dark:bg-[#3a2820]"
+                  className="flex items-center justify-between gap-3 rounded-lg border border-camel bg-khaki px-3 py-2 text-sm shadow-sm dark:border-cocoa dark:bg-espresso-deep"
                 >
                   <div className="min-w-0">
                     <p className="truncate font-medium text-cocoa dark:text-linen">
@@ -130,7 +122,7 @@ export default async function InvitarPage({
                       <form action={quitarMiembro.bind(null, m.usuario_id)}>
                         <SubmitButton
                           variant="secondary"
-                          className="min-h-0 px-2 py-1 text-xs"
+                          size="sm"
                           pendingText={t('quitando')}
                           confirmMessage={t('confirmarQuitarMiembro', { nombre: nombreMiembro(m) })}
                         >

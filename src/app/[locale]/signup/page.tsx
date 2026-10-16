@@ -19,7 +19,7 @@ export default async function SignupPage({
     <div className="flex min-h-dvh flex-col bg-linen">
       <SiteHeader />
 
-      <main className="flex flex-1 items-center justify-center bg-[radial-gradient(circle_at_top,_rgba(178,150,125,0.32),_transparent_36%)] px-4 py-12">
+      <main className="flex flex-1 items-center justify-center fondo-auth px-4 py-12">
         <div className="w-full max-w-sm space-y-6 rounded-lg border border-camel bg-khaki p-6 shadow-lg">
           <div className="space-y-1 text-center">
             <h1 className="text-2xl font-bold text-cocoa">{t('crearCuenta')}</h1>
@@ -27,7 +27,7 @@ export default async function SignupPage({
           </div>
 
           {error && (
-            <p className="rounded-lg border border-[#a8422e] bg-[#a8422e]/10 px-3 py-2 text-sm font-medium text-[#a8422e]">
+            <p className="rounded-lg border border-danger bg-danger/10 px-3 py-2 text-sm font-medium text-danger">
               {error}
             </p>
           )}
