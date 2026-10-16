@@ -566,5 +566,15 @@
     "descripcionGenerica": "Try again in a moment.",
     "descripcionApp": "Try again. If it keeps happening, let whoever maintains the app know.",
     "reintentar": "Retry"
+  },
+  "Tema": {
+    "titulo": "House color",
+    "landingTitulo": "Make it yours: pick its color",
+    "arcilla": "Clay",
+    "petroleo": "Petrol",
+    "cafe": "Coffee",
+    "bosque": "Forest",
+    "ciruela": "Plum",
+    "oceano": "Ocean"
   }
 }

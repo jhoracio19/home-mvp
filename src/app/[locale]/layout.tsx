@@ -1,4 +1,5 @@
 import type { Metadata, Viewport } from "next";
+import { Manrope, Sora } from "next/font/google";
 import { notFound } from "next/navigation";
 import { NextIntlClientProvider, hasLocale } from "next-intl";
 import { setRequestLocale } from "next-intl/server";
@@ -6,6 +7,12 @@ import { Analytics } from "@vercel/analytics/next";
 import { RegistrarServiceWorker } from "@/components/RegistrarServiceWorker";
 import { routing, type Locale } from "@/i18n/routing";
 import "../globals.css";
+
+// Tipografía de marca: Sora para títulos, Manrope para la interfaz.
+// Se exponen como variables CSS que globals.css conecta a --font-sans
+// y a los headings.
+const manrope = Manrope({ subsets: ["latin"], variable: "--font-manrope" });
+const sora = Sora({ subsets: ["latin"], weight: ["600", "700", "800"], variable: "--font-sora" });
 
 export function generateStaticParams() {
   return routing.locales.map((locale) => ({ locale }));
@@ -36,12 +43,12 @@ export const metadata: Metadata = {
 
 // viewportFit: 'cover' habilita env(safe-area-inset-*) en iOS, para no
 // tapar contenido con el notch o la barra de gestos inferior.
-// themeColor pinta la barra de estado/navegador con el espresso de la marca.
+// themeColor pinta la barra de estado/navegador con la tinta del tema default.
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
   viewportFit: "cover",
-  themeColor: "#4A342A",
+  themeColor: "#53301C",
 };
 
 export default async function RootLayout({
@@ -59,8 +66,17 @@ export default async function RootLayout({
   setRequestLocale(locale as Locale);
 
   return (
-    <html lang={locale} className="h-dvh antialiased">
+    <html lang={locale} className={`${manrope.variable} ${sora.variable} h-dvh antialiased`}>
       <body className="min-h-dvh flex flex-col">
+        {/* Aplica el tema guardado en la cookie antes del primer pintado,
+            para que no haya flash del tema default. Valores acotados a la
+            lista conocida; un valor extraño simplemente no matchea. */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html:
+              "try{var m=document.cookie.match(/(?:^|; )tema=(petroleo|cafe|bosque|ciruela|oceano)(?:;|$)/);if(m)document.documentElement.setAttribute('data-tema',m[1]);}catch(e){}",
+          }}
+        />
         <NextIntlClientProvider>
           {children}
           <RegistrarServiceWorker />

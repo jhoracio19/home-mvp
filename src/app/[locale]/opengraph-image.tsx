@@ -30,7 +30,7 @@ export default async function Image({ params }: { params: Promise<{ locale: stri
           flexDirection: 'column',
           justifyContent: 'center',
           padding: '80px 96px',
-          backgroundColor: '#4A342A',
+          backgroundColor: '#53301C',
           fontFamily: 'sans-serif',
         }}
       >
@@ -41,20 +41,20 @@ export default async function Image({ params }: { params: Promise<{ locale: stri
               width: 72,
               height: 72,
               borderRadius: 18,
-              backgroundColor: '#F5F1EA',
+              backgroundColor: '#FAF6F1',
               alignItems: 'center',
               justifyContent: 'center',
             }}
           >
             <svg width="40" height="40" viewBox="0 0 512 512">
-              <path d="M256 100 L376 200 L376 400 L136 400 L136 200 Z" fill="#7D5A44" />
+              <path d="M256 100 L376 200 L376 400 L136 400 L136 200 Z" fill="#7C4A2D" />
             </svg>
           </div>
-          <span style={{ fontSize: 34, fontWeight: 700, color: '#F5F1EA' }}>RemindHome</span>
+          <span style={{ fontSize: 34, fontWeight: 700, color: '#FAF6F1' }}>RemindHome</span>
         </div>
 
         <div style={{ display: 'flex', marginTop: 56, maxWidth: 920 }}>
-          <span style={{ fontSize: 58, fontWeight: 700, lineHeight: 1.15, color: '#F5F1EA' }}>{titulo}</span>
+          <span style={{ fontSize: 58, fontWeight: 700, lineHeight: 1.15, color: '#FAF6F1' }}>{titulo}</span>
         </div>
 
         <div style={{ display: 'flex', gap: 14, marginTop: 48 }}>
@@ -65,8 +65,8 @@ export default async function Image({ params }: { params: Promise<{ locale: stri
                 display: 'flex',
                 padding: '10px 22px',
                 borderRadius: 999,
-                border: '2px solid #B2967D',
-                color: '#D7C9B8',
+                border: '2px solid #C08A66',
+                color: '#F0E2D4',
                 fontSize: 24,
                 fontWeight: 600,
               }}

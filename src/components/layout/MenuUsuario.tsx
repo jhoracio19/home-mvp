@@ -8,6 +8,7 @@ import { logout } from '@/app/[locale]/auth/actions';
 import { salirDeCasa } from '@/app/[locale]/(app)/casas/actions';
 import { NotificacionesToggle } from '@/components/notificaciones/NotificacionesToggle';
 import { ConfirmDialog } from '@/components/ui/ConfirmDialog';
+import { SelectorTema } from '@/components/tema/SelectorTema';
 import { LocaleSwitcher } from './LocaleSwitcher';
 import { itemClase, iconoClase } from './menu-clases';
 
@@ -129,6 +130,7 @@ export function MenuUsuario({ dentroDeCasa, esAdmin }: { dentroDeCasa: boolean; 
 
         <NotificacionesToggle />
         <LocaleSwitcher variant="menuItem" />
+        <SelectorTema />
 
         {(EMAIL_SOPORTE || LINK_DONACIONES) && <div className="border-t border-khaki" />}
 

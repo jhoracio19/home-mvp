@@ -566,5 +566,15 @@
     "descripcionGenerica": "Intenta de nuevo en un momento.",
     "descripcionApp": "Intenta de nuevo. Si sigue pasando, avísale a quien mantiene la app.",
     "reintentar": "Reintentar"
+  },
+  "Tema": {
+    "titulo": "Color de la casa",
+    "landingTitulo": "Hazla tuya: elige su color",
+    "arcilla": "Arcilla",
+    "petroleo": "Petróleo",
+    "cafe": "Café",
+    "bosque": "Bosque",
+    "ciruela": "Ciruela",
+    "oceano": "Océano"
   }
 }

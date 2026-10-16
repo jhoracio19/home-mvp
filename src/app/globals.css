@@ -7,25 +7,36 @@
 @custom-variant dark (&:where(.modo-oscuro-desactivado));
 
 :root {
-  --linen: #F5F1EA;
-  --khaki: #D7C9B8;
-  --camel: #B2967D;
-  --cocoa: #7D5A44;
-  --espresso: #4A342A;
-  /* Tono más oscuro que espresso: estados active y fondos de alto
-     contraste. Antes vivía suelto como #3a2820 por todo el código. */
-  --espresso-deep: #3A2820;
+  /* Tema por defecto: "Arcilla" — terracota cálida, acogedora.
+     Los nombres de los tokens (linen/khaki/camel/cocoa/espresso) son
+     históricos — vienen de la paleta café original y se conservan para
+     no tocar cada componente; léelos como roles, no como colores:
+       linen    = fondo de página
+       khaki    = superficie de card
+       camel    = borde / acento suave
+       cocoa    = tinta principal / botón primario
+       espresso = tinta de máximo énfasis
+     El usuario puede elegir otro tema (SelectorTema): se guarda en la
+     cookie `tema` y se aplica como data-tema en <html> antes del primer
+     pintado, con los bloques [data-tema=...] de abajo. */
+  --linen: #FAF6F1;
+  --khaki: #F0E2D4;
+  --camel: #C08A66;
+  --cocoa: #7C4A2D;
+  --espresso: #53301C;
+  /* Tono más oscuro que espresso: estados active y fondos de alto contraste. */
+  --espresso-deep: #3B2112;
 
   /* Semánticos: error/peligro, advertencia (vence hoy) y éxito.
      Los "-soft" son las variantes claras para usarse sobre fondos
      oscuros (espresso/espresso-deep). */
-  --danger: #A8422E;
-  --danger-hover: #8F3626;
-  --danger-active: #7A2D20;
-  --danger-soft: #E3A999;
-  --warning: #C9702F;
-  --warning-soft: #F0B988;
-  --success: #6B8F5A;
+  --danger: #B23B2A;
+  --danger-hover: #983123;
+  --danger-active: #7F2A1E;
+  --danger-soft: #EBAA9B;
+  --warning: #B35E12;
+  --warning-soft: #F2BE86;
+  --success: #2E7D52;
 
   /* Superficie elevada (paneles de menú, badges sobre cards teñidas).
      Único blanco permitido en la paleta; antes era bg-white suelto. */
@@ -33,6 +44,54 @@
 
   --background: var(--linen);
   --foreground: var(--espresso);
+}
+
+/* ---- Temas elegibles por el usuario ----------------------------------
+   Solo cambian los 6 tokens de marca; los semánticos (danger/warning/
+   success) son constantes para que "vencido" siempre se lea igual. */
+[data-tema='petroleo'] {
+  --linen: #F6F8F8;
+  --khaki: #E3EBEB;
+  --camel: #7E9EA5;
+  --cocoa: #24454C;
+  --espresso: #132E34;
+  --espresso-deep: #0B2125;
+}
+
+[data-tema='cafe'] {
+  --linen: #F5F1EA;
+  --khaki: #D7C9B8;
+  --camel: #B2967D;
+  --cocoa: #6E4E3A;
+  --espresso: #4A342A;
+  --espresso-deep: #3A2820;
+}
+
+[data-tema='bosque'] {
+  --linen: #F5F8F3;
+  --khaki: #E2EBDA;
+  --camel: #8CAB80;
+  --cocoa: #3C5E34;
+  --espresso: #233E1E;
+  --espresso-deep: #152B11;
+}
+
+[data-tema='ciruela'] {
+  --linen: #F9F5F8;
+  --khaki: #ECDFE9;
+  --camel: #AC84A6;
+  --cocoa: #5D3A5A;
+  --espresso: #3C223B;
+  --espresso-deep: #2A1529;
+}
+
+[data-tema='oceano'] {
+  --linen: #F4F7FA;
+  --khaki: #DFE8F0;
+  --camel: #7E9FBC;
+  --cocoa: #2E4E68;
+  --espresso: #1B3348;
+  --espresso-deep: #112334;
 }
 
 @theme inline {
@@ -52,14 +111,26 @@
   --color-warning-soft: var(--warning-soft);
   --color-success: var(--success);
   --color-overlay: var(--overlay);
-  --font-sans: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  /* Manrope (vía next/font en el layout raíz) como sans de interfaz. */
+  --font-sans: var(--font-manrope), ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  /* Radios un paso más generosos que el default para suavizar las cards. */
+  --radius-lg: 0.625rem;
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
   font-family: var(--font-sans);
+}
+
+/* Sora como voz de los títulos; el resto de la interfaz queda en Manrope. */
+h1,
+h2,
+h3 {
+  font-family: var(--font-sora), var(--font-sans);
+  letter-spacing: -0.01em;
+  text-wrap: balance;
 }
 
 /* Destello de confirmación: se dispara una sola vez al pintar el
@@ -102,9 +173,9 @@ body {
 }
 
 @keyframes demo-pulso {
-  0%, 48% { box-shadow: 0 0 0 0 rgba(107, 143, 90, 0); }
-  56% { box-shadow: 0 0 0 5px rgba(107, 143, 90, 0.35); }
-  68%, 100% { box-shadow: 0 0 0 0 rgba(107, 143, 90, 0); }
+  0%, 48% { box-shadow: 0 0 0 0 rgba(46, 125, 82, 0); }
+  56% { box-shadow: 0 0 0 5px rgba(46, 125, 82, 0.35); }
+  68%, 100% { box-shadow: 0 0 0 0 rgba(46, 125, 82, 0); }
 }
 
 .demo-checkbox {
@@ -163,8 +234,8 @@ body {
 
 /* Tareas: el botón de "marcar hecho" respira para invitar el clic. */
 @keyframes demo-boton-pulso {
-  0%, 100% { box-shadow: 0 0 0 0 rgba(125, 90, 68, 0); }
-  50% { box-shadow: 0 0 0 4px rgba(125, 90, 68, 0.25); }
+  0%, 100% { box-shadow: 0 0 0 0 transparent; }
+  50% { box-shadow: 0 0 0 4px color-mix(in srgb, var(--cocoa) 25%, transparent); }
 }
 .demo-boton-pulso {
   animation: demo-boton-pulso 2.4s ease-in-out infinite;
@@ -197,19 +268,18 @@ body {
    del mismo tono camel, casi imperceptibles, para que no se sientan
    bloques planos de color pero sin ensuciar la lectura. */
 .textura-puntos {
-  background-image: radial-gradient(circle, rgba(178, 150, 125, 0.35) 1px, transparent 1px);
+  background-image: radial-gradient(circle, color-mix(in srgb, var(--camel) 35%, transparent) 1px, transparent 1px);
   background-size: 18px 18px;
 }
 
 /* Fondo estándar de página: halo camel desde la esquina superior
    izquierda sobre linen. La variante -auth lo centra arriba (login,
-   signup, recuperar). Antes este gradiente estaba copy-pasteado como
-   clase arbitraria en 10 archivos. */
+   signup, recuperar). color-mix para que siga al tema elegido. */
 .fondo-pagina {
   background-color: var(--linen);
-  background-image: radial-gradient(circle at top left, rgba(178, 150, 125, 0.3), transparent 34%);
+  background-image: radial-gradient(circle at top left, color-mix(in srgb, var(--camel) 30%, transparent), transparent 34%);
 }
 .fondo-auth {
   background-color: var(--linen);
-  background-image: radial-gradient(circle at top, rgba(178, 150, 125, 0.32), transparent 36%);
+  background-image: radial-gradient(circle at top, color-mix(in srgb, var(--camel) 32%, transparent), transparent 36%);
 }

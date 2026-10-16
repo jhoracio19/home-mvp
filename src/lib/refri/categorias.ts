@@ -21,19 +21,19 @@ export function etiquetaCategoria(categoria: CategoriaItem, t: Traductor): strin
 // que necesitan el valor crudo (ej. un punto de color inline);
 // COLOR_CATEGORIA ya trae las clases listas para una pastilla/badge.
 export const HEX_CATEGORIA: Record<CategoriaItem, string> = {
-  fruta: '#E08E45',
-  verdura: '#6B8F5A',
-  lacteo: '#6E93A8',
-  carne: '#B4573F',
-  preparado: '#8B6B9E',
-  otro: '#8A7A64',
+  fruta: '#C06E1F',
+  verdura: '#2E7D52',
+  lacteo: '#3E7A96',
+  carne: '#9C4038',
+  preparado: '#7B5EA7',
+  otro: '#5E6B70',
 };
 
 export const COLOR_CATEGORIA: Record<CategoriaItem, string> = {
-  fruta: 'border-[#E08E45]/50 bg-[#E08E45]/15 text-[#E08E45] dark:bg-[#E08E45]/20',
+  fruta: 'border-[#C06E1F]/50 bg-[#C06E1F]/15 text-[#C06E1F] dark:bg-[#C06E1F]/20',
   verdura: 'border-success/50 bg-success/15 text-success dark:bg-success/20',
-  lacteo: 'border-[#6E93A8]/50 bg-[#6E93A8]/15 text-[#6E93A8] dark:bg-[#6E93A8]/20',
-  carne: 'border-[#B4573F]/50 bg-[#B4573F]/15 text-[#B4573F] dark:bg-[#B4573F]/20',
-  preparado: 'border-[#8B6B9E]/50 bg-[#8B6B9E]/15 text-[#8B6B9E] dark:bg-[#8B6B9E]/20',
-  otro: 'border-[#8A7A64]/50 bg-[#8A7A64]/15 text-[#8A7A64] dark:bg-[#8A7A64]/20',
+  lacteo: 'border-[#3E7A96]/50 bg-[#3E7A96]/15 text-[#3E7A96] dark:bg-[#3E7A96]/20',
+  carne: 'border-[#9C4038]/50 bg-[#9C4038]/15 text-[#9C4038] dark:bg-[#9C4038]/20',
+  preparado: 'border-[#7B5EA7]/50 bg-[#7B5EA7]/15 text-[#7B5EA7] dark:bg-[#7B5EA7]/20',
+  otro: 'border-[#5E6B70]/50 bg-[#5E6B70]/15 text-[#5E6B70] dark:bg-[#5E6B70]/20',
 };

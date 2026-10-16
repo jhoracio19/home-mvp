@@ -7,8 +7,8 @@ export default function manifest(): MetadataRoute.Manifest {
     description: 'Refri y tareas compartidas del hogar.',
     start_url: '/dashboard',
     display: 'standalone',
-    background_color: '#F5F1EA',
-    theme_color: '#4A342A',
+    background_color: '#FAF6F1',
+    theme_color: '#53301C',
     icons: [
       {
         src: '/icons/icon-192.png',

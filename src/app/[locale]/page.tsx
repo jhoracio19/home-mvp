@@ -9,6 +9,7 @@ import { SiteFooter } from '@/components/landing/SiteFooter';
 import { DemoTiempoReal } from '@/components/landing/DemoTiempoReal';
 import { StickyCTA } from '@/components/landing/StickyCTA';
 import { InstalarApp } from '@/components/landing/InstalarApp';
+import { SelectorTema } from '@/components/tema/SelectorTema';
 
 // Mismas clases que dashboard/page.tsx y tareas/page.tsx — los mockups
 // de abajo son una reproducción fiel del look real, no una versión
@@ -332,6 +333,12 @@ export default async function RootPage() {
             </svg>
             {t('hero.sinAnuncios')}
           </p>
+
+          {/* Personalización en vivo: cambiar el tema repinta toda la
+              landing al instante — la mejor demo de "hazla tuya". */}
+          <div className="flex justify-center lg:justify-start">
+            <SelectorTema variant="landing" />
+          </div>
         </div>
 
         <TelefonoRefri {...traductores} />
